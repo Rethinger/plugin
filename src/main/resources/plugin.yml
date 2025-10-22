@@ -1,0 +1,25 @@
+name: MmmmStoryPlugin
+version: '${project.version}'
+main: com.mmmm.story.MmmmStoryPlugin
+api-version: '1.21'
+author: MmmmTeam
+description: Story campaign plugin for Minecraft
+website: https://example.com
+
+commands:
+  story:
+    description: Main story plugin command
+    usage: /story <start|skip|reset|progress|tp|reload>
+    permission: story.admin
+    aliases: [st]
+
+permissions:
+  story.admin:
+    description: Full admin access to story plugin
+    default: op
+  story.debug:
+    description: Debug and teleport commands
+    default: op
+  story.progress.view:
+    description: View story progress
+    default: true
