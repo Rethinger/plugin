@@ -1,0 +1,111 @@
+# Project information
+site_name: PurpurMC Documentation
+site_url: https://purpurmc.org/docs
+site_author: granny
+site_description: >-
+  The official documentation for Purpur.
+  Purpur is a fork of Paper with the goal of providing new and interesting configuration options, which allow for creating a unique gameplay experience not seen anywhere else.
+docs_dir: mkdocs
+nav:
+    - index.md
+    - Purpur:
+      - Purpur: purpur/index.md
+      - Installation: purpur/installation.md
+      - Configuration: purpur/configuration.md
+      - Commands: purpur/commands.md
+      - Permissions: purpur/permissions.md
+      - Frequently Asked Questions: purpur/faq.md
+    - PurpurExtras:
+      - PurpurExtras: purpurextras/index.md
+      - Installation: purpurextras/installation.md
+      - Configuration: purpurextras/configuration.md
+      - Commands: purpurextras/commands.md
+      # - Permissions: purpurextras/permissions.md
+      # - Frequently Asked Questions: purpurextras/faq.md
+    - PurpurPacks:
+      - PurpurPacks: purpurpacks/index.md
+      - Installation: purpurpacks/installation.md
+      - Packs List: purpurpacks/packs.md
+      # - Configuration: purpurpacks/configuration.md
+      # - Commands: purpurpacks/commands.md
+      # - Permissions: purpurpacks/permissions.md
+      # - Frequently Asked Questions: purpurpacks/faq.md
+repo_url: https://github.com/PurpurMC/PurpurDocs
+repo_name: PurpurDocs
+edit_uri: edit/main/mkdocs/
+extra_css:
+  - stylesheets/extra.css
+plugins:
+  - search
+  - ezlinks
+  - markdownextradata
+  - autolink_references:
+      autolinks:
+          - reference_prefix: MC-
+            target_url: https://bugs.mojang.com/browse/MC-<num>
+          - reference_prefix: PaperMC/Paper#
+            target_url: https://github.com/PaperMC/Paper/issues/<num>
+  - redirects:
+      redirect_maps:
+          'commands.md': 'purpur/commands.md'
+          'cmds.md': 'purpur/commands.md'
+          'configuration.md': 'purpur/configuration.md'
+          'config.md': 'purpur/configuration.md'
+          'permissions.md': 'purpur/permissions.md'
+          'perms.md': 'purpur/permissions.md'
+          'faq.md': 'purpur/faq.md'
+          'Commands.md': 'purpur/commands.md'
+          'Configuration.md': 'purpur/configuration.md'
+          'FAQ.md': 'purpur/faq.md'
+          'Installation.md': 'purpur/installation.md'
+          'Log4j.md': 'purpur/log4j.md'
+          'Permissions.md': 'purpur/permissions.md'
+theme:
+  name: material
+  custom_dir: overrides
+  favicon: images/purpur-small.png
+  logo: images/purpur-small.png
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.indexes
+  palette:
+    - scheme: slate
+      primary: light blue
+      accent: blue
+markdown_extensions:
+  - attr_list
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.magiclink
+  - markdown.extensions.md_in_html
+  - footnotes
+  - toc:
+      permalink: 🔗
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+extra:
+  org:
+    source: https://github.com/PurpurMC/
+  project:
+    website: https://purpurmc.org
+    javadoc: https://purpurmc.org/javadoc
+    downloads: https://purpurmc.org/downloads
+    source: https://github.com/PurpurMC/Purpur
+    version: 1.21.3
+    build:
+      number: 2347
+      commit: 06dde9
+  purpur_extras:
+    downloads: https://modrinth.com/plugin/purpurextras/versions
+    source: https://github.com/PurpurMC/PurpurExtras
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://purpurmc.org/discord
+      name: Purpur Discord Server
+  purpur_packs:
+    source: https://github.com/PurpurMC/PurpurPacks
