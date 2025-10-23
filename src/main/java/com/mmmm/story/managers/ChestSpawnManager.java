@@ -36,16 +36,16 @@ public class ChestSpawnManager implements Listener {
     private final Map<UUID, Integer> activeSearchTasks = new HashMap<>(); // Player UUID -> Task ID
     
     // Chance for item spawn
-    private static final double SPAWN_CHANCE_STABILIZATION_CORE = 0.12;  // 12% для ядра стабилизации
+    private static final double SPAWN_CHANCE_STABILIZATION_CORE = 0.15;  // 15% для ядра стабилизации
     private static final double SPAWN_CHANCE_BOSS1_KEY = 0.10;  // 10% для ключа босса №1
     private static final double SPAWN_CHANCE_BOSS1_CATALYST = 0.10;  // 10% для катализатора пустоты
-    private static final double SPAWN_CHANCE_ARTIFACT = 0.15; // 15% для артефактов End
+    private static final double SPAWN_CHANCE_ARTIFACT = 0.20; // 20% для артефактов End
     
     // Delay range in ticks
     private static final int MIN_DELAY_NORMAL = 100; // 5 секунд
-    private static final int MAX_DELAY_NORMAL = 400; // 20 секунд
+    private static final int MAX_DELAY_NORMAL = 200; // 10 секунд
     private static final int MIN_DELAY_ARTIFACT = 40; // 2 секунды
-    private static final int MAX_DELAY_ARTIFACT = 120; // 6 секунд
+    private static final int MAX_DELAY_ARTIFACT = 100; // 5 секунд
     
     // Cooldown between chest searches (prevent abuse) - 5 seconds
     private static final long CHEST_COOLDOWN = 5000L;
@@ -135,8 +135,11 @@ public class ChestSpawnManager implements Listener {
                 long timeSince = System.currentTimeMillis() - lastProcessed;
                 if (timeSince < CHEST_COOLDOWN) {
                     // Still on cooldown, don't show search mechanic
-                    Component msg = Component.text("✗ Этот сундук уже был обыскан недавно (" + (CHEST_COOLDOWN - timeSince) / 1000 + " сек)")
-                            .color(NamedTextColor.RED);
+                    String lang = plugin.getDialogManager().getPlayerLanguage(player);
+                    String message = lang.equals("en") 
+                        ? "✗ This chest was already searched recently (" + (CHEST_COOLDOWN - timeSince) / 1000 + " sec)"
+                        : "✗ Этот сундук уже был обыскан недавно (" + (CHEST_COOLDOWN - timeSince) / 1000 + " сек)";
+                    Component msg = Component.text(message).color(NamedTextColor.RED);
                     player.sendMessage(msg);
                     player.sendActionBar(msg);
                     return;
@@ -196,19 +199,99 @@ public class ChestSpawnManager implements Listener {
         }
     }
     
+    /**
+     * Translate story items when player opens ANY inventory containing them
+     * This ensures each player sees items in their own language
+     */
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player)) {
+            return;
+        }
+        
+        Player player = (Player) event.getPlayer();
+        String playerLang = plugin.getDialogManager().getPlayerLanguage(player);
+        
+        // Translate all story items in the opened inventory
+        Inventory inventory = event.getInventory();
+        ItemStack[] contents = inventory.getContents();
+        
+        boolean modified = false;
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack item = contents[i];
+            if (item != null && item.getType() != Material.AIR) {
+                String storyItemId = plugin.getItemManager().getStoryItemId(item);
+                if (storyItemId != null) {
+                    // This is a story item - recreate it in player's language
+                    ItemStack translatedItem = plugin.getItemManager().createStoryItem(storyItemId, playerLang);
+                    if (translatedItem != null) {
+                        // Preserve the amount
+                        translatedItem.setAmount(item.getAmount());
+                        contents[i] = translatedItem;
+                        modified = true;
+                    }
+                }
+            }
+        }
+        
+        // Update inventory if any items were translated
+        if (modified) {
+            // Schedule update for next tick to avoid conflicts
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                inventory.setContents(contents);
+            });
+        }
+        
+        // Also translate items in player's own inventory
+        translatePlayerInventory(player, playerLang);
+    }
+    
+    /**
+     * Helper method to translate all story items in player's inventory
+     */
+    private void translatePlayerInventory(Player player, String language) {
+        ItemStack[] inventory = player.getInventory().getContents();
+        boolean modified = false;
+        
+        for (int i = 0; i < inventory.length; i++) {
+            ItemStack item = inventory[i];
+            if (item != null && item.getType() != Material.AIR) {
+                String storyItemId = plugin.getItemManager().getStoryItemId(item);
+                if (storyItemId != null) {
+                    ItemStack translatedItem = plugin.getItemManager().createStoryItem(storyItemId, language);
+                    if (translatedItem != null) {
+                        translatedItem.setAmount(item.getAmount());
+                        inventory[i] = translatedItem;
+                        modified = true;
+                    }
+                }
+            }
+        }
+        
+        if (modified) {
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                player.getInventory().setContents(inventory);
+            });
+        }
+    }
+    
     private void startSearchingMechanic(Player player, StoryStructureType type, String structureKey) {
         UUID playerId = player.getUniqueId();
+        String lang = plugin.getDialogManager().getPlayerLanguage(player);
         
         // Add player to searching list
         searchingPlayers.put(playerId, structureKey);
         structureSearchers.computeIfAbsent(structureKey, k -> new HashSet<>()).add(playerId);
         
         // Send initial message
-        String itemName = getItemNameForStructure(type);
-        Component searchMsg = Component.text("🔍 Обыск сундука...")
+        String itemName = getItemNameForStructure(type, lang);
+        String searchText = lang.equals("en") ? "🔍 Searching chest..." : "🔍 Обыск сундука...";
+        String itemText = lang.equals("en") ? "Searching for: " + itemName : "Искомый предмет: " + itemName;
+        
+        Component searchMsg = Component.text(searchText)
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.BOLD, true);
-        Component itemMsg = Component.text("Искомый предмет: " + itemName)
+        Component itemMsg = Component.text(itemText)
                 .color(NamedTextColor.YELLOW);
         
         player.sendMessage(searchMsg);
@@ -228,6 +311,9 @@ public class ChestSpawnManager implements Listener {
             plugin.getServer().getScheduler().cancelTask(activeSearchTasks.get(playerId));
         }
         
+        String lang = plugin.getDialogManager().getPlayerLanguage(player);
+        String searchingText = lang.equals("en") ? "🔍 Searching chest..." : "🔍 Обыскиваю сундук...";
+        
         BukkitRunnable task = new BukkitRunnable() {
             int ticks = 0;
             
@@ -242,15 +328,15 @@ public class ChestSpawnManager implements Listener {
                 }
                 
                 ticks++;
-                
-                // Play experience orb sound every 5 ticks
-                if (ticks % 5 == 0) {
+
+                // Play experience orb sound every 2 ticks
+                if (ticks % 2 == 0) {
                     player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1.5f);
                 }
                 
                 // Send searching messages every 2 seconds
                 if (ticks % 40 == 0) {
-                    player.sendActionBar(Component.text("🔍 Обыскиваю сундук...")
+                    player.sendActionBar(Component.text(searchingText)
                             .color(NamedTextColor.GRAY));
                 }
             }
@@ -268,13 +354,14 @@ public class ChestSpawnManager implements Listener {
         }
     }
     
-    private String getItemNameForStructure(StoryStructureType type) {
+    private String getItemNameForStructure(StoryStructureType type, String lang) {
+        boolean isEnglish = lang.equals("en");
         return switch (type) {
-            case RUINED_PORTAL -> "Ядро Стабилизации";
-            case NETHER_FORTRESS -> "Ключ Призыва";
-            case BASTION_REMNANT -> "Катализатор Пустоты";
-            case END_CITY -> "Артефакт Края";
-            default -> "Неизвестный предмет";
+            case RUINED_PORTAL -> isEnglish ? "Stabilization Core" : "Ядро Стабилизации";
+            case NETHER_FORTRESS -> isEnglish ? "Summon Key" : "Ключ Призыва";
+            case BASTION_REMNANT -> isEnglish ? "Void Catalyst" : "Катализатор Пустоты";
+            case END_CITY -> isEnglish ? "End Artifact" : "Артефакт Края";
+            default -> isEnglish ? "Unknown Item" : "Неизвестный предмет";
         };
     }
     
@@ -316,7 +403,12 @@ public class ChestSpawnManager implements Listener {
             for (UUID playerId : structureSearchers.get(structureKey)) {
                 Player p = plugin.getServer().getPlayer(playerId);
                 if (p != null && p.isOnline()) {
-                    p.sendMessage(Component.text("✓ Материал найден в этой структуре!")
+                    String lang = plugin.getDialogManager().getPlayerLanguage(p);
+                    String notifyText = lang.equals("en") 
+                        ? "✓ Material found in this structure!"
+                        : "✓ Материал найден в этой структуре!";
+                    
+                    p.sendMessage(Component.text(notifyText)
                             .color(NamedTextColor.GREEN)
                             .decoration(TextDecoration.BOLD, true));
                     p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
@@ -335,10 +427,10 @@ public class ChestSpawnManager implements Listener {
         
         // Get spawn chance based on structure type
         double spawnChance = switch (structureType) {
-            case RUINED_PORTAL -> SPAWN_CHANCE_STABILIZATION_CORE;  // 12%
+            case RUINED_PORTAL -> SPAWN_CHANCE_STABILIZATION_CORE;  // 15%
             case NETHER_FORTRESS -> SPAWN_CHANCE_BOSS1_KEY;         // 10%
             case BASTION_REMNANT -> SPAWN_CHANCE_BOSS1_CATALYST;    // 10%
-            case END_CITY -> SPAWN_CHANCE_ARTIFACT;                  // 15%
+            case END_CITY -> SPAWN_CHANCE_ARTIFACT;                  // 20%
             default -> 0.05;
         };
         
@@ -352,7 +444,7 @@ public class ChestSpawnManager implements Listener {
                     return;
                 }
                 
-                // Check spawn chance (ruined_portal 12%, fortress/bastion 10%, end_city 15%)
+                // Check spawn chance (ruined_portal 15%, fortress/bastion 10%, end_city 20%)
                 if (random.nextDouble() > spawnChance) {
                     // Failed spawn - increment fail counter
                     int failCount = chestFailCounts.getOrDefault(chestKey, 0) + 1;
@@ -362,8 +454,12 @@ public class ChestSpawnManager implements Listener {
                     if (player.isOnline()) {
                         stopSearchingTask(player);
                         
-                        Component failMsg = Component.text("✗ В этом сундуке ничего не найдено (" + failCount + "/3)")
-                                .color(NamedTextColor.GRAY);
+                        String lang = plugin.getDialogManager().getPlayerLanguage(player);
+                        String failText = lang.equals("en") 
+                            ? "✗ Nothing found in this chest (" + failCount + "/3)"
+                            : "✗ В этом сундуке ничего не найдено (" + failCount + "/3)";
+                        
+                        Component failMsg = Component.text(failText).color(NamedTextColor.GRAY);
                         player.sendMessage(failMsg);
                         player.sendActionBar(failMsg);
                         player.playSound(player.getLocation(), Sound.ENTITY_CAT_DEATH, 1.0f, 1.0f);
@@ -387,7 +483,11 @@ public class ChestSpawnManager implements Listener {
                             world.spawnParticle(Particle.BLOCK, chestLoc.add(0.5, 0.5, 0.5), 30, 0.3, 0.3, 0.3, 0.1, Material.CHEST.createBlockData());
                             world.playSound(chestLoc, Sound.BLOCK_CHEST_LOCKED, 1.0f, 0.8f);
                             
-                            player.sendMessage(Component.text("✗ Сундук сломался после 3 неудачных попыток!")
+                            String breakText = lang.equals("en")
+                                ? "✗ Chest broke after 3 failed attempts!"
+                                : "✗ Сундук сломался после 3 неудачных попыток!";
+                            
+                            player.sendMessage(Component.text(breakText)
                                     .color(NamedTextColor.RED)
                                     .decoration(TextDecoration.BOLD, true));
                             
@@ -399,7 +499,8 @@ public class ChestSpawnManager implements Listener {
                 }
                 
                 // Spawn item based on structure
-                ItemStack item = getItemForStructure(structureType);
+                String lang = plugin.getDialogManager().getPlayerLanguage(player);
+                ItemStack item = getItemForStructure(structureType, lang);
                 if (item == null) {
                     processedChests.remove(chestKey);
                     return;
@@ -426,14 +527,18 @@ public class ChestSpawnManager implements Listener {
                     // Stop searching task
                     stopSearchingTask(player);
                     
-                    String itemName = getItemNameForStructure(structureType);
-                    Component foundMsg = Component.text("✓ НАЙДЕНО: " + itemName + "!")
+                    String itemName = getItemNameForStructure(structureType, lang);
+                    
+                    String foundText = lang.equals("en") ? "✓ FOUND: " + itemName + "!" : "✓ НАЙДЕНО: " + itemName + "!";
+                    String successText = lang.equals("en") ? "✓ SUCCESS!" : "✓ УСПЕХ!";
+                    
+                    Component foundMsg = Component.text(foundText)
                             .color(NamedTextColor.GREEN)
                             .decoration(TextDecoration.BOLD, true);
                     player.sendMessage(foundMsg);
                     player.sendActionBar(foundMsg);
                     player.showTitle(net.kyori.adventure.title.Title.title(
-                            Component.text("✓ УСПЕХ!").color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true),
+                            Component.text(successText).color(NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true),
                             Component.text(itemName).color(NamedTextColor.YELLOW)
                     ));
                     player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
@@ -501,17 +606,17 @@ public class ChestSpawnManager implements Listener {
         return false;
     }
     
-    private ItemStack getItemForStructure(StoryStructureType type) {
+    private ItemStack getItemForStructure(StoryStructureType type, String language) {
         return switch (type) {
-            case RUINED_PORTAL -> plugin.getItemManager().createStoryItem(ItemManager.STABILIZATION_CORE);
-            case NETHER_FORTRESS -> plugin.getItemManager().createStoryItem("boss1_summon_key"); // Призывалка для Boss 1
-            case BASTION_REMNANT -> plugin.getItemManager().createStoryItem("boss1_catalyst"); // Катализатор Пустоты
-            case END_CITY -> getRandomUnfoundArtifact();
+            case RUINED_PORTAL -> plugin.getItemManager().createStoryItem(ItemManager.STABILIZATION_CORE, language);
+            case NETHER_FORTRESS -> plugin.getItemManager().createStoryItem("boss1_summon_key", language); // Призывалка для Boss 1
+            case BASTION_REMNANT -> plugin.getItemManager().createStoryItem("boss1_catalyst", language); // Катализатор Пустоты
+            case END_CITY -> getRandomUnfoundArtifact(language);
             default -> null;
         };
     }
     
-    private ItemStack getRandomUnfoundArtifact() {
+    private ItemStack getRandomUnfoundArtifact(String language) {
         // Collect all unfound artifacts
         List<Integer> unfoundArtifacts = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
@@ -528,7 +633,7 @@ public class ChestSpawnManager implements Listener {
         Random random = new Random();
         int artifactNumber = unfoundArtifacts.get(random.nextInt(unfoundArtifacts.size()));
         
-        return plugin.getItemManager().createStoryItem("end_artifact_" + artifactNumber);
+        return plugin.getItemManager().createStoryItem("end_artifact_" + artifactNumber, language);
     }
     
     private StoryStructureType detectStructureType(Location location) {
@@ -536,22 +641,35 @@ public class ChestSpawnManager implements Listener {
         var structureRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.STRUCTURE);
         
         // Check for minecraft:ruined_portal (Ядро Стабилизации) - Overworld only
+        // Search through all ruined portal variants (desert, jungle, mountain, ocean, swamp, standard)
         if (world.getEnvironment() == World.Environment.NORMAL) {
-            Structure ruinedPortal = structureRegistry.get(NamespacedKey.minecraft("ruined_portal"));
+            // Try all ruined portal structure variants
+            String[] portalVariants = {
+                "ruined_portal",
+                "ruined_portal_desert",
+                "ruined_portal_jungle", 
+                "ruined_portal_mountain",
+                "ruined_portal_ocean",
+                "ruined_portal_swamp"
+            };
             
-            if (ruinedPortal != null) {
-                StructureSearchResult portalResult = world.locateNearestStructure(
-                    location, 
-                    ruinedPortal,
-                    50, // radius in chunks
-                    false
-                );
+            for (String variantName : portalVariants) {
+                Structure ruinedPortal = structureRegistry.get(NamespacedKey.minecraft(variantName));
                 
-                if (portalResult != null) {
-                    double distance = portalResult.getLocation().distance(location);
+                if (ruinedPortal != null) {
+                    StructureSearchResult portalResult = world.locateNearestStructure(
+                        location, 
+                        ruinedPortal,
+                        50, // radius in chunks
+                        false
+                    );
                     
-                    if (distance < 120) { // Увеличенный радиус для больших порталов
-                        return StoryStructureType.RUINED_PORTAL;
+                    if (portalResult != null) {
+                        double distance = portalResult.getLocation().distance(location);
+                        
+                        if (distance < 120) { // Увеличенный радиус для больших порталов
+                            return StoryStructureType.RUINED_PORTAL;
+                        }
                     }
                 }
             }
@@ -567,7 +685,7 @@ public class ChestSpawnManager implements Listener {
                     50,
                     false
                 );
-                if (fortressResult != null && fortressResult.getLocation().distance(location) < 150) {
+                if (fortressResult != null && fortressResult.getLocation().distance(location) < 200) {
                     plugin.getLogger().info("Detected NETHER_FORTRESS at " + location.getBlockX() + ", " + location.getBlockZ());
                     return StoryStructureType.NETHER_FORTRESS;
                 }
@@ -582,7 +700,7 @@ public class ChestSpawnManager implements Listener {
                     50,
                     false
                 );
-                if (bastionResult != null && bastionResult.getLocation().distance(location) < 150) {
+                if (bastionResult != null && bastionResult.getLocation().distance(location) < 200) {
                     plugin.getLogger().info("Detected BASTION_REMNANT at " + location.getBlockX() + ", " + location.getBlockZ());
                     return StoryStructureType.BASTION_REMNANT;
                 }
@@ -599,7 +717,7 @@ public class ChestSpawnManager implements Listener {
                     50,
                     false
                 );
-                if (endCityResult != null && endCityResult.getLocation().distance(location) < 150) {
+                if (endCityResult != null && endCityResult.getLocation().distance(location) < 200) {
                     plugin.getLogger().info("Detected END_CITY at " + location.getBlockX() + ", " + location.getBlockZ());
                     return StoryStructureType.END_CITY;
                 }

@@ -18,6 +18,7 @@ public class ConfigManager {
     private FileConfiguration messages;
     
     private final Map<String, FileConfiguration> configs = new HashMap<>();
+    private final Map<String, FileConfiguration> dialogsByLanguage = new HashMap<>();
     
     public ConfigManager(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -27,6 +28,7 @@ public class ConfigManager {
         // Save default configs if they don't exist
         plugin.saveDefaultConfig();
         saveResourceIfNotExists("dialogs.yml");
+        saveResourceIfNotExists("dialogs_en.yml");
         saveResourceIfNotExists("sounds.yml");
         saveResourceIfNotExists("messages_ru.yml");
         
@@ -35,6 +37,10 @@ public class ConfigManager {
         dialogs = loadConfig("dialogs.yml");
         sounds = loadConfig("sounds.yml");
         messages = loadConfig("messages_ru.yml");
+        
+        // Load dialog files for different languages
+        dialogsByLanguage.put("ru", loadConfig("dialogs.yml"));
+        dialogsByLanguage.put("en", loadConfig("dialogs_en.yml"));
         
         configs.put("config", config);
         configs.put("dialogs", dialogs);
@@ -80,6 +86,10 @@ public class ConfigManager {
     
     public FileConfiguration getDialogs() {
         return dialogs;
+    }
+    
+    public FileConfiguration getDialogs(String language) {
+        return dialogsByLanguage.getOrDefault(language, dialogs);
     }
     
     public FileConfiguration getSounds() {

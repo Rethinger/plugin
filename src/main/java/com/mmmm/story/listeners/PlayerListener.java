@@ -34,6 +34,11 @@ public class PlayerListener implements Listener {
         // Initialize player data if first join
         plugin.getDataManager().getPlayerData(player.getUniqueId());
         
+        // Translate all story items in player's inventory to their language
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            translatePlayerItems(player);
+        }, 20L); // Wait 1 second after join for client to fully load
+        
         // Auto-start story if 2+ players online and story hasn't started
         int onlinePlayers = plugin.getServer().getOnlinePlayers().size();
         int currentAct = plugin.getDataManager().getCurrentAct();
@@ -112,10 +117,27 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
+        int currentAct = plugin.getDataManager().getCurrentAct();
         
-        // In Act 4, if player dies in the End, respawn them in Overworld instead
-        if (plugin.getDataManager().getCurrentAct() >= 4) {
-            if (event.getRespawnLocation().getWorld().getEnvironment() == World.Environment.THE_END) {
+        // Acts 3-4: Respawn in the End
+        if (currentAct >= 3 && currentAct <= 4) {
+            if (event.getRespawnLocation().getWorld().getEnvironment() != World.Environment.THE_END) {
+                // Find the End
+                World end = plugin.getServer().getWorlds().stream()
+                        .filter(w -> w.getEnvironment() == World.Environment.THE_END)
+                        .findFirst()
+                        .orElse(null);
+                
+                if (end != null) {
+                    Location spawnLoc = end.getSpawnLocation();
+                    event.setRespawnLocation(spawnLoc);
+                    plugin.getLogger().info("Player " + player.getName() + " respawned in the End (Act " + currentAct + ")");
+                }
+            }
+        }
+        // Act 5+: Respawn in Overworld
+        else if (currentAct >= 5) {
+            if (event.getRespawnLocation().getWorld().getEnvironment() != World.Environment.NORMAL) {
                 // Find the overworld
                 World overworld = plugin.getServer().getWorlds().stream()
                         .filter(w -> w.getEnvironment() == World.Environment.NORMAL)
@@ -125,9 +147,38 @@ public class PlayerListener implements Listener {
                 if (overworld != null) {
                     Location spawnLoc = overworld.getSpawnLocation();
                     event.setRespawnLocation(spawnLoc);
-                    plugin.getLogger().info("Player " + player.getName() + " respawned in Overworld (Act 4+)");
+                    plugin.getLogger().info("Player " + player.getName() + " respawned in Overworld (Act " + currentAct + ")");
                 }
             }
+        }
+    }
+    
+    /**
+     * Translate all story items in player's inventory to their language
+     */
+    private void translatePlayerItems(Player player) {
+        String playerLang = plugin.getDialogManager().getPlayerLanguage(player);
+        ItemStack[] inventory = player.getInventory().getContents();
+        boolean modified = false;
+        
+        for (int i = 0; i < inventory.length; i++) {
+            ItemStack item = inventory[i];
+            if (item != null && item.getType() != org.bukkit.Material.AIR) {
+                String storyItemId = plugin.getItemManager().getStoryItemId(item);
+                if (storyItemId != null) {
+                    ItemStack translatedItem = plugin.getItemManager().createStoryItem(storyItemId, playerLang);
+                    if (translatedItem != null) {
+                        translatedItem.setAmount(item.getAmount());
+                        inventory[i] = translatedItem;
+                        modified = true;
+                    }
+                }
+            }
+        }
+        
+        if (modified) {
+            player.getInventory().setContents(inventory);
+            player.updateInventory();
         }
     }
 }

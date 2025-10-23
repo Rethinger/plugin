@@ -377,6 +377,20 @@ public class Act3Listener implements Listener {
         Location dragonLoc = dragon.getLocation();
         World world = dragon.getWorld();
         
+        // Reset all endermen to vanilla behavior (remove aggro from players)
+        for (Entity entity : world.getEntities()) {
+            if (entity instanceof Enderman) {
+                Enderman enderman = (Enderman) entity;
+                // Clear target (remove aggro)
+                enderman.setTarget(null);
+                // Remove any custom AI modifications
+                enderman.setAware(true);
+                enderman.setAI(true);
+            }
+        }
+        
+        plugin.getLogger().info("Dragon defeated! Endermen returned to vanilla state.");
+        
         // Find the exit portal location (usually at 0, ~, 0)
         Location portalLoc = new Location(world, 0, 65, 0);
         
@@ -425,13 +439,16 @@ public class Act3Listener implements Listener {
     
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        // Block teleportation through END portal (exit portal) after dragon defeat
+        // Block teleportation through END portal (exit portal) after dragon defeat until ritual starts
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
             if (event.getFrom().getWorld().getEnvironment() == World.Environment.THE_END) {
-                if (plugin.getDataManager().isDragonDefeated()) {
-                    // Cancel portal teleport after dragon defeat
+                int currentAct = plugin.getDataManager().getCurrentAct();
+                
+                // Block exit if dragon defeated but ritual hasn't started (Acts 3-4)
+                if (plugin.getDataManager().isDragonDefeated() && currentAct < 5) {
+                    // Cancel portal teleport - players must stay in End until ritual
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(Component.text("§c§lПортал заблокирован! Используйте жемчужины Края для возвращения.")
+                    event.getPlayer().sendMessage(Component.text("§c§lВыход из Края заблокирован! Соберите все артефакты для начала ритуала.")
                             .color(NamedTextColor.RED));
                     event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.5f, 0.5f);
                     return;

@@ -1,0 +1,69 @@
+# ================================
+# SYSTEM MESSAGES (ENGLISH)
+# ================================
+
+# NPC
+npc:
+  messenger_name: "§6Messenger"
+  direction_marker: "§6You received a direction marker! (Lasts 5 minutes)"
+
+# Act Manager
+act:
+  divider: "§8§m                                                    "
+  title_prefix: "§8» "
+  subtitle_prefix: "§8» §7"
+
+# Story Item Protection
+item_protection:
+  saved_on_death: "§6§lStory items saved and will be returned after respawn!"
+  restored: "§a§l✔ Story items restored!"
+  items_saved: "§aYour story items have been saved!"
+
+# Act 1 - Skeleton Wave
+act1:
+  skeleton_warrior: "§6Skeleton Warrior"
+  skeleton_archer: "§6Skeleton Archer"
+  achievement_survivor: "§a§l✔ Achievement unlocked: Survivor"
+  achievement_survivor_desc: "§7You survived the wave of skeleton warriors!"
+  wave_started: "§c§lSkeleton wave has begun! Defend until dawn!"
+  crossroads_activated: "§6§l⚡ Crossroads Node activated!"
+  portals_enabled: "§aPortals to the Nether now work!"
+
+# Boss 1 - Skeleton Lord
+boss1:
+  name: "§4§lSkeleton Lord"
+  warrior: "§6Lord's Warrior"
+  archer: "§6Lord's Archer"
+  shield_break: "§c§l⚡ The Lord shatters your shield!"
+  knockback: "§c§l⚡ The Lord knocks you back!"
+  phase2: "§5§l⚡ The Lord enters PHASE TWO!"
+  wall_rage: "§4§l⚡⚡⚡ THE LORD IS ENRAGED! HE DESTROYS WALLS! ⚡⚡⚡"
+  wall_rage_feel: "§c§lYou feel the Lord's wrath!"
+  cowardice: "§c§l⚠ The Lord senses your cowardice..."
+  pull: "§4§l⚡ THE LORD PULLS YOU IN!"
+  defeated_first: "§e§l✦ Find the Void Catalyst in the Bastion!"
+  defeated_again: "§6§l⚔ The Lord is defeated again!"
+
+# Boss 2 - Nether Fiend
+boss2:
+  name: "§4§lNether Depths Fiend"
+
+# Boss 3 - End Guardian
+boss3:
+  name: "§5§lEnd Guardian"
+  materialized: "§5§l⚔ End Guardian materializes!"
+  crystal_guardian: "§5§lCrystal Guardian"
+
+# Act 5 - Final Ritual
+act5:
+  exit_blocked: "§c§lExit from the End is blocked! Collect all artifacts to begin the ritual."
+  too_far: "§c✗ Too far from the End center! (distance: %distance%/100 blocks)"
+  artifacts_count: "§d✦ Artifacts in ritual chests: %count%/5"
+  returned_overworld: "§6You have returned to the Overworld..."
+
+# Portals
+portal:
+  end_opened: "§5§l⚡ The End Gate has appeared!"
+  end_instruction: "§aEnter the gate to complete what you started."
+  unstable: "§cPortal is unstable! Stabilization required..."
+  end_closed: "§cEnd portal is sealed! A special key is required..."

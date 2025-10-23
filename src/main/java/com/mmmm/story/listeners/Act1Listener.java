@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -24,6 +26,7 @@ public class Act1Listener implements Listener {
     private final Map<UUID, Boolean> activeWavePlayers = new HashMap<>();
     private final Map<UUID, Boolean> playerReceivedAchievement = new HashMap<>();
     private Location coreDropLocation = null; // Store location where core was dropped
+    private int skeletonSpawnCounter = 0; // Counter for archer spawns (every 10th)
     
     public Act1Listener(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -33,6 +36,133 @@ public class Act1Listener implements Listener {
     // Public method to get core location for portal ignition
     public Location getCoreDropLocation() {
         return coreDropLocation;
+    }
+    
+    @EventHandler
+    public void onSkeletonKeyDrop(org.bukkit.event.entity.ItemSpawnEvent event) {
+        if (plugin.getDataManager().getCurrentAct() < 1) {
+            return;
+        }
+        
+        org.bukkit.entity.Item droppedItem = event.getEntity();
+        ItemStack itemStack = droppedItem.getItemStack();
+        
+        // Check if it's Act1 Skeleton Key
+        if (!plugin.getItemManager().isStoryItem(itemStack)) {
+            return;
+        }
+        
+        if (!ItemManager.ACT1_SKELETON_KEY.equals(plugin.getItemManager().getStoryItemId(itemStack))) {
+            return;
+        }
+        
+        // Schedule check for Ancient Debris below
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!droppedItem.isValid() || droppedItem.isDead()) {
+                    cancel();
+                    return;
+                }
+                
+                Location itemLoc = droppedItem.getLocation();
+                Location blockBelow = itemLoc.clone().subtract(0, 1, 0);
+                
+                // Check if item is on Ancient Debris
+                if (blockBelow.getBlock().getType() == Material.ANCIENT_DEBRIS) {
+                    // Spawn skeleton with cinematic effect!
+                    spawnCinematicSkeleton(droppedItem);
+                    cancel();
+                }
+            }
+        }.runTaskTimer(plugin, 10L, 5L);
+    }
+    
+    private void spawnCinematicSkeleton(org.bukkit.entity.Item droppedItem) {
+        Location location = droppedItem.getLocation();
+        World world = location.getWorld();
+        
+        // Remove the key item
+        droppedItem.remove();
+        
+        // Используем существующий блок ancient_debris, НЕ создаём новый!
+        final Location spawnLoc = location.clone();
+        final Block centerBlock = spawnLoc.getBlock();
+        
+        // Initial effects (без установки нового блока)
+        world.spawnParticle(Particle.LAVA, spawnLoc.clone().add(0.5, 0.5, 0.5), 50, 0.5, 0.5, 0.5, 0.1);
+        world.spawnParticle(Particle.FLAME, spawnLoc.clone().add(0.5, 0.5, 0.5), 100, 0.5, 0.5, 0.5, 0.05);
+        world.playSound(spawnLoc, Sound.BLOCK_ANCIENT_DEBRIS_BREAK, 1.5f, 0.7f);
+        
+        // PHASE 2: After 1 second, spawn skeleton skull flying upward
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Spawn skeleton skull item that flies up
+                org.bukkit.entity.Item skullItem = world.dropItem(
+                    spawnLoc.clone().add(0.5, 1, 0.5),
+                    new ItemStack(Material.SKELETON_SKULL)
+                );
+                skullItem.setVelocity(new org.bukkit.util.Vector(0, 1.2, 0)); // Fly upward
+                skullItem.setPickupDelay(Integer.MAX_VALUE);
+                skullItem.setGlowing(true);
+                
+                // Explosion effect
+                world.spawnParticle(Particle.EXPLOSION, spawnLoc.clone().add(0.5, 0.5, 0.5), 3, 0.3, 0.3, 0.3, 0);
+                world.spawnParticle(Particle.SOUL_FIRE_FLAME, spawnLoc.clone().add(0.5, 0.5, 0.5), 50, 0.5, 0.5, 0.5, 0.1);
+                world.playSound(spawnLoc, Sound.ENTITY_GENERIC_EXPLODE, 1.2f, 0.9f);
+                
+                // Блок НЕ удаляется - он должен остаться для босса!
+                
+                // PHASE 3: After skull flies up (1 second), spawn the skeleton
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        // Remove the skull item
+                        skullItem.remove();
+                        
+                        // Spawn skeleton with effects
+                        Skeleton skeleton = (Skeleton) world.spawnEntity(spawnLoc.clone().add(0, 1, 0), EntityType.SKELETON);
+                        skeleton.setCustomName("§6Воин-Скелет");
+                        skeleton.setCustomNameVisible(true);
+                        
+                        // Equipment
+                        skeleton.getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
+                        skeleton.getEquipment().setHelmet(new ItemStack(Material.CHAINMAIL_HELMET));
+                        skeleton.getEquipment().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
+                        
+                        // Make equipment not drop
+                        skeleton.getEquipment().setItemInMainHandDropChance(0.0f);
+                        skeleton.getEquipment().setHelmetDropChance(0.0f);
+                        skeleton.getEquipment().setChestplateDropChance(0.0f);
+                        
+                        // Increase HP
+                        skeleton.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(30.0);
+                        skeleton.setHealth(30.0);
+                        
+                        // Particle effects on spawn
+                        world.spawnParticle(Particle.SOUL_FIRE_FLAME, skeleton.getLocation(), 100, 1, 1, 1, 0.2);
+                        world.spawnParticle(Particle.SMOKE, skeleton.getLocation(), 50, 0.5, 0.5, 0.5, 0.1);
+                        world.playSound(skeleton.getLocation(), Sound.ENTITY_SKELETON_AMBIENT, 1.5f, 0.7f);
+                        
+                        // Find nearest player to target
+                        Player nearestPlayer = null;
+                        double nearestDistance = Double.MAX_VALUE;
+                        for (Player p : world.getPlayers()) {
+                            double distance = p.getLocation().distance(skeleton.getLocation());
+                            if (distance < nearestDistance) {
+                                nearestDistance = distance;
+                                nearestPlayer = p;
+                            }
+                        }
+                        
+                        if (nearestPlayer != null) {
+                            skeleton.setTarget(nearestPlayer);
+                        }
+                    }
+                }.runTaskLater(plugin, 20L); // 1 second after skull
+            }
+        }.runTaskLater(plugin, 20L); // 1 second after key drop
     }
     
     private void startSkeletonWaveTask() {
@@ -158,13 +288,30 @@ public class Act1Listener implements Listener {
     
     private void spawnWarriorSkeleton(Location location, Player targetPlayer) {
         Skeleton skeleton = (Skeleton) location.getWorld().spawnEntity(location, EntityType.SKELETON);
-        skeleton.setCustomName("§6Воин-Скелет");
+        
+        // Increment counter and check if this is 10th skeleton
+        skeletonSpawnCounter++;
+        boolean isArcher = (skeletonSpawnCounter % 10 == 0);
+        
+        if (isArcher) {
+            skeleton.setCustomName("§6Лучник-Скелет");
+        } else {
+            skeleton.setCustomName("§6Воин-Скелет");
+        }
         skeleton.setCustomNameVisible(true);
         
-        // Equipment: gold helmet, iron chestplate, stone sword
+        // Equipment: gold helmet, iron chestplate
         skeleton.getEquipment().setHelmet(new ItemStack(Material.GOLDEN_HELMET));
         skeleton.getEquipment().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-        skeleton.getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
+        
+        // Every 10th skeleton is archer, others are melee
+        if (isArcher) {
+            // Archer variant - with bow
+            skeleton.getEquipment().setItemInMainHand(new ItemStack(Material.BOW));
+        } else {
+            // Melee variant - with stone sword
+            skeleton.getEquipment().setItemInMainHand(new ItemStack(Material.STONE_SWORD));
+        }
         
         // Set equipment to not drop
         skeleton.getEquipment().setHelmetDropChance(0.0f);

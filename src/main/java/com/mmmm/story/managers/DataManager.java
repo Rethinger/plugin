@@ -1,6 +1,7 @@
 package com.mmmm.story.managers;
 
 import com.mmmm.story.MmmmStoryPlugin;
+import com.mmmm.story.data.PlayerSettings;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -270,5 +271,53 @@ public class DataManager {
     public void setString(String key, String value) {
         globalData.set(key, value);
         saveGlobal();
+    }
+    
+    // ==========================================
+    // PLAYER SETTINGS METHODS
+    // ==========================================
+    
+    /**
+     * Get player settings, creating default if not exists
+     */
+    public PlayerSettings getPlayerSettings(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        
+        boolean showDialogs = cfg.getBoolean("settings.showDialogs", true);
+        String language = cfg.getString("settings.language", "ru");
+        String speedStr = cfg.getString("settings.dialogSpeed", "NORMAL");
+        PlayerSettings.DialogSpeed speed = PlayerSettings.DialogSpeed.fromString(speedStr);
+        
+        return new PlayerSettings(showDialogs, language, speed);
+    }
+    
+    /**
+     * Save player settings
+     */
+    public void savePlayerSettings(UUID uuid, PlayerSettings settings) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        
+        cfg.set("settings.showDialogs", settings.isShowDialogs());
+        cfg.set("settings.language", settings.getLanguage());
+        cfg.set("settings.dialogSpeed", settings.getDialogSpeed().name());
+        
+        savePlayerData(uuid);
+    }
+    
+    /**
+     * Check if player has configured settings (for first-time setup)
+     */
+    public boolean hasConfiguredSettings(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        return cfg.contains("settings.configured");
+    }
+    
+    /**
+     * Mark player settings as configured
+     */
+    public void markSettingsConfigured(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        cfg.set("settings.configured", true);
+        savePlayerData(uuid);
     }
 }

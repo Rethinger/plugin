@@ -3,6 +3,7 @@ package com.mmmm.story;
 import com.mmmm.story.commands.StoryCommand;
 import com.mmmm.story.listeners.*;
 import com.mmmm.story.managers.*;
+import de.eisi05.npc.api.NpcApi;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -18,6 +19,8 @@ public class MmmmStoryPlugin extends JavaPlugin {
     private ActManager actManager;
     private DialogManager dialogManager;
     private StructureManager structureManager;
+    private SettingsManager settingsManager;
+    private MessageManager messageManager;
     private Act1Listener act1Listener;
     
     @Override
@@ -28,6 +31,10 @@ public class MmmmStoryPlugin extends JavaPlugin {
         getLogger().info("Initializing story campaign...");
         
         try {
+            // Initialize NPC API
+            NpcApi.createInstance(this);
+            getLogger().info("NPC API initialized");
+            
             // Initialize managers
             configManager = new ConfigManager(this);
             configManager.loadAll();
@@ -40,6 +47,8 @@ public class MmmmStoryPlugin extends JavaPlugin {
             structureManager = new StructureManager(this);
             npcManager = new NPCManager(this);
             actManager = new ActManager(this);
+            settingsManager = new SettingsManager(this);
+            messageManager = new MessageManager(this);
             
             // Register commands
             getCommand("story").setExecutor(new StoryCommand(this));
@@ -89,6 +98,7 @@ public class MmmmStoryPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChestSpawnManager(this), this);
         getServer().getPluginManager().registerEvents(new StoryItemProtectionListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockTrackingListener(), this);
+        getServer().getPluginManager().registerEvents(settingsManager, this);
     }
     
     public void reload() {
@@ -131,5 +141,13 @@ public class MmmmStoryPlugin extends JavaPlugin {
     
     public Act1Listener getAct1Listener() {
         return act1Listener;
+    }
+    
+    public SettingsManager getSettingsManager() {
+        return settingsManager;
+    }
+    
+    public MessageManager getMessageManager() {
+        return messageManager;
     }
 }

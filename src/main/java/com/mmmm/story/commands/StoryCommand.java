@@ -50,10 +50,42 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
                 return handleGive(sender, args);
             case "debug":
                 return handleDebug(sender);
+            case "continue":
+                return handleContinue(sender);
+            case "settings":
+            case "menu":
+                return handleSettings(sender);
             default:
                 sendHelp(sender);
                 return true;
         }
+    }
+    
+    private boolean handleContinue(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Component.text("Эту команду может использовать только игрок!").color(NamedTextColor.RED));
+            return true;
+        }
+        
+        Player player = (Player) sender;
+        boolean success = plugin.getDialogManager().continueDialog(player);
+        
+        if (!success) {
+            player.sendMessage(Component.text("Нет активного диалога для продолжения.").color(NamedTextColor.YELLOW));
+        }
+        
+        return true;
+    }
+    
+    private boolean handleSettings(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Component.text("Эту команду может использовать только игрок!").color(NamedTextColor.RED));
+            return true;
+        }
+        
+        Player player = (Player) sender;
+        plugin.getSettingsManager().openSettingsMenu(player);
+        return true;
     }
     
     private boolean handleStart(CommandSender sender) {
@@ -62,8 +94,9 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         
-        plugin.getActManager().startCampaign();
-        sender.sendMessage(Component.text("Сюжетная кампания запущена!").color(NamedTextColor.GREEN));
+        // Start campaign with player waiting system
+        plugin.getSettingsManager().startCampaignWithSettings();
+        sender.sendMessage(Component.text("Запуск кампании... Ожидание настройки игроков.").color(NamedTextColor.YELLOW));
         return true;
     }
     
@@ -284,6 +317,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(Component.text("=== Story Plugin Commands ===").color(NamedTextColor.GOLD));
         sender.sendMessage(Component.text("/story start - Запустить кампанию").color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("/story settings - Открыть меню настроек").color(NamedTextColor.GREEN));
         sender.sendMessage(Component.text("/story skip <act> - Перейти к акту").color(NamedTextColor.YELLOW));
         sender.sendMessage(Component.text("/story reset <all|world|player <имя>> - Сбросить прогресс").color(NamedTextColor.YELLOW));
         sender.sendMessage(Component.text("/story progress [игрок] - Показать прогресс").color(NamedTextColor.YELLOW));
@@ -298,7 +332,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
         
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("start", "skip", "reset", "progress", "give", "tp", "reload", "debug"));
+            completions.addAll(Arrays.asList("start", "settings", "menu", "skip", "reset", "progress", "give", "tp", "reload", "debug"));
         } else if (args.length == 2) {
             switch (args[0].toLowerCase()) {
                 case "skip":

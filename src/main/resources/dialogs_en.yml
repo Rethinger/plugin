@@ -1,0 +1,575 @@
+# ================================
+# STORY CAMPAIGN DIALOGS - ENGLISH
+# Complete English translation
+# Based on СЮЖЕТ_ФИНАЛЬНЫЙ.md
+# Uses vanilla Minecraft structures
+# ================================
+
+# ================================
+# PROLOGUE — "Awakening"
+# ================================
+
+messenger.spawn:
+  hologram: true
+  actionBar: true
+  title: false
+  effect: "DARKNESS"
+  lines:
+    - delay: 0
+      text: "&7&o*The world around suddenly darkens...*"
+      sound: "AMBIENT_CAVE"
+    - delay: 5
+      text: "&d&o???&r: &7...is someone there?"
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 10
+      text: "&7&o*A figure materializes from the mist*"
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+      removeEffect: true
+    - delay: 15
+      text: "&6Messenger: &7Finally... You have arrived."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 21
+      text: "&6Messenger: &7My name is the Messenger. I've been waiting for you."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 27
+      text: "&6Messenger: &7The world is dying. Portals are crumbling, boundaries between worlds are thinning."
+      sound: "BLOCK_GLASS_BREAK"
+    - delay: 35
+      text: "&6Messenger: &aBut you can stop this."
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 41
+      text: "&6Messenger: &7To the north lies an ancient altar. The Stabilization Core is hidden there."
+      sound: "BLOCK_BELL_USE"
+    - delay: 49
+      text: "&6Messenger: &7Only it can restore the balance..."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 55
+      text: "&6Messenger: &dSeek ruins with purple glow. Go... before it's too late."
+      sound: "BLOCK_BEACON_AMBIENT"
+    - delay: 63
+      text: "&7&o*The Messenger vanishes into the mist*"
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+    - delay: 68
+      text: "&e&l✦ &eNew Quest:&f Find the Ruined Portal to the north"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# ================================
+# ACT I — "The Rift"
+# ================================
+
+altar.forgotten:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The ancient altar radiates strange warmth*"
+      sound: "BLOCK_BEACON_AMBIENT"
+    - delay: 5
+      text: "&5Ancient Voice: &7Don't... touch... the seal..."
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 10
+      text: "&6Messenger: &7Don't listen to the whispers of madness. Take the Core."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 16
+      text: "&7&o*You take the Stabilization Core*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 21
+      text: "&5Ancient Voice: &cThe seal... has weakened..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 26
+      text: "&6Messenger: &aExcellent. Now find the Crossroads Node to the south."
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 32
+      text: "&6Messenger: &7There you'll be able to stabilize the portals."
+      sound: "BLOCK_BELL_USE"
+    - delay: 38
+      text: "&e&l✦ &aObtained:&b Stabilization Core"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 43
+      text: "&e&l✦ &eNew Quest:&f Find the Crossroads Node"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+node.crossroads:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&7&o*The Core is inserted into the pedestal*"
+      sound: "BLOCK_END_PORTAL_FRAME_FILL"
+    - delay: 4
+      text: "&7&o*The earth begins to shake*"
+      sound: "ENTITY_LIGHTNING_BOLT_THUNDER"
+    - delay: 9
+      text: "&5Ancient Voice: &cThe second... seal... is broken..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 14
+      text: "&6Messenger: &aWonderful! The portals are restored!"
+      sound: "ENTITY_VILLAGER_CELEBRATE"
+    - delay: 20
+      text: "&7&o*The Nether portal ignites by itself*"
+      sound: "BLOCK_PORTAL_TRIGGER"
+      ignitePortal: true
+    - delay: 25
+      text: "&6Messenger: &7Now go to the Nether. An important mission awaits you there."
+      sound: "BLOCK_BELL_USE"
+    - delay: 31
+      text: "&6Messenger: &7Seek the nether fortresses... a key to summon the Guardian is hidden there."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 38
+      text: "&5Ancient Voice: &cDon't go... this is... a trap..."
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 43
+      text: "&6Messenger: &7*Laughs* Mad whispers of the ancient dead. Ignore them."
+      sound: "ENTITY_VILLAGER_NO"
+    - delay: 49
+      text: "&a&l✓ &aAchievement:&f The Rift Activated"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 54
+      text: "&e&l✦ &eNew Quest:&f Explore the Nether Fortresses"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+nether.key_found:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The key begins to pulsate with dark energy*"
+      sound: "BLOCK_BEACON_AMBIENT"
+    - delay: 5
+      text: "&5Ancient Voice: &cThis key... will open the gates..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&6Messenger: &7Excellent! Now create a summoning altar."
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 16
+      text: "&e&l✦ &aObtained:&6 Summoning Key"
+      sound: "ENTITY_ITEM_PICKUP"
+
+bastion.catalyst_found:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The crystal emanates shimmering void*"
+      sound: "BLOCK_RESPAWN_ANCHOR_AMBIENT"
+    - delay: 5
+      text: "&5Ancient Voice: &cThe power of chaos... be careful..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 10
+      text: "&6Messenger: &7The Void Catalyst! It will amplify the Overlord's Fragment."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 17
+      text: "&e&l✦ &aObtained:&5 Void Catalyst"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# ================================
+# ACT II — "First Sacrifice"
+# ================================
+
+boss1.summon:
+  hologram: false
+  actionBar: true
+  title: true
+  spawnBossAfter: true
+  lines:
+    - delay: 0
+      text: "&7&o*The Summoning Key is inserted into the altar*"
+      sound: "ITEM_FIRECHARGE_USE"
+    - delay: 3
+      text: "&7&o*The earth splits open*"
+      sound: "ENTITY_GENERIC_EXPLODE"
+    - delay: 6
+      text: "&k&4???&r: &c*A roar comes from the depths...*"
+      sound: "ENTITY_WITHER_SPAWN"
+    - delay: 9
+      text: "&k&5Overlord&r&5: &7Who... dared... disturb... my slumber?"
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 13
+      text: "&k&5Overlord&r&5: &7I... was a knight..."
+      sound: "ENTITY_SKELETON_AMBIENT"
+    - delay: 17
+      text: "&k&5Overlord&r&5: &7I... guarded... the seal..."
+      sound: "ENTITY_SKELETON_HURT"
+    - delay: 21
+      text: "&k&5Overlord&r&5: &cBut now... YOU WILL DIE!"
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 24
+      text: "&6Messenger: &aDestroy him! He is a spawn of ancient evil!"
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 28
+      text: "&5Ancient Voice: &cNo... he is... a guardian... you are freeing..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 31
+      text: "&4&l⚔⚔⚔ BATTLE BEGINS ⚔⚔⚔"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+
+boss1.defeated:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&k&5Overlord&r&5: &7I am... free... from the curse..."
+      sound: "ENTITY_SKELETON_DEATH"
+    - delay: 5
+      text: "&k&5Overlord&r&5: &cBut you... have freed... something worse..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 11
+      text: "&7&o*The Overlord crumbles to dust*"
+      sound: "BLOCK_SAND_BREAK"
+    - delay: 16
+      text: "&6Messenger: &aExcellent! The first guardian is defeated!"
+      sound: "ENTITY_VILLAGER_CELEBRATE"
+    - delay: 22
+      text: "&5Ancient Voice: &cThe first... seal... is broken..."
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 27
+      text: "&6Messenger: &7Take his power. You'll need it for the next trial."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 34
+      text: "&e&l✦ &aObtained:&d Fragment of the Overlord's Power"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 39
+      text: "&a&l✓ &aAchievement:&f Fallen Guardian"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 44
+      text: "&e&l✦ &eNew Quest:&f Explore the ruined piglin bastions"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+    - delay: 49
+      text: "&7&o*The skeleton waves have ceased*"
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+
+# ================================
+# ACT II (NETHER) CONTINUATION
+# ================================
+
+boss2.summon:
+  hologram: false
+  actionBar: true
+  title: true
+  spawnBossAfter: true  # Boss spawns AFTER dialog finishes
+  lines:
+    - delay: 0
+      text: "&7&o*The Fragment and Catalyst merge*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 3
+      text: "&7&o*The earth splits apart*"
+      sound: "ENTITY_GENERIC_EXPLODE"
+    - delay: 6
+      text: "&k&4???&r: &c*Hellfire bursts forth...*"
+      sound: "ENTITY_WITHER_SPAWN"
+    - delay: 9
+      text: "&k&4The Fiend&r&4: &cI SLEPT... FOR THOUSANDS OF YEARS!"
+      sound: "ENTITY_BLAZE_AMBIENT"
+    - delay: 13
+      text: "&k&4The Fiend&r&4: &7I WAS... IMPRISONED... FOR MY CRIME!"
+      sound: "ENTITY_GHAST_SCREAM"
+    - delay: 17
+      text: "&k&4The Fiend&r&4: &7I GUARDED... THE PASSAGE TO THE END!"
+      sound: "ENTITY_BLAZE_HURT"
+    - delay: 21
+      text: "&k&4The Fiend&r&4: &cBUT NOW... I AM FREE! AND YOU... SHALL BURN!"
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 25
+      text: "&6Messenger: &aDestroy him! He's the last barrier before the End!"
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 29
+      text: "&5Ancient Voice: &cHe... the last... guardian..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 32
+      text: "&4&l🔥🔥🔥 BATTLE WITH THE FIEND BEGINS 🔥🔥🔥"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+
+boss2.defeated:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&k&4The Fiend&r&4: &7The seal... third seal... breaking..."
+      sound: "ENTITY_WITHER_DEATH"
+    - delay: 5
+      text: "&k&4The Fiend&r&4: &cYou... are doomed... all doomed..."
+      sound: "ENTITY_BLAZE_DEATH"
+    - delay: 11
+      text: "&7&o*The Fiend explodes*"
+      sound: "ENTITY_GENERIC_EXPLODE"
+    - delay: 16
+      text: "&6Messenger: &aFINALLY! The path to the End is open!"
+      sound: "ENTITY_VILLAGER_CELEBRATE"
+    - delay: 22
+      text: "&5Ancient Voice: &cThe last... seal... broken..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 28
+      text: "&6Messenger: &7Now throw the key onto the beacon to open the gateway."
+      sound: "BLOCK_BELL_USE"
+    - delay: 34
+      text: "&6Messenger: &eAnd don't forget the pumpkin."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 40
+      text: "&e&l✦ &aObtained:&6 End Portal Key"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 45
+      text: "&a&l✓ &aAchievement:&f Nether Triumph"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 50
+      text: "&e&l✦ &eNew Quest:&f Activate the End Portal"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# ================================
+# ACT III — "The True Truth"
+# ================================
+
+end.entry:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*You enter the portal*"
+      sound: "BLOCK_PORTAL_TRAVEL"
+    - delay: 5
+      text: "&7&o*Reality warps*"
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+    - delay: 10
+      text: "&5Ancient Voice: &7Finally... someone... hears..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 16
+      text: "&5Ancient Voice: &cThe dragon... not enemy... he is... JAILER!"
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 22
+      text: "&6Messenger: &cDon't listen! The dragon is the source of all evil!"
+      sound: "ENTITY_VILLAGER_NO"
+    - delay: 28
+      text: "&5Ancient Voice: &cThe Messenger... it's... HIM!"
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 34
+      text: "&6Messenger: &7*Laughs* Foolish shard of the past..."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 40
+      text: "&e&l✦ &eQuest:&f Defeat the Ender Dragon"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+dragon.defeated:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&5&k???&r&5: &7I... was... guardian..."
+      sound: "ENTITY_ENDER_DRAGON_HURT"
+    - delay: 5
+      text: "&5&k???&r&5: &cSeal... final... broken..."
+      sound: "ENTITY_ENDER_DRAGON_DEATH"
+    - delay: 11
+      text: "&7&o*The dragon vanishes*"
+      sound: "BLOCK_END_PORTAL_SPAWN"
+    - delay: 16
+      text: "&5Ancient Voice: &cHE... IS FREE..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 22
+      text: "&6Messenger: &4*Voice distorts* FINALLY!"
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 28
+      text: "&4&k???&r: &cYou... FREED ME!"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+    - delay: 34
+      text: "&4&kThe Dark Lord&r: &cI AM... THE DARK LORD!"
+      sound: "ENTITY_WITHER_SPAWN"
+    - delay: 40
+      text: "&4&kThe Dark Lord&r: &7Thousands of years... I was imprisoned..."
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 46
+      text: "&4&kThe Dark Lord&r: &cBut you... broke the THREE SEALS!"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+    - delay: 53
+      text: "&5Ancient Voice: &7Collect... five artifacts..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 59
+      text: "&5Ancient Voice: &7This... last chance... to seal him... again..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 66
+      text: "&4&kThe Dark Lord&r: &c*Laughs* Try it..."
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 72
+      text: "&e&l✦ &aObtained:&d Dragon Egg"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 77
+      text: "&a&l✓ &aAchievement:&f End of an Era"
+      sound: "ENTITY_PLAYER_LEVELUP"
+
+artifact.found_1:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The echo shard vibrates with ancient power*"
+      sound: "BLOCK_SCULK_SHRIEKER_SHRIEK"
+    - delay: 5
+      text: "&5Ancient Voice: &7First... &cVoid Shard&7... found..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aFound:&c Void Shard (1/5)"
+      sound: "ENTITY_ITEM_PICKUP"
+
+artifact.found_2:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The bottle with dragon's breath glows from within*"
+      sound: "ENTITY_ENDER_DRAGON_AMBIENT"
+    - delay: 5
+      text: "&5Ancient Voice: &7Second... &bBreath of Time&7... near..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aFound:&b Breath of Time (2/5)"
+      sound: "ENTITY_ITEM_PICKUP"
+
+artifact.found_3:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The chorus fruit warps space around itself*"
+      sound: "BLOCK_CHORUS_FLOWER_GROW"
+    - delay: 5
+      text: "&5Ancient Voice: &7Halfway there... &aFruit of the Void&7..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aFound:&a Fruit of the Void (3/5)"
+      sound: "ENTITY_ITEM_PICKUP"
+
+artifact.found_4:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The Eye of Ender pulses with interdimensional energy*"
+      sound: "BLOCK_END_PORTAL_FRAME_FILL"
+    - delay: 5
+      text: "&5Ancient Voice: &7Almost... all... &fEye of Dimensions&7..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aFound:&f Eye of Dimensions (4/5)"
+      sound: "ENTITY_ITEM_PICKUP"
+
+artifact.found_5:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*The elytra emanate purple glow*"
+      sound: "ITEM_ELYTRA_FLYING"
+    - delay: 5
+      text: "&5Ancient Voice: &7One more... artifact... found..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aFound:&5 Wings of Freedom"
+      sound: "ENTITY_ITEM_PICKUP"
+
+artifact.void_found:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&5Ancient Voice: &cTHE LAST ONE! &cALL FIVE ARTIFACTS!"
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 6
+      text: "&5Ancient Voice: &7Hurry... to the ritual... time... is short..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 12
+      text: "&4&kDark Lord&r: &cYou won't make it... the world is already mine..."
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 18
+      text: "&a&l✓ &aAchievement:&f Five Keys"
+      sound: "ENTITY_PLAYER_LEVELUP"
+
+final.ritual_start:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&7&o*Void Shard placed*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 2
+      text: "&5Ancient Voice: &7First... link..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 5
+      text: "&7&o*Breath of Time placed*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 7
+      text: "&5Ancient Voice: &7Second... link..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&7&o*Fruit of Void placed*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 12
+      text: "&5Ancient Voice: &7Third... link..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 14
+      text: "&4&kDark Lord&r: &cYou... shall not dare..."
+      sound: "ENTITY_WITHER_HURT"
+    - delay: 17
+      text: "&7&o*Eye of Dimensions placed*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 19
+      text: "&5Ancient Voice: &7Fourth... link..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 21
+      text: "&4&kDark Lord&r: &cSTOP!"
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 24
+      text: "&7&o*Wings of Freedom placed*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 26
+      text: "&5Ancient Voice: &cFIFTH... LINK!"
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 28
+      text: "&7&o*Beams connect in the sky*"
+      sound: "BLOCK_END_PORTAL_SPAWN"
+    - delay: 30
+      text: "&4&kDark Lord&r: &cNOOOOO!"
+      sound: "ENTITY_WITHER_DEATH"
+    - delay: 32
+      text: "&4&kDark Lord&r: &7Impossible..."
+      sound: "ENTITY_WITHER_DEATH"
+    - delay: 34
+      text: "&4&kDark Lord&r: &7I am... defeated..."
+      sound: "ENTITY_ENDER_DRAGON_DEATH"
+    - delay: 37
+      text: "&5Ancient Voice: &aThe seal... is restored..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 40
+      text: "&5Ancient Voice: &aThe world... is saved..."
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+    - delay: 43
+      text: "&5Ancient Voice: &aReturn... heroes..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 46
+      text: "&7&o*A portal home opens*"
+      sound: "BLOCK_END_PORTAL_SPAWN"
+
+final.complete:
+  hologram: false
+  actionBar: true
+  title: true
+  clearWeather: true
+  lines:
+    - delay: 0
+      text: "&7&o*The sun shines brighter*"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 6
+      text: "&5Ancient Voice: &7But this... is not yet the end..."
+      sound: "ENTITY_ENDERMAN_STARE"

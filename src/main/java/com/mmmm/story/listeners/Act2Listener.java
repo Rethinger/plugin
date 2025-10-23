@@ -20,6 +20,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.enchantments.Enchantment;
@@ -40,6 +41,8 @@ public class Act2Listener implements Listener {
     private int boss1Phase = 1;
     private Set<UUID> boss1Warriors = new HashSet<>();
     private Map<UUID, Long> playersAboveBoss = new HashMap<>(); // Отслеживание игроков над боссом
+    private Map<UUID, Long> playersNearBoss = new HashMap<>(); // Отслеживание игроков рядом с боссом для телепортации
+    private Map<UUID, Integer> playerArrowsShot = new HashMap<>(); // Счетчик стрел для отражения каждой 3-й
     
     public Act2Listener(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -194,18 +197,95 @@ public class Act2Listener implements Listener {
     }
     
     private void summonBoss1(org.bukkit.entity.Item droppedItem) {
-        Location location = droppedItem.getLocation();
-        World world = location.getWorld();
+        final Location location = droppedItem.getLocation();
+        final World world = location.getWorld();
         
         // Remove the item
         droppedItem.remove();
         
-        // Effects
+        // Initial effects when key is inserted (delay: 0)
         world.spawnParticle(Particle.FLAME, location, 200, 2, 2, 2, 0.1);
         world.spawnParticle(Particle.LAVA, location, 100, 1, 1, 1, 0.1);
         world.spawnParticle(Particle.SMOKE, location, 150, 1.5, 1.5, 1.5, 0.05);
         world.playSound(location, Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.8f);
         world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.5f, 1.2f);
+        
+        // Synchronized particle effects with dialog timeline:
+        
+        // Delay 3s: "Земля разверзается" - Ground cracks
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.BLOCK, location, 300, 2, 0.5, 2, 0, Material.NETHERRACK.createBlockData());
+                world.spawnParticle(Particle.LAVA, location, 50, 1.5, 0.5, 1.5, 0.1);
+                world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 1.5f, 0.7f);
+            }
+        }.runTaskLater(plugin, 60L); // 3 seconds
+        
+        // Delay 6s: "Из глубин доносится рык" - Dark energy rising
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.SOUL_FIRE_FLAME, location, 100, 1, 1, 1, 0.15);
+                world.spawnParticle(Particle.SMOKE, location, 200, 1.5, 1, 1.5, 0.1);
+                world.spawnParticle(Particle.REVERSE_PORTAL, location, 50, 1, 1, 1, 0.3);
+            }
+        }.runTaskLater(plugin, 120L); // 6 seconds
+        
+        // Delay 9s: "Кто посмел потревожить мой сон" - Awakening power
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.END_ROD, location, 80, 2, 2, 2, 0.2);
+                world.spawnParticle(Particle.DRAGON_BREATH, location, 60, 1.5, 1, 1.5, 0.05);
+                world.spawnParticle(Particle.SOUL, location, 40, 1, 1.5, 1, 0.1);
+            }
+        }.runTaskLater(plugin, 180L); // 9 seconds
+        
+        // Delay 13s: "Я был рыцарем" - Noble memories
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.ENCHANT, location, 150, 2, 1.5, 2, 1);
+                world.spawnParticle(Particle.END_ROD, location, 50, 1, 2, 1, 0.1);
+                world.playSound(location, Sound.BLOCK_BELL_USE, 1.0f, 1.2f);
+            }
+        }.runTaskLater(plugin, 260L); // 13 seconds
+        
+        // Delay 17s: "Я охранял печать" - Ancient seal imagery
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.ENCHANT, location, 200, 2.5, 1, 2.5, 1.5);
+                world.spawnParticle(Particle.GLOW, location, 100, 2, 1.5, 2, 0);
+                world.spawnParticle(Particle.END_ROD, location, 80, 1.5, 1.5, 1.5, 0.15);
+                world.playSound(location, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1.5f, 1.0f);
+            }
+        }.runTaskLater(plugin, 340L); // 17 seconds
+        
+        // Delay 21s: "ВЫ УМРЁТЕ!" - Rage explosion
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.EXPLOSION, location, 15, 2, 1, 2, 0);
+                world.spawnParticle(Particle.FLASH, location, 5, 1, 1, 1, 0);
+                world.spawnParticle(Particle.SOUL_FIRE_FLAME, location, 300, 3, 2, 3, 0.3);
+                world.spawnParticle(Particle.LAVA, location, 150, 2.5, 1, 2.5, 0.1);
+                world.playSound(location, Sound.ENTITY_WITHER_SHOOT, 2.0f, 0.7f);
+                world.playSound(location, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.5f, 1.0f);
+            }
+        }.runTaskLater(plugin, 420L); // 21 seconds
+        
+        // Delay 28s: "он... страж... ты освобождаешь..." - Warning signs
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                world.spawnParticle(Particle.REVERSE_PORTAL, location, 200, 2, 2, 2, 0.5);
+                world.spawnParticle(Particle.DRAGON_BREATH, location, 100, 2, 1.5, 2, 0.1);
+                world.spawnParticle(Particle.SOUL, location, 60, 1.5, 1.5, 1.5, 0.05);
+                world.playSound(location, Sound.BLOCK_PORTAL_AMBIENT, 2.0f, 0.8f);
+            }
+        }.runTaskLater(plugin, 560L); // 28 seconds
         
         // Play dialog FIRST for nearby players
         for (Player player : world.getPlayers()) {
@@ -224,15 +304,258 @@ public class Act2Listener implements Listener {
     }
     
     private void spawnBoss1(Location location) {
-        Location spawnLoc = location.clone().add(0, 2, 0);
+        final Location spawnLoc = location.clone();
+        final World world = spawnLoc.getWorld();
         
-        Skeleton boss = (Skeleton) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.SKELETON);
-        boss.setCustomName("§4§lПовелитель Скелетов");
+        // НЕ СОЗДАЁМ новый ancient_debris - просто используем тот который уже есть!
+        // Предполагается что блок уже ancient_debris под dropped item
+        
+        // PHASE 1: Dramatic particle buildup (0-2 seconds)
+        world.spawnParticle(Particle.LAVA, spawnLoc.clone().add(0.5, 0.5, 0.5), 100, 0.5, 0.5, 0.5, 0.1);
+        world.spawnParticle(Particle.FLAME, spawnLoc.clone().add(0.5, 0.5, 0.5), 200, 1, 1, 1, 0.1);
+        world.spawnParticle(Particle.SOUL, spawnLoc.clone().add(0.5, 0.5, 0.5), 50, 0.5, 0.5, 0.5, 0.05);
+        world.playSound(spawnLoc, Sound.BLOCK_PORTAL_TRIGGER, 2.0f, 0.5f);
+        world.playSound(spawnLoc, Sound.ENTITY_WITHER_HURT, 1.5f, 0.8f);
+        
+        // PHASE 2: Череп на невидимом armor stand (2 seconds)
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Create invisible armor stand for skull
+                final ArmorStand skullStand = world.spawn(spawnLoc.clone().add(0.5, 1, 0.5), ArmorStand.class);
+                skullStand.setVisible(false);
+                skullStand.setGravity(false);
+                skullStand.setInvulnerable(true);
+                skullStand.setMarker(true); // No hitbox
+                skullStand.setHelmet(new ItemStack(Material.SKELETON_SKULL)); // Changed from WITHER_SKELETON_SKULL
+                
+                // Skull flies up with particles
+                world.spawnParticle(Particle.EXPLOSION, spawnLoc.clone().add(0.5, 1, 0.5), 3, 0.3, 0.3, 0.3, 0);
+                world.spawnParticle(Particle.SOUL_FIRE_FLAME, spawnLoc.clone().add(0.5, 1, 0.5), 100, 0.5, 0.5, 0.5, 0.1);
+                world.playSound(spawnLoc, Sound.ENTITY_WITHER_SPAWN, 1.5f, 1.2f);
+                world.playSound(spawnLoc, Sound.BLOCK_BELL_USE, 1.0f, 0.8f);
+                
+                // Animate skull flying up
+                new BukkitRunnable() {
+                    int ticks = 0;
+                    @Override
+                    public void run() {
+                        if (ticks >= 20 || !skullStand.isValid()) { // 1 second
+                            cancel();
+                            return;
+                        }
+                        skullStand.teleport(skullStand.getLocation().add(0, 0.1, 0));
+                        world.spawnParticle(Particle.SOUL, skullStand.getLocation(), 2, 0.1, 0.1, 0.1, 0.01);
+                        ticks++;
+                    }
+                }.runTaskTimer(plugin, 0L, 1L);
+                
+                // PHASE 3: Sword flies out (after 1 second)
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        final ArmorStand swordStand = world.spawn(spawnLoc.clone().add(0.5, 1, 0.5), ArmorStand.class);
+                        swordStand.setVisible(false);
+                        swordStand.setGravity(false);
+                        swordStand.setInvulnerable(true);
+                        swordStand.setMarker(true);
+                        swordStand.setItemInHand(new ItemStack(Material.NETHERITE_SWORD));
+                        swordStand.setRightArmPose(new EulerAngle(Math.toRadians(-90), 0, 0)); // Hold sword up
+                        
+                        world.spawnParticle(Particle.ENCHANTED_HIT, swordStand.getLocation(), 50, 0.3, 0.3, 0.3, 0.1);
+                        world.playSound(spawnLoc, Sound.ITEM_TRIDENT_THROW, 1.5f, 0.8f);
+                        world.playSound(spawnLoc, Sound.BLOCK_ANVIL_LAND, 0.8f, 1.5f);
+                        
+                        // Animate sword flying to the side
+                        new BukkitRunnable() {
+                            int ticks = 0;
+                            @Override
+                            public void run() {
+                                if (ticks >= 15 || !swordStand.isValid()) {
+                                    cancel();
+                                    return;
+                                }
+                                swordStand.teleport(swordStand.getLocation().add(0.15, 0.05, 0));
+                                world.spawnParticle(Particle.CRIT, swordStand.getLocation(), 1, 0.05, 0.05, 0.05, 0);
+                                ticks++;
+                            }
+                        }.runTaskTimer(plugin, 0L, 1L);
+                        
+                        // PHASE 4: Armor pieces fly out (after 0.5 seconds)
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                // Helmet
+                                final ArmorStand helmetStand = world.spawn(spawnLoc.clone().add(0.5, 1.5, 0.5), ArmorStand.class);
+                                helmetStand.setVisible(false);
+                                helmetStand.setGravity(false);
+                                helmetStand.setInvulnerable(true);
+                                helmetStand.setMarker(true);
+                                helmetStand.setHelmet(new ItemStack(Material.NETHERITE_HELMET));
+                                
+                                // Chestplate
+                                final ArmorStand chestStand = world.spawn(spawnLoc.clone().add(0.5, 1.3, 0.5), ArmorStand.class);
+                                chestStand.setVisible(false);
+                                chestStand.setGravity(false);
+                                chestStand.setInvulnerable(true);
+                                chestStand.setMarker(true);
+                                chestStand.setChestplate(new ItemStack(Material.NETHERITE_CHESTPLATE));
+                                
+                                // Leggings
+                                final ArmorStand legsStand = world.spawn(spawnLoc.clone().add(0.5, 1.1, 0.5), ArmorStand.class);
+                                legsStand.setVisible(false);
+                                legsStand.setGravity(false);
+                                legsStand.setInvulnerable(true);
+                                legsStand.setMarker(true);
+                                legsStand.setLeggings(new ItemStack(Material.NETHERITE_LEGGINGS));
+                                
+                                // Boots
+                                final ArmorStand bootsStand = world.spawn(spawnLoc.clone().add(0.5, 0.9, 0.5), ArmorStand.class);
+                                bootsStand.setVisible(false);
+                                bootsStand.setGravity(false);
+                                bootsStand.setInvulnerable(true);
+                                bootsStand.setMarker(true);
+                                bootsStand.setBoots(new ItemStack(Material.NETHERITE_BOOTS));
+                                
+                                world.spawnParticle(Particle.ITEM, spawnLoc.clone().add(0.5, 1.2, 0.5), 100, 0.5, 0.5, 0.5, 0.1, new ItemStack(Material.NETHERITE_CHESTPLATE));
+                                world.playSound(spawnLoc, Sound.BLOCK_CHAIN_PLACE, 2.0f, 0.7f);
+                                world.playSound(spawnLoc, Sound.BLOCK_ANVIL_USE, 1.0f, 1.2f);
+                                
+                                // Animate armor pieces flying around in circle
+                                new BukkitRunnable() {
+                                    int ticks = 0;
+                                    @Override
+                                    public void run() {
+                                        if (ticks >= 20) {
+                                            // After circular animation, move armor to skeleton position
+                                            new BukkitRunnable() {
+                                                int convergeTicks = 0;
+                                                @Override
+                                                public void run() {
+                                                    if (convergeTicks >= 10) {
+                                                        cancel();
+                                                        return;
+                                                    }
+                                                    // Move armor pieces towards center skeleton position
+                                                    double progress = convergeTicks / 10.0;
+                                                    Location targetHelmet = spawnLoc.clone().add(0.5, 1.7, 0.5);
+                                                    Location targetChest = spawnLoc.clone().add(0.5, 1.3, 0.5);
+                                                    Location targetLegs = spawnLoc.clone().add(0.5, 0.9, 0.5);
+                                                    Location targetBoots = spawnLoc.clone().add(0.5, 0.3, 0.5);
+                                                    
+                                                    helmetStand.teleport(helmetStand.getLocation().clone().add(
+                                                        (targetHelmet.getX() - helmetStand.getLocation().getX()) * 0.2,
+                                                        (targetHelmet.getY() - helmetStand.getLocation().getY()) * 0.2,
+                                                        (targetHelmet.getZ() - helmetStand.getLocation().getZ()) * 0.2
+                                                    ));
+                                                    chestStand.teleport(chestStand.getLocation().clone().add(
+                                                        (targetChest.getX() - chestStand.getLocation().getX()) * 0.2,
+                                                        (targetChest.getY() - chestStand.getLocation().getY()) * 0.2,
+                                                        (targetChest.getZ() - chestStand.getLocation().getZ()) * 0.2
+                                                    ));
+                                                    legsStand.teleport(legsStand.getLocation().clone().add(
+                                                        (targetLegs.getX() - legsStand.getLocation().getX()) * 0.2,
+                                                        (targetLegs.getY() - legsStand.getLocation().getY()) * 0.2,
+                                                        (targetLegs.getZ() - legsStand.getLocation().getZ()) * 0.2
+                                                    ));
+                                                    bootsStand.teleport(bootsStand.getLocation().clone().add(
+                                                        (targetBoots.getX() - bootsStand.getLocation().getX()) * 0.2,
+                                                        (targetBoots.getY() - bootsStand.getLocation().getY()) * 0.2,
+                                                        (targetBoots.getZ() - bootsStand.getLocation().getZ()) * 0.2
+                                                    ));
+                                                    
+                                                    world.spawnParticle(Particle.ENCHANT, helmetStand.getLocation(), 2, 0.1, 0.1, 0.1, 0);
+                                                    world.spawnParticle(Particle.ENCHANT, chestStand.getLocation(), 2, 0.1, 0.1, 0.1, 0);
+                                                    convergeTicks++;
+                                                }
+                                            }.runTaskTimer(plugin, 0L, 1L);
+                                            cancel();
+                                            return;
+                                        }
+                                        double angle = ticks * Math.PI / 10;
+                                        helmetStand.teleport(spawnLoc.clone().add(0.5 + Math.cos(angle) * 0.8, 1.8, 0.5 + Math.sin(angle) * 0.8));
+                                        chestStand.teleport(spawnLoc.clone().add(0.5 + Math.cos(angle + Math.PI/2) * 0.7, 1.3, 0.5 + Math.sin(angle + Math.PI/2) * 0.7));
+                                        legsStand.teleport(spawnLoc.clone().add(0.5 + Math.cos(angle + Math.PI) * 0.6, 1.1, 0.5 + Math.sin(angle + Math.PI) * 0.6));
+                                        bootsStand.teleport(spawnLoc.clone().add(0.5 + Math.cos(angle + 3*Math.PI/2) * 0.5, 0.9, 0.5 + Math.sin(angle + 3*Math.PI/2) * 0.5));
+                                        
+                                        world.spawnParticle(Particle.ENCHANT, helmetStand.getLocation(), 1, 0, 0, 0, 0);
+                                        ticks++;
+                                    }
+                                }.runTaskTimer(plugin, 0L, 1L);
+                                
+                                // PHASE 5: Skeleton silhouette buildup with particles (after 1 second)
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        // Draw skeleton silhouette with particles
+                                        for (int i = 0; i < 40; i++) {
+                                            double y = 0.2 + (i * 0.05); // From feet to head
+                                            world.spawnParticle(Particle.END_ROD, spawnLoc.clone().add(0.5, y, 0.5), 1, 0.2, 0, 0.2, 0);
+                                        }
+                                        world.spawnParticle(Particle.SOUL_FIRE_FLAME, spawnLoc.clone().add(0.5, 1, 0.5), 50, 0.3, 0.5, 0.3, 0.05);
+                                        world.playSound(spawnLoc, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 1.5f, 1.5f);
+                                        
+                                        // PHASE 6: IMPACT FRAME! (after 0.5 seconds)
+                                        new BukkitRunnable() {
+                                            @Override
+                                            public void run() {
+                                                // MASSIVE IMPACT EFFECT
+                                                world.spawnParticle(Particle.EXPLOSION, spawnLoc.clone().add(0.5, 1, 0.5), 10, 0, 0, 0, 0);
+                                                world.spawnParticle(Particle.FLASH, spawnLoc.clone().add(0.5, 1, 0.5), 3, 0, 0, 0, 0);
+                                                world.spawnParticle(Particle.SOUL_FIRE_FLAME, spawnLoc.clone().add(0.5, 1, 0.5), 300, 1.5, 1.5, 1.5, 0.3);
+                                                world.spawnParticle(Particle.END_ROD, spawnLoc.clone().add(0.5, 1, 0.5), 200, 1, 1, 1, 0.2);
+                                                world.spawnParticle(Particle.REVERSE_PORTAL, spawnLoc.clone().add(0.5, 1, 0.5), 500, 1.5, 1.5, 1.5, 0.5);
+                                                world.spawnParticle(Particle.DRAGON_BREATH, spawnLoc.clone().add(0.5, 1, 0.5), 150, 1, 1, 1, 0.1);
+                                                
+                                                // EPIC SOUND COMBO
+                                                world.playSound(spawnLoc, Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.8f);
+                                                world.playSound(spawnLoc, Sound.ENTITY_ENDER_DRAGON_GROWL, 2.0f, 0.7f);
+                                                world.playSound(spawnLoc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2.0f, 1.0f);
+                                                world.playSound(spawnLoc, Sound.ENTITY_GENERIC_EXPLODE, 2.0f, 0.5f);
+                                                world.playSound(spawnLoc, Sound.BLOCK_BELL_RESONATE, 2.0f, 0.6f);
+                                                
+                                                // Remove all armor stands
+                                                skullStand.remove();
+                                                swordStand.remove();
+                                                helmetStand.remove();
+                                                chestStand.remove();
+                                                legsStand.remove();
+                                                bootsStand.remove();
+                                                
+                                                // PHASE 7: Spawn actual boss (after impact)
+                                                new BukkitRunnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Skeleton boss = (Skeleton) world.spawnEntity(spawnLoc.clone().add(0, 1, 0), EntityType.SKELETON);
+                                                        boss.setCustomName("§4§lПовелитель Скелетов");
+                                                        boss.setCustomNameVisible(true);
+                                                        
+                                                        // More epic particles on spawn
+                                                        world.spawnParticle(Particle.TOTEM_OF_UNDYING, boss.getLocation(), 100, 1, 1, 1, 0.1);
+                                                        world.spawnParticle(Particle.END_ROD, boss.getLocation(), 50, 0.5, 1, 0.5, 0.1);
+                                                        
+                                                        // Setup boss attributes
+                                                        setupBossAttributes(boss);
+                                                    }
+                                                }.runTaskLater(plugin, 10L); // 0.5 seconds after impact
+                                            }
+                                        }.runTaskLater(plugin, 10L); // 0.5 seconds for silhouette
+                                    }
+                                }.runTaskLater(plugin, 20L); // 1 second for armor dance
+                            }
+                        }.runTaskLater(plugin, 10L); // 0.5 seconds after sword
+                    }
+                }.runTaskLater(plugin, 20L); // 1 second after skull
+            }
+        }.runTaskLater(plugin, 40L); // 2 seconds initial buildup
+    }
+    
+    private void setupBossAttributes(Skeleton boss) {
         boss.setCustomNameVisible(true);
         
         // Set attributes
-        boss.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(200.0);
-        boss.setHealth(200.0);
+        boss.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(300.0);
+        boss.setHealth(300.0);
         boss.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3);
         
         // Equipment: full netherite with enchantments
@@ -295,9 +618,8 @@ public class Act2Listener implements Listener {
         // Start anti-wall task (prevent boxing the boss)
         startBoss1AntiWallTask(boss);
         
-        // Effects
-        boss.getWorld().playSound(spawnLoc, Sound.ENTITY_WITHER_SPAWN, 2.0f, 0.8f);
-        boss.getWorld().spawnParticle(Particle.SMOKE, spawnLoc, 100, 2, 2, 2, 0.1);
+        // Start teleport task (teleport away from players crowding the boss)
+        startBoss1TeleportTask(boss);
     }
     
     private void createBoss1BossBar() {
@@ -374,6 +696,45 @@ public class Act2Listener implements Listener {
         Skeleton skeleton = (Skeleton) event.getEntity();
         if (skeleton != boss1Entity) {
             return;
+        }
+        
+        // If boss takes damage from a player, break shields of all blocking players nearby
+        if (event instanceof org.bukkit.event.entity.EntityDamageByEntityEvent) {
+            org.bukkit.event.entity.EntityDamageByEntityEvent damageEvent = (org.bukkit.event.entity.EntityDamageByEntityEvent) event;
+            
+            // Check if damager is a player (or arrow from player)
+            boolean isPlayerAttack = false;
+            if (damageEvent.getDamager() instanceof Player) {
+                isPlayerAttack = true;
+            } else if (damageEvent.getDamager() instanceof org.bukkit.entity.Arrow) {
+                org.bukkit.entity.Arrow arrow = (org.bukkit.entity.Arrow) damageEvent.getDamager();
+                if (arrow.getShooter() instanceof Player) {
+                    isPlayerAttack = true;
+                }
+            }
+            
+            // If player attacked boss, break shields of all blocking players nearby
+            if (isPlayerAttack) {
+                for (Player player : skeleton.getWorld().getPlayers()) {
+                    if (player.getLocation().distance(skeleton.getLocation()) < 15 && player.isBlocking()) {
+                        // Break shield in main hand or offhand
+                        ItemStack mainHand = player.getInventory().getItemInMainHand();
+                        ItemStack offHand = player.getInventory().getItemInOffHand();
+                        
+                        if (mainHand.getType() == Material.SHIELD) {
+                            mainHand.setAmount(0);
+                            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+                            player.getWorld().spawnParticle(Particle.ITEM, player.getLocation().add(0, 1, 0), 20, 0.3, 0.3, 0.3, 0.1, mainHand);
+                            player.sendMessage(Component.text("§c§l⚡ Повелитель разбивает ваш щит!").color(NamedTextColor.RED));
+                        } else if (offHand.getType() == Material.SHIELD) {
+                            offHand.setAmount(0);
+                            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+                            player.getWorld().spawnParticle(Particle.ITEM, player.getLocation().add(0, 1, 0), 20, 0.3, 0.3, 0.3, 0.1, offHand);
+                            player.sendMessage(Component.text("§c§l⚡ Повелитель разбивает ваш щит!").color(NamedTextColor.RED));
+                        }
+                    }
+                }
+            }
         }
         
         // Check for phase 2 transition at 100 HP
@@ -494,6 +855,97 @@ public class Act2Listener implements Listener {
         }
     }
     
+    @EventHandler
+    public void onBoss1ArrowDeflect(org.bukkit.event.entity.EntityDamageByEntityEvent event) {
+        // Check if boss is hit by arrow
+        if (!(event.getEntity() instanceof Skeleton)) {
+            return;
+        }
+        
+        Skeleton skeleton = (Skeleton) event.getEntity();
+        if (skeleton.getCustomName() == null || !skeleton.getCustomName().contains("Повелитель Скелетов")) {
+            return;
+        }
+        
+        // Check if damage is from arrow
+        if (!(event.getDamager() instanceof Arrow)) {
+            return;
+        }
+        
+        Arrow arrow = (Arrow) event.getDamager();
+        
+        // Check if arrow was shot by player
+        if (!(arrow.getShooter() instanceof Player)) {
+            return;
+        }
+        
+        Player shooter = (Player) arrow.getShooter();
+        UUID shooterId = shooter.getUniqueId();
+        
+        // Track arrow count for this player
+        int arrowCount = playerArrowsShot.getOrDefault(shooterId, 0) + 1;
+        playerArrowsShot.put(shooterId, arrowCount);
+        
+        // Every 3rd arrow is deflected
+        if (arrowCount % 3 == 0) {
+            event.setCancelled(true);
+            
+            // Deflect arrow back at shooter
+            Vector direction = shooter.getLocation().toVector().subtract(skeleton.getLocation().toVector()).normalize();
+            direction.multiply(2.0); // Fast deflection
+            
+            arrow.setVelocity(direction);
+            arrow.setShooter(skeleton); // Boss becomes the shooter
+            arrow.setBounce(false);
+            
+            // Epic deflection effects
+            World world = skeleton.getWorld();
+            Location arrowLoc = arrow.getLocation();
+            
+            world.spawnParticle(Particle.ENCHANTED_HIT, arrowLoc, 30, 0.3, 0.3, 0.3, 0.1);
+            world.spawnParticle(Particle.CRIT, arrowLoc, 20, 0.2, 0.2, 0.2, 0.1);
+            world.spawnParticle(Particle.FLASH, arrowLoc, 1, 0, 0, 0, 0);
+            
+            world.playSound(arrowLoc, Sound.ITEM_SHIELD_BLOCK, 1.5f, 1.5f);
+            world.playSound(arrowLoc, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 0.7f);
+            
+            plugin.getLogger().info("Boss deflected arrow #" + arrowCount + " from " + shooter.getName());
+        }
+    }
+    
+    @EventHandler
+    public void onArcherHitPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent event) {
+        // Check if arrow hit player in phase 2
+        if (!(event.getDamager() instanceof Arrow)) {
+            return;
+        }
+        
+        Arrow arrow = (Arrow) event.getDamager();
+        if (!(arrow.getShooter() instanceof Skeleton)) {
+            return;
+        }
+        
+        Skeleton shooter = (Skeleton) arrow.getShooter();
+        
+        // Check if shooter is an archer warrior in phase 2
+        if (boss1Phase != 2) {
+            return;
+        }
+        
+        if (shooter.getCustomName() == null || !shooter.getCustomName().contains("Лучник Повелителя")) {
+            return;
+        }
+        
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        
+        Player player = (Player) event.getEntity();
+        
+        // Apply nausea effect for 5 seconds (100 ticks) - silently, without message
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 100, 0, false, true));
+    }
+    
     private void startBoss1SummonTask(Skeleton boss) {
         new BukkitRunnable() {
             @Override
@@ -505,11 +957,12 @@ public class Act2Listener implements Listener {
                 
                 // Summon 2-3 warrior skeletons
                 for (int i = 0; i < 2 + (int)(Math.random() * 2); i++) {
-                    Location summonLoc = boss.getLocation().clone().add(
-                        (Math.random() - 0.5) * 4,
-                        0,
-                        (Math.random() - 0.5) * 4
-                    );
+                    // Find safe spawn location
+                    Location summonLoc = findSafeSpawnLocation(boss.getLocation(), 4);
+                    
+                    if (summonLoc == null) {
+                        continue; // Skip if no safe location found
+                    }
                     
                     Skeleton warrior = (Skeleton) boss.getWorld().spawnEntity(summonLoc, EntityType.SKELETON);
                     warrior.setCustomName("§6Воин Повелителя");
@@ -538,23 +991,26 @@ public class Act2Listener implements Listener {
                 boss.getWorld().playSound(boss.getLocation(), Sound.ENTITY_SKELETON_AMBIENT, 1.0f, 0.5f);
                 boss.getWorld().spawnParticle(Particle.SOUL, boss.getLocation(), 20, 1, 1, 1, 0.05);
             }
-        }.runTaskTimer(plugin, 400L, 400L); // Every 20 seconds (was 30)
+        }.runTaskTimer(plugin, 300L, 300L); // Every 15 seconds
     }
     
     private void transitionToPhase2(Skeleton boss) {
         boss1Phase = 2;
         
-        // Remove all armor
-        boss.getEquipment().setHelmet(null);
+        // Remove chest and leggings only, keep helmet and boots
         boss.getEquipment().setChestplate(null);
         boss.getEquipment().setLeggings(null);
-        boss.getEquipment().setBoots(null);
         
-        // Give enchanted bow with Punch (knockback for bows)
+        // Keep helmet and boots but make them not drop
+        boss.getEquipment().setHelmetDropChance(0.0f);
+        boss.getEquipment().setBootsDropChance(0.0f);
+        
+        // Give enchanted bow with Power 4 and Punch
         ItemStack bow = new ItemStack(Material.BOW);
-        bow.addEnchantment(Enchantment.POWER, 3);
+        bow.addEnchantment(Enchantment.POWER, 4); // Changed from 3 to 4
         bow.addEnchantment(Enchantment.PUNCH, 1); // Punch = knockback для луков
         boss.getEquipment().setItemInMainHand(bow);
+        boss.getEquipment().setItemInMainHandDropChance(0.0f); // Bow doesn't drop
         
         // Add Speed 2, Resistance 2, and Fire Resistance
         boss.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, false, false));
@@ -595,6 +1051,43 @@ public class Act2Listener implements Listener {
                 player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.0f, 1.5f);
             }
         }
+    }
+    
+    private Location findSafeSpawnLocation(Location center, double radius) {
+        World world = center.getWorld();
+        
+        // Try 10 times to find a safe location
+        for (int attempt = 0; attempt < 10; attempt++) {
+            double angle = Math.random() * 2 * Math.PI;
+            double distance = Math.random() * radius;
+            
+            double x = center.getX() + Math.cos(angle) * distance;
+            double z = center.getZ() + Math.sin(angle) * distance;
+            
+            // Find highest solid block at this position
+            Location testLoc = new Location(world, x, center.getY(), z);
+            
+            // Check blocks from boss Y level down to 10 blocks below
+            for (int y = (int)center.getY(); y >= (int)center.getY() - 10; y--) {
+                testLoc.setY(y);
+                Block block = testLoc.getBlock();
+                Block above = block.getRelative(0, 1, 0);
+                Block above2 = block.getRelative(0, 2, 0);
+                
+                // Check if this is a valid spawn location:
+                // 1. Block below is solid
+                // 2. Two blocks above are air (enough space for skeleton)
+                if (block.getType().isSolid() && 
+                    above.getType().isAir() && 
+                    above2.getType().isAir()) {
+                    // Found safe location
+                    return above.getLocation().add(0.5, 0, 0.5); // Center of block
+                }
+            }
+        }
+        
+        // If no safe location found, return original center location
+        return center.clone().add(0, 1, 0);
     }
     
     private void startBoss1AITask(Skeleton boss) {
@@ -922,6 +1415,152 @@ public class Act2Listener implements Listener {
                 ticks++;
             }
         }.runTaskTimer(plugin, 0L, 1L); // Каждый тик
+    }
+    
+    private void startBoss1TeleportTask(Skeleton boss) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (boss.isDead() || !boss.isValid()) {
+                    playersNearBoss.clear();
+                    cancel();
+                    return;
+                }
+                
+                long currentTime = System.currentTimeMillis();
+                List<Player> nearbyPlayers = new ArrayList<>();
+                
+                // Find all players within 2 blocks
+                for (Player player : boss.getWorld().getPlayers()) {
+                    if (player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE) {
+                        continue;
+                    }
+                    
+                    double distance = player.getLocation().distance(boss.getLocation());
+                    if (distance <= 2.0) {
+                        nearbyPlayers.add(player);
+                        
+                        UUID uuid = player.getUniqueId();
+                        if (!playersNearBoss.containsKey(uuid)) {
+                            playersNearBoss.put(uuid, currentTime);
+                        }
+                    } else {
+                        playersNearBoss.remove(player.getUniqueId());
+                    }
+                }
+                
+                // Check if any player has been near for 5+ seconds
+                boolean shouldTeleport = false;
+                for (Player player : nearbyPlayers) {
+                    Long startTime = playersNearBoss.get(player.getUniqueId());
+                    if (startTime != null && (currentTime - startTime >= 5000)) {
+                        shouldTeleport = true;
+                        break;
+                    }
+                }
+                
+                if (shouldTeleport && nearbyPlayers.size() > 0) {
+                    Location teleportLoc = findBossTeleportLocation(boss, nearbyPlayers);
+                    
+                    if (teleportLoc != null) {
+                        // Epic teleport effects at old location
+                        Location oldLoc = boss.getLocation();
+                        World world = boss.getWorld();
+                        
+                        world.spawnParticle(Particle.PORTAL, oldLoc, 100, 0.5, 1, 0.5, 1);
+                        world.spawnParticle(Particle.SMOKE, oldLoc, 50, 0.5, 1, 0.5, 0.1);
+                        world.playSound(oldLoc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.5f, 0.7f);
+                        
+                        // Teleport boss
+                        boss.teleport(teleportLoc);
+                        
+                        // Epic effects at new location
+                        world.spawnParticle(Particle.REVERSE_PORTAL, teleportLoc, 100, 0.5, 1, 0.5, 1);
+                        world.spawnParticle(Particle.END_ROD, teleportLoc, 50, 0.5, 1, 0.5, 0.1);
+                        world.playSound(teleportLoc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.5f, 1.2f);
+                        world.playSound(teleportLoc, Sound.ENTITY_WITHER_SHOOT, 1.0f, 1.5f);
+                        
+                        // Clear tracking
+                        playersNearBoss.clear();
+                        
+                        plugin.getLogger().info("Boss teleported away from " + nearbyPlayers.size() + " crowding players");
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 20L, 20L); // Check every second
+    }
+    
+    private Location findBossTeleportLocation(Skeleton boss, List<Player> nearbyPlayers) {
+        World world = boss.getWorld();
+        Location bossLoc = boss.getLocation();
+        
+        // Try 20 times to find a good teleport spot
+        for (int attempt = 0; attempt < 20; attempt++) {
+            Location targetLoc = null;
+            
+            // 50% chance: teleport behind random player
+            // 50% chance: teleport to elevated position (tree, hill)
+            if (Math.random() < 0.5 && !nearbyPlayers.isEmpty()) {
+                // Behind player
+                Player randomPlayer = nearbyPlayers.get((int) (Math.random() * nearbyPlayers.size()));
+                Vector direction = randomPlayer.getLocation().getDirection().multiply(-3); // 3 blocks behind
+                targetLoc = randomPlayer.getLocation().add(direction);
+            } else {
+                // Elevated random position around boss
+                double angle = Math.random() * Math.PI * 2;
+                double distance = 8 + Math.random() * 7; // 8-15 blocks away
+                
+                double x = bossLoc.getX() + Math.cos(angle) * distance;
+                double z = bossLoc.getZ() + Math.sin(angle) * distance;
+                
+                // Find highest block (for tree/hill)
+                targetLoc = world.getHighestBlockAt((int) x, (int) z).getLocation().add(0, 1, 0);
+            }
+            
+            // Validate location
+            if (targetLoc == null) continue;
+            
+            // Check if location is safe (not underground, not in lava, has line of sight)
+            Block block = targetLoc.getBlock();
+            Block above = targetLoc.clone().add(0, 1, 0).getBlock();
+            Block below = targetLoc.clone().subtract(0, 1, 0).getBlock();
+            
+            // Must have solid ground and air above
+            if (!below.getType().isSolid() || !block.getType().isAir() || !above.getType().isAir()) {
+                continue;
+            }
+            
+            // Don't teleport into lava/fire
+            if (below.getType() == Material.LAVA || block.getType() == Material.LAVA) {
+                continue;
+            }
+            
+            // Don't teleport too deep underground (Y level check)
+            if (targetLoc.getY() < bossLoc.getY() - 10) {
+                continue;
+            }
+            
+            // Check line of sight to at least one player
+            boolean hasLineOfSight = false;
+            for (Player player : nearbyPlayers) {
+                if (player.hasLineOfSight(targetLoc.clone().add(0, 1, 0))) {
+                    hasLineOfSight = true;
+                    break;
+                }
+            }
+            
+            if (!hasLineOfSight) {
+                continue;
+            }
+            
+            // Location is good!
+            return targetLoc;
+        }
+        
+        // Fallback: teleport 10 blocks away in random direction at same Y level
+        double angle = Math.random() * Math.PI * 2;
+        Location fallback = bossLoc.clone().add(Math.cos(angle) * 10, 0, Math.sin(angle) * 10);
+        return fallback;
     }
     
     @EventHandler

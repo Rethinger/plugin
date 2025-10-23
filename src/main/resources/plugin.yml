@@ -1,10 +1,10 @@
-name: MmmmStoryPlugin
+name: ServerStoryPlugin
 version: '${project.version}'
 main: com.mmmm.story.MmmmStoryPlugin
 api-version: '1.21'
-author: MmmmTeam
-description: Story campaign plugin for Minecraft
-website: https://example.com
+author: Rethinger
+description: Story campaign plugin for Minecraft by Rethinger
+website: https://pidoras.uno
 
 commands:
   story:

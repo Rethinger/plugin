@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
+    id 'com.gradleup.shadow' version '8.3.3'
+}
+
+group = "de.eisi05"
+version = "1.21.x-4"
+
+base {
+    archivesName = "NpcApi-Paper"
+}
+
+repositories {
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    paperweightDevelopmentBundle("io.papermc.paper:dev-bundle:1.21.10-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+}
+
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.21")
+    }
+}
+
+def targetJavaVersion = 21
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(targetJavaVersion)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact(tasks.jar) // plain jar, no reobf
+            groupId = project.group
+            artifactId = "npcapi-paper" // lowercase!
+            version = project.version
+        }
+    }
+    repositories {
+        maven {
+            url = uri("file://${buildDir}/repo") // or your actual repo
+        }
+    }
+}
+
+tasks.assemble { dependsOn tasks.reobfJar }
+
