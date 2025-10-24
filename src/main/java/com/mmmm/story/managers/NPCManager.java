@@ -20,9 +20,31 @@ import java.util.UUID;
 
 public class NPCManager {
     
+    // Animation timing constants (in ticks)
+    private static final long TICKS_PER_SECOND = 20L;
+    private static final long MESSENGER_SPAWN_DELAY = 10 * TICKS_PER_SECOND;  // 10 seconds
+    private static final long MESSENGER_DESPAWN_START = 58 * TICKS_PER_SECOND; // 58 seconds
+    private static final long MESSENGER_DESPAWN_DURATION = 5 * TICKS_PER_SECOND; // 5 seconds
+    private static final long DIRECTION_MARKER_DURATION = 5 * 60 * TICKS_PER_SECOND; // 5 minutes
+    
+    // Animation frame rates
+    private static final int ANIMATION_FPS = 20; // 20 ticks per second
+    private static final long IDLE_CHECK_INTERVAL = 60L; // Check every 3 seconds
+    private static final long IDLE_NOD_INTERVAL = 100L; // Nod every 5 seconds
+    
+    // Scale limits for breathing animation
+    private static final double BREATHING_AMPLITUDE = 0.03; // ±3% scale change
+    private static final double BASE_SCALE = 1.0;
+    
+    // Head movement limits (in degrees)
+    private static final float IDLE_YAW_MAX = 8.0f;
+    private static final float IDLE_PITCH_MAX = 5.0f;
+    
     private final MmmmStoryPlugin plugin;
     private final Map<String, NPC> npcEntities = new HashMap<>();
     private final Map<String, BukkitRunnable> auraTask = new HashMap<>();
+    private String currentMessengerId = null; // Track the current messenger NPC
+    private Location currentMessengerLocation = null; // Track messenger spawn location for despawn animation
     
     public NPCManager(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -31,6 +53,8 @@ public class NPCManager {
     public void spawnMessenger(Location location) {
         final World world = location.getWorld();
         final String npcId = "messenger_" + UUID.randomUUID().toString().substring(0, 8);
+        currentMessengerId = npcId; // Track this messenger for later despawn
+        currentMessengerLocation = location.clone(); // Store location for despawn animation
         
         // PHASE 1: Pre-spawn effects (delay: 0-5s) - Darkness gathers
         world.spawnParticle(Particle.SMOKE, location, 100, 1, 1.5, 1, 0.05);
@@ -97,6 +121,7 @@ public class NPCManager {
                 npc.setEnabled(true);
                 npc.setOption(NpcOption.GLOWING, ChatFormat.GOLD); // Golden glow effect
                 npc.setOption(NpcOption.LOOK_AT_PLAYER, 8.0); // Look at nearby players
+                npc.setOption(NpcOption.SHOW_TAB_LIST, false); // Bug #7 Fix: Hide from TAB list
                 
                 // Show NPC to all players
                 npc.showNpcToAllPlayers();
@@ -125,11 +150,8 @@ public class NPCManager {
                     startMessengerAnimations(npcId, location);
                 }, 20L); // Wait 1 second after spawn
                 
-                // Start disappearance animation at delay: 58s (5 seconds before finish at 63s)
-                // Despawn takes 5 seconds (100 ticks), so start at 58s to finish at 63s
-                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                    startMessengerDespawn(npcId, location);
-                }, 1160L); // 58 seconds = 1160 ticks - disappear finishes at 63s when text appears
+                // Despawn timing now controlled by DialogManager via despawnMessenger() call
+                // This ensures exact synchronization with the "*Посланник исчезает в тумане*" dialog line
             }, 200L); // 10 seconds from async skin fetch
         }); // End of async task
         
@@ -707,7 +729,37 @@ public class NPCManager {
         removeNPC(npcId.toString());
     }
     
+    /**
+     * Despawn the current messenger NPC (if one exists).
+     * This should be called by DialogManager at the exact "*Посланник исчезает в тумане*" timing.
+     * Triggers the animated 5-second shrinking despawn effect.
+     */
+    public void despawnMessenger() {
+        if (currentMessengerId == null) {
+            plugin.getLogger().warning("[NPC] despawnMessenger() called but no messenger is tracked");
+            return;
+        }
+        
+        if (currentMessengerLocation == null) {
+            plugin.getLogger().warning("[NPC] despawnMessenger() called but messenger location is null, using immediate removal");
+            removeNPC(currentMessengerId);
+            currentMessengerId = null;
+            return;
+        }
+        
+        plugin.getLogger().info("[NPC] Starting despawn animation for messenger: " + currentMessengerId);
+        
+        // Trigger the 5-second shrinking animation
+        startMessengerDespawn(currentMessengerId, currentMessengerLocation);
+        
+        // Clear tracking (actual NPC removal happens at end of animation)
+        currentMessengerId = null;
+        currentMessengerLocation = null;
+    }
+    
     public void cleanup() {
+        plugin.getLogger().info("[NPC] Cleaning up all NPCs and animations...");
+        
         // Cancel all aura tasks
         for (BukkitRunnable task : auraTask.values()) {
             if (task != null) {
@@ -716,13 +768,34 @@ public class NPCManager {
         }
         auraTask.clear();
         
-        // Remove all NPCs
-        for (NPC npc : npcEntities.values()) {
+        // Remove all NPCs (including messenger if still present)
+        int removedCount = 0;
+        
+        for (Map.Entry<String, NPC> entry : npcEntities.entrySet()) {
+            NPC npc = entry.getValue();
             if (npc != null) {
-                npc.hideNpcFromAllPlayers();
+                try {
+                    // Hide NPC from all players
+                    npc.hideNpcFromAllPlayers();
+                    removedCount++;
+                    
+                    // Log if this is a potential tiny NPC (messenger-related)
+                    if (entry.getKey().contains("messenger") || entry.getKey().contains("Messenger")) {
+                        plugin.getLogger().info("[NPC] Removed messenger NPC: " + entry.getKey());
+                    }
+                    
+                } catch (Exception e) {
+                    plugin.getLogger().warning("[NPC] Error removing NPC '" + entry.getKey() + "' during cleanup: " + e.getMessage());
+                }
             }
         }
         npcEntities.clear();
+        
+        // Clear messenger tracking
+        currentMessengerId = null;
+        currentMessengerLocation = null;
+        
+        plugin.getLogger().info("[NPC] Cleanup complete - removed " + removedCount + " NPCs");
     }
     
     // Squash & Stretch animation helper (24 FPS smooth animation)
@@ -772,10 +845,20 @@ public class NPCManager {
     }
     
     public void giveDirectionMarker(Player player, Location target) {
-        // Give compass pointing to target
-        // For now, just send a message
-        player.sendMessage(Component.text("§6Вы получили метку направления! (Действует 5 минут)"));
+        if (player == null || target == null) {
+            return;
+        }
         
-        // TODO: Implement boss bar or compass tracking
+        // Set player's compass target
+        player.setCompassTarget(target);
+        player.sendMessage(Component.text("§6Вы получили метку направления! Следуйте за компасом (5 минут)"));
+        
+        // Reset compass after 5 minutes
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (player.isOnline()) {
+                player.setCompassTarget(player.getWorld().getSpawnLocation());
+                player.sendMessage(Component.text("§7Метка направления исчезла"));
+            }
+        }, 6000L); // 5 minutes = 6000 ticks
     }
 }

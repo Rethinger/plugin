@@ -28,6 +28,7 @@ import java.util.*;
 public class ChestSpawnManager implements Listener {
     
     private final MmmmStoryPlugin plugin;
+    private final MessageManager messageManager;
     private final Set<String> processedChests = new HashSet<>();
     private final Map<String, Long> chestTimers = new HashMap<>();
     private final Map<UUID, String> searchingPlayers = new HashMap<>(); // Player UUID -> Structure Key
@@ -55,6 +56,7 @@ public class ChestSpawnManager implements Listener {
     
     public ChestSpawnManager(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
+        this.messageManager = plugin.getMessageManager();
         
         // Start cleanup task to remove old processed chests (every 10 minutes)
         new BukkitRunnable() {
@@ -135,10 +137,9 @@ public class ChestSpawnManager implements Listener {
                 long timeSince = System.currentTimeMillis() - lastProcessed;
                 if (timeSince < CHEST_COOLDOWN) {
                     // Still on cooldown, don't show search mechanic
-                    String lang = plugin.getDialogManager().getPlayerLanguage(player);
-                    String message = lang.equals("en") 
-                        ? "✗ This chest was already searched recently (" + (CHEST_COOLDOWN - timeSince) / 1000 + " sec)"
-                        : "✗ Этот сундук уже был обыскан недавно (" + (CHEST_COOLDOWN - timeSince) / 1000 + " сек)";
+                    long secondsRemaining = (CHEST_COOLDOWN - timeSince) / 1000;
+                    String message = messageManager.getMessage(player, "chest.search.cooldown")
+                        .replace("{0}", String.valueOf(secondsRemaining));
                     Component msg = Component.text(message).color(NamedTextColor.RED);
                     player.sendMessage(msg);
                     player.sendActionBar(msg);
@@ -285,8 +286,9 @@ public class ChestSpawnManager implements Listener {
         
         // Send initial message
         String itemName = getItemNameForStructure(type, lang);
-        String searchText = lang.equals("en") ? "🔍 Searching chest..." : "🔍 Обыск сундука...";
-        String itemText = lang.equals("en") ? "Searching for: " + itemName : "Искомый предмет: " + itemName;
+        String searchText = messageManager.getMessage(player, "chest.search.searching");
+        String itemText = messageManager.getMessage(player, "chest.search.searching_item")
+            .replace("{0}", itemName);
         
         Component searchMsg = Component.text(searchText)
                 .color(NamedTextColor.GOLD)
@@ -312,7 +314,7 @@ public class ChestSpawnManager implements Listener {
         }
         
         String lang = plugin.getDialogManager().getPlayerLanguage(player);
-        String searchingText = lang.equals("en") ? "🔍 Searching chest..." : "🔍 Обыскиваю сундук...";
+        String searchingText = messageManager.getMessage(player, "chest.search.searching");
         
         BukkitRunnable task = new BukkitRunnable() {
             int ticks = 0;
@@ -454,10 +456,9 @@ public class ChestSpawnManager implements Listener {
                     if (player.isOnline()) {
                         stopSearchingTask(player);
                         
-                        String lang = plugin.getDialogManager().getPlayerLanguage(player);
-                        String failText = lang.equals("en") 
-                            ? "✗ Nothing found in this chest (" + failCount + "/3)"
-                            : "✗ В этом сундуке ничего не найдено (" + failCount + "/3)";
+                        String failText = messageManager.getMessage(player, "chest.search.nothing")
+                            .replace("{0}", String.valueOf(failCount))
+                            .replace("{1}", String.valueOf(MAX_FAILED_ATTEMPTS));
                         
                         Component failMsg = Component.text(failText).color(NamedTextColor.GRAY);
                         player.sendMessage(failMsg);
@@ -483,9 +484,7 @@ public class ChestSpawnManager implements Listener {
                             world.spawnParticle(Particle.BLOCK, chestLoc.add(0.5, 0.5, 0.5), 30, 0.3, 0.3, 0.3, 0.1, Material.CHEST.createBlockData());
                             world.playSound(chestLoc, Sound.BLOCK_CHEST_LOCKED, 1.0f, 0.8f);
                             
-                            String breakText = lang.equals("en")
-                                ? "✗ Chest broke after 3 failed attempts!"
-                                : "✗ Сундук сломался после 3 неудачных попыток!";
+                            String breakText = messageManager.getMessage(player, "chest.search.broke");
                             
                             player.sendMessage(Component.text(breakText)
                                     .color(NamedTextColor.RED)
@@ -529,8 +528,9 @@ public class ChestSpawnManager implements Listener {
                     
                     String itemName = getItemNameForStructure(structureType, lang);
                     
-                    String foundText = lang.equals("en") ? "✓ FOUND: " + itemName + "!" : "✓ НАЙДЕНО: " + itemName + "!";
-                    String successText = lang.equals("en") ? "✓ SUCCESS!" : "✓ УСПЕХ!";
+                    String foundText = messageManager.getMessage(player, "chest.search.found")
+                        .replace("{0}", itemName);
+                    String successText = messageManager.getMessage(player, "chest.search.success");
                     
                     Component foundMsg = Component.text(foundText)
                             .color(NamedTextColor.GREEN)

@@ -9,7 +9,11 @@ import org.bukkit.block.Block;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
@@ -23,6 +27,12 @@ public class Act3Listener implements Listener {
     
     private final MmmmStoryPlugin plugin;
     private boolean phantomSpawningActive = false;
+    private boolean dragonAlliesSpawned = false; // Bug #3: Track if enderman allies spawned
+    
+    // Bug #4 Fix: Portal protection after dragon death
+    private boolean portalProtected = false;
+    private Location endPortalCenter = null;
+    private static final double PORTAL_PROTECTION_RADIUS = 10.0; // Protect 10 blocks around portal
     
     public Act3Listener(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -358,6 +368,134 @@ public class Act3Listener implements Listener {
         }.runTaskTimer(plugin, 0L, interval * 20L);
     }
     
+    // ==========================================
+    // BUG #3 FIX: ENDERMAN ALLY SPAWNING AT 50% DRAGON HEALTH
+    // ==========================================
+    
+    @EventHandler
+    public void onDragonDamage(EntityDamageEvent event) {
+        // Only handle Ender Dragon damage
+        if (!(event.getEntity() instanceof EnderDragon)) {
+            return;
+        }
+        
+        // Skip if allies already spawned
+        if (dragonAlliesSpawned) {
+            return;
+        }
+        
+        EnderDragon dragon = (EnderDragon) event.getEntity();
+        
+        // Calculate health after this damage
+        double healthAfter = dragon.getHealth() - event.getFinalDamage();
+        double maxHealth = dragon.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double healthPercent = (healthAfter / maxHealth) * 100;
+        
+        // Spawn allies at 50% health
+        if (healthPercent <= 50.0) {
+            dragonAlliesSpawned = true;
+            spawnDragonAllies(dragon);
+        }
+    }
+    
+    /**
+     * Spawn Endermen allies for the Ender Dragon at 50% HP
+     */
+    private void spawnDragonAllies(EnderDragon dragon) {
+        World world = dragon.getWorld();
+        Location dragonLoc = dragon.getLocation();
+        
+        // Get configuration
+        int spawnCount = plugin.getConfig().getInt("acts.end.dragonFight.endermanAllies.spawnCount", 5);
+        
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("Spawning " + spawnCount + " Enderman allies for dragon at 50% HP");
+        }
+        
+        // Spawn configured number of Endermen around the dragon
+        for (int i = 0; i < spawnCount; i++) {
+            // Calculate spawn location in a circle around the dragon
+            double angle = (360.0 / spawnCount) * i;
+            double radians = Math.toRadians(angle);
+            double radius = 8.0 + (Math.random() * 4.0); // 8-12 blocks away
+            
+            double x = dragonLoc.getX() + (Math.cos(radians) * radius);
+            double z = dragonLoc.getZ() + (Math.sin(radians) * radius);
+            double y = dragonLoc.getY();
+            
+            Location spawnLoc = new Location(world, x, y, z);
+            
+            // Find safe ground level
+            while (spawnLoc.getY() > 50 && !spawnLoc.getBlock().getType().isSolid()) {
+                spawnLoc.subtract(0, 1, 0);
+            }
+            spawnLoc.add(0, 1, 0); // Place on top of solid block
+            
+            // Spawn Enderman
+            Enderman ally = (Enderman) world.spawnEntity(spawnLoc, EntityType.ENDERMAN);
+            
+            // Add scoreboard tag to identify as dragon ally (Bug #3 tracking)
+            ally.addScoreboardTag("story_dragon_ally");
+            
+            // Apply potion effects from config
+            var effectsList = plugin.getConfig().getList("acts.end.dragonFight.endermanAllies.effects");
+            if (effectsList != null) {
+                for (Object effectObj : effectsList) {
+                    if (effectObj instanceof java.util.Map effectMap) {
+                        String typeName = (String) effectMap.get("type");
+                        int level = (int) effectMap.get("level");
+                        int duration = (int) effectMap.get("duration");
+                        
+                        try {
+                            PotionEffectType type = PotionEffectType.getByName(typeName);
+                            if (type != null) {
+                                // -1 duration means infinite
+                                int actualDuration = duration == -1 ? Integer.MAX_VALUE : duration * 20;
+                                ally.addPotionEffect(new PotionEffect(type, actualDuration, level, false, false));
+                            }
+                        } catch (Exception e) {
+                            plugin.getLogger().warning("Failed to apply potion effect " + typeName + " to Enderman ally");
+                        }
+                    }
+                }
+            }
+            
+            // Make ally aggressive
+            ally.setTarget(getNearestPlayer(dragonLoc));
+            
+            // Spawn effects
+            world.spawnParticle(Particle.PORTAL, spawnLoc, 50, 0.5, 1, 0.5, 0.3);
+            world.playSound(spawnLoc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.7f);
+        }
+        
+        // Broadcast message to players
+        for (Player player : world.getPlayers()) {
+            player.sendMessage(Component.text("Эндер Дракон призвал своих союзников!", NamedTextColor.DARK_PURPLE));
+        }
+        
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("Spawned " + spawnCount + " tagged Enderman allies for dragon");
+        }
+    }
+    
+    /**
+     * Find nearest player to a location
+     */
+    private Player getNearestPlayer(Location location) {
+        Player nearest = null;
+        double nearestDist = Double.MAX_VALUE;
+        
+        for (Player player : location.getWorld().getPlayers()) {
+            double dist = player.getLocation().distance(location);
+            if (dist < nearestDist) {
+                nearest = player;
+                nearestDist = dist;
+            }
+        }
+        
+        return nearest;
+    }
+    
     @EventHandler
     public void onDragonDeath(EntityDeathEvent event) {
         if (!(event.getEntity() instanceof EnderDragon)) {
@@ -377,22 +515,84 @@ public class Act3Listener implements Listener {
         Location dragonLoc = dragon.getLocation();
         World world = dragon.getWorld();
         
-        // Reset all endermen to vanilla behavior (remove aggro from players)
+        // ==========================================
+        // BUG #3 FIX: CLEANUP ENDERMAN ALLIES AFTER DRAGON DEATH
+        // ==========================================
+        
+        boolean removeOnDeath = plugin.getConfig().getBoolean("acts.end.dragonFight.endermanAllies.removeOnDragonDeath", true);
+        int cleanedCount = 0;
+        
+        // Debug logging: Start cleanup process
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("[DEBUG] Dragon death cleanup - removeOnDeath config: " + removeOnDeath);
+            long totalEndermen = world.getEntities().stream()
+                .filter(e -> e instanceof Enderman)
+                .count();
+            long taggedEndermen = world.getEntities().stream()
+                .filter(e -> e instanceof Enderman)
+                .map(e -> (Enderman) e)
+                .filter(e -> e.getScoreboardTags().contains("story_dragon_ally"))
+                .count();
+            plugin.getLogger().info("[DEBUG] Found " + totalEndermen + " total Endermen, " + taggedEndermen + " with 'story_dragon_ally' tag");
+        }
+        
         for (Entity entity : world.getEntities()) {
             if (entity instanceof Enderman) {
                 Enderman enderman = (Enderman) entity;
-                // Clear target (remove aggro)
-                enderman.setTarget(null);
-                // Remove any custom AI modifications
-                enderman.setAware(true);
-                enderman.setAI(true);
+                
+                // Check if this is a tagged dragon ally
+                if (enderman.getScoreboardTags().contains("story_dragon_ally")) {
+                    if (removeOnDeath) {
+                        // Remove the ally entirely
+                        enderman.remove();
+                        cleanedCount++;
+                    } else {
+                        // Revert to vanilla behavior
+                        enderman.removeScoreboardTag("story_dragon_ally");
+                        enderman.setTarget(null);
+                        enderman.clearActivePotionEffects();
+                        enderman.setAware(true);
+                        enderman.setAI(true);
+                        enderman.setCanPickupItems(false);  // Reset pickup behavior
+                        cleanedCount++;
+                    }
+                } else {
+                    // Reset vanilla endermen (not allies)
+                    enderman.setTarget(null);
+                    enderman.setAware(true);
+                    enderman.setAI(true);
+                }
             }
         }
         
-        plugin.getLogger().info("Dragon defeated! Endermen returned to vanilla state.");
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            String action = removeOnDeath ? "removed" : "reverted";
+            plugin.getLogger().info("Dragon defeated! " + cleanedCount + " Enderman allies " + action + ", vanilla Endermen reset.");
+        } else {
+            plugin.getLogger().info("Dragon defeated! Endermen returned to vanilla state.");
+        }
+        
+        // Reset ally spawn flag for potential future dragon fights
+        dragonAlliesSpawned = false;
+        
+        // ==========================================
+        // BUG #4 FIX: PROTECT END PORTAL FROM CORRUPTION
+        // ==========================================
+        
+        // Find and protect the End portal
+        Location portalLoc = new Location(world, 0, 65, 0);
+        endPortalCenter = findEndPortal(world);
+        if (endPortalCenter != null) {
+            portalProtected = true;
+            plugin.getLogger().info("[Portal Protection] End portal protected at " + 
+                endPortalCenter.getBlockX() + ", " + endPortalCenter.getBlockY() + ", " + endPortalCenter.getBlockZ());
+        } else {
+            plugin.getLogger().warning("[Portal Protection] Could not find End portal to protect!");
+            portalProtected = true; // Still enable protection to be safe
+            endPortalCenter = portalLoc; // Use default location
+        }
         
         // Find the exit portal location (usually at 0, ~, 0)
-        Location portalLoc = new Location(world, 0, 65, 0);
         
         // Break portal and replace bedrock with end_stone continuously
         new BukkitRunnable() {
@@ -401,7 +601,8 @@ public class Act3Listener implements Listener {
             
             @Override
             public void run() {
-                if (ticksElapsed >= maxTicks || plugin.getDataManager().getCurrentAct() >= 6) {
+                // Stop when Act 5 is completed (Act >= 5 means ritual completed)
+                if (ticksElapsed >= maxTicks || plugin.getDataManager().getCurrentAct() >= 5) {
                     cancel();
                     return;
                 }
@@ -426,10 +627,11 @@ public class Act3Listener implements Listener {
                     }
                 }
                 
-                // Place custom structure with 5 chests (only on first run)
+                // BUG #6 FIX: Dragon_loot structure removed - artifacts obtained via other mechanics
+                // Previously spawned dragon_loot structure here, but this is no longer needed
+                // Artifacts are obtained through End City chest searches instead
                 if (ticksElapsed == 0) {
-                    plugin.getStructureManager().placeStructure("dragon_loot", portalLoc);
-                    plugin.getLogger().info("Dragon defeated! Portal broken, egg preserved, custom loot structure placed at: " + portalLoc);
+                    plugin.getLogger().info("Dragon defeated! Portal broken, egg preserved. Artifacts available in End Cities.");
                 }
                 
                 ticksElapsed += 20; // Increment by 1 second
@@ -519,5 +721,103 @@ public class Act3Listener implements Listener {
         }
         
         plugin.getLogger().info("End crystal regeneration complete!");
+    }
+    
+    /**
+     * Find the End portal location by scanning for END_PORTAL blocks
+     */
+    private Location findEndPortal(World world) {
+        // Scan area around 0,0 at typical portal heights
+        for (int y = 40; y <= 80; y++) {
+            for (int x = -10; x <= 10; x++) {
+                for (int z = -10; z <= 10; z++) {
+                    Location loc = new Location(world, x, y, z);
+                    if (loc.getBlock().getType() == Material.END_PORTAL) {
+                        // Found a portal block, return its location
+                        plugin.getLogger().info("[Portal Protection] Found END_PORTAL block at " + x + ", " + y + ", " + z);
+                        return loc;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Check if a location is within the protected portal radius
+     */
+    private boolean isNearProtectedPortal(Location location) {
+        if (!portalProtected || endPortalCenter == null) {
+            return false;
+        }
+        
+        // Check if in same world
+        if (!location.getWorld().equals(endPortalCenter.getWorld())) {
+            return false;
+        }
+        
+        // Check distance (use 2D distance since portal is horizontal)
+        double distance = location.distance(endPortalCenter);
+        return distance <= PORTAL_PROTECTION_RADIUS;
+    }
+    
+    /**
+     * Prevent block physics from corrupting portal (e.g., end_stone replacing portal blocks)
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        if (!portalProtected) {
+            return;
+        }
+        
+        Block block = event.getBlock();
+        Location blockLoc = block.getLocation();
+        
+        // Protect portal blocks from physics changes
+        if (block.getType() == Material.END_PORTAL || block.getType() == Material.END_PORTAL_FRAME) {
+            if (isNearProtectedPortal(blockLoc)) {
+                // Cancel physics to prevent portal corruption
+                event.setCancelled(true);
+                
+                if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                    plugin.getLogger().info("[Portal Protection] Prevented physics change at portal block: " + 
+                        blockLoc.getBlockX() + ", " + blockLoc.getBlockY() + ", " + blockLoc.getBlockZ());
+                }
+            }
+        }
+        
+        // Prevent end_stone from appearing near portal
+        if (block.getType() == Material.END_STONE && isNearProtectedPortal(blockLoc)) {
+            event.setCancelled(true);
+            
+            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                plugin.getLogger().info("[Portal Protection] Prevented end_stone physics at: " + 
+                    blockLoc.getBlockX() + ", " + blockLoc.getBlockY() + ", " + blockLoc.getBlockZ());
+            }
+        }
+    }
+    
+    /**
+     * Prevent players from placing end_stone near protected portal
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (!portalProtected) {
+            return;
+        }
+        
+        Block block = event.getBlock();
+        Location blockLoc = block.getLocation();
+        
+        // Prevent end_stone placement near portal
+        if (block.getType() == Material.END_STONE && isNearProtectedPortal(blockLoc)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(Component.text("§c§l⚠ Cannot place blocks near the protected End Portal!").color(NamedTextColor.RED));
+            
+            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                plugin.getLogger().info("[Portal Protection] Prevented " + event.getPlayer().getName() + 
+                    " from placing end_stone near portal");
+            }
+        }
     }
 }

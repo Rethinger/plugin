@@ -2,7 +2,11 @@ package com.mmmm.story.listeners;
 
 import com.mmmm.story.MmmmStoryPlugin;
 import com.mmmm.story.managers.ItemManager;
+import com.mmmm.story.managers.MessageManager;
 import com.mmmm.story.managers.PlayerPlacedBlocksManager;
+import com.mmmm.story.bosses.CircleStrafeTracker;
+import com.mmmm.story.bosses.BossAttackState;
+import com.mmmm.story.bosses.SafeZone;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,10 +15,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -43,6 +49,17 @@ public class Act2Listener implements Listener {
     private Map<UUID, Long> playersAboveBoss = new HashMap<>(); // Отслеживание игроков над боссом
     private Map<UUID, Long> playersNearBoss = new HashMap<>(); // Отслеживание игроков рядом с боссом для телепортации
     private Map<UUID, Integer> playerArrowsShot = new HashMap<>(); // Счетчик стрел для отражения каждой 3-й
+    
+    // BUG #2 FIX: Boss teleport tracking
+    private Map<UUID, Long> playerProximityStart = new HashMap<>(); // When player entered proximity
+    private Map<UUID, Long> teleportCooldown = new HashMap<>(); // Last teleport time per player
+    
+    // Circle-strafe detection for boss exploit prevention
+    private Map<UUID, CircleStrafeTracker> circleStrafeTrackers = new HashMap<>();
+    
+    // Wither skull attack state tracking (phase 1 only)
+    private BossAttackState witherSkullAttackState = null;
+    private List<SafeZone> currentSafeZones = new ArrayList<>();
     
     public Act2Listener(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -609,6 +626,12 @@ public class Act2Listener implements Listener {
         // Start boss bar update task
         startBoss1BossBarTask();
         
+        // Start circle-strafe detection task
+        startCircleStrafeDetection();
+        
+        // Start wither skull attack task (phase 1 only)
+        startWitherSkullAttackTask();
+        
         // Start boss AI task (distance keeping in phase 2)
         startBoss1AITask(boss);
         
@@ -620,6 +643,9 @@ public class Act2Listener implements Listener {
         
         // Start teleport task (teleport away from players crowding the boss)
         startBoss1TeleportTask(boss);
+        
+        // Start proximity teleport task (Bug #2: teleport behind close players in Phase 2)
+        startBoss1ProximityTeleportTask(boss);
     }
     
     private void createBoss1BossBar() {
@@ -685,6 +711,289 @@ public class Act2Listener implements Listener {
                 }
             }
         }.runTaskTimer(plugin, 0L, 10L); // Update every 0.5 seconds
+    }
+    
+    /**
+     * Start circle-strafe detection task for boss combat.
+     * Runs every 0.5 seconds to update player movement patterns and teleport exploiters.
+     */
+    private void startCircleStrafeDetection() {
+        double minDistance = plugin.getConfig().getDouble("acts.boss1.circleStrafeDetection.minDistance", 2.0);
+        double maxDistance = plugin.getConfig().getDouble("acts.boss1.circleStrafeDetection.maxDistance", 3.0);
+        double angleThreshold = plugin.getConfig().getDouble("acts.boss1.circleStrafeDetection.angleThreshold", 0.1);
+        int minAngleChanges = plugin.getConfig().getInt("acts.boss1.circleStrafeDetection.minAngleChanges", 10);
+        int trackingDurationSeconds = plugin.getConfig().getInt("acts.boss1.circleStrafeDetection.trackingDurationSeconds", 3);
+        long checkIntervalTicks = plugin.getConfig().getLong("acts.boss1.circleStrafeDetection.checkIntervalTicks", 5);
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (boss1Entity == null || boss1Entity.isDead() || !boss1Entity.isValid()) {
+                    // Clear all trackers when boss dies
+                    circleStrafeTrackers.clear();
+                    cancel();
+                    return;
+                }
+                
+                Location bossLocation = boss1Entity.getLocation();
+                
+                // Update trackers for all nearby players
+                for (Player player : boss1Entity.getWorld().getPlayers()) {
+                    double distance = player.getLocation().distance(bossLocation);
+                    
+                    // Only track players in circle-strafe range
+                    if (distance < 100) { // Within boss fight area
+                        UUID playerId = player.getUniqueId();
+                        Location playerLocation = player.getLocation();
+                        
+                        // Initialize tracker if needed
+                        CircleStrafeTracker tracker = circleStrafeTrackers.computeIfAbsent(
+                            playerId, 
+                            k -> new CircleStrafeTracker(
+                                player,
+                                minDistance,
+                                maxDistance,
+                                angleThreshold,
+                                minAngleChanges,
+                                trackingDurationSeconds
+                            )
+                        );
+                        
+                        // Update tracker with current position
+                        tracker.update(playerLocation, bossLocation);
+                        
+                        // Debug: Log tracking progress
+                        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                            plugin.getLogger().info("[Circle-Strafe] " + player.getName() + 
+                                " distance=" + String.format("%.2f", distance) + 
+                                " blocks, tracking=" + (tracker.isConfirmed() ? "CONFIRMED" : "in progress"));
+                        }
+                        
+                        // Check if circle-strafing detected
+                        if (tracker.isConfirmed()) {
+                            // Teleport player on top of boss (punishment for exploiting)
+                            Location teleportLoc = bossLocation.clone().add(0, 2, 0);
+                            player.teleport(teleportLoc);
+                            player.sendMessage(Component.text("§c§l⚡ Повелитель наказывает вас за трусость!").color(NamedTextColor.RED));
+                            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.7f);
+                            bossLocation.getWorld().spawnParticle(Particle.PORTAL, teleportLoc, 50, 0.5, 1, 0.5, 0.5);
+                            
+                            // Reset tracker after teleport
+                            circleStrafeTrackers.remove(playerId);
+                            
+                            plugin.getLogger().info("[Circle-Strafe] EXPLOIT DETECTED: " + player.getName() + " teleported to boss location");
+                        }
+                    } else {
+                        // Remove tracker if player leaves area
+                        circleStrafeTrackers.remove(player.getUniqueId());
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0L, checkIntervalTicks); // Check at configured interval
+    }
+    
+    /**
+     * Start wither skull attack task for phase 1 boss combat.
+     * Boss fires circular volley every 30 seconds with safe zones.
+     */
+    private void startWitherSkullAttackTask() {
+        int intervalSeconds = plugin.getConfig().getInt("acts.boss1.witherSkullAttack.intervalSeconds", 30);
+        int minSafeZones = plugin.getConfig().getInt("acts.boss1.witherSkullAttack.safeZones.count.min", 6);
+        int maxSafeZones = plugin.getConfig().getInt("acts.boss1.witherSkullAttack.safeZones.count.max", 8);
+        double safeZoneRadius = plugin.getConfig().getDouble("acts.boss1.witherSkullAttack.safeZones.radius", 15.0);
+        double protectionRadius = plugin.getConfig().getDouble("acts.boss1.witherSkullAttack.safeZones.protectionRadius", 1.0);
+        
+        // Initialize attack state with boss UUID and phase 1
+        witherSkullAttackState = new BossAttackState(UUID.randomUUID(), 1); // Will be set to actual boss UUID on spawn
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (boss1Entity == null || boss1Entity.isDead() || !boss1Entity.isValid()) {
+                    currentSafeZones.clear();
+                    cancel();
+                    return;
+                }
+                
+                // Only attack in phase 1
+                if (boss1Phase != 1) {
+                    return;
+                }
+                
+                // Check if can attack (respects interval)
+                if (witherSkullAttackState.canAttack(intervalSeconds)) {
+                    performWitherSkullAttack(minSafeZones, maxSafeZones, safeZoneRadius, protectionRadius);
+                }
+            }
+        }.runTaskTimer(plugin, 100L, 20L); // Start after 5s, check every second
+    }
+    
+    /**
+     * Perform wither skull volley attack with safe zones.
+     */
+    private void performWitherSkullAttack(int minSafeZones, int maxSafeZones, double radius, double protectionRadius) {
+        if (boss1Entity == null) return;
+        
+        witherSkullAttackState.startAttack();
+        Location bossLoc = boss1Entity.getLocation();
+        World world = bossLoc.getWorld();
+        
+        // Check if boss should freeze during cast
+        boolean freezeBoss = plugin.getConfig().getBoolean("acts.boss1.witherSkullAttack.freezeBossDuringCast", true);
+        int freezeDurationSeconds = plugin.getConfig().getInt("acts.boss1.witherSkullAttack.freezeDurationSeconds", 5);
+        
+        // Freeze boss if enabled
+        if (freezeBoss && boss1Entity instanceof Mob mob) {
+            mob.setAI(false);
+            mob.setVelocity(new org.bukkit.util.Vector(0, 0, 0));
+        }
+        
+        // Generate safe zones
+        int safeZoneCount = minSafeZones + (int)(Math.random() * (maxSafeZones - minSafeZones + 1));
+        currentSafeZones.clear();
+        
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("[Safe Zones] Generating " + safeZoneCount + " safe zones within " + radius + " blocks of boss");
+        }
+        
+        for (int i = 0; i < safeZoneCount; i++) {
+            SafeZone zone = SafeZone.generateRandom(bossLoc, radius, protectionRadius, freezeDurationSeconds);
+            currentSafeZones.add(zone);
+            
+            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                Location center = zone.getCenter();
+                plugin.getLogger().info("[Safe Zones]   Zone " + (i+1) + " at (" + 
+                    String.format("%.1f", center.getX()) + ", " + 
+                    String.format("%.1f", center.getY()) + ", " + 
+                    String.format("%.1f", center.getZ()) + ") radius=" + protectionRadius);
+            }
+        }
+        
+        // Visual/audio warning
+        world.playSound(bossLoc, Sound.ENTITY_WITHER_AMBIENT, 2.0f, 0.7f);
+        world.spawnParticle(Particle.SMOKE, bossLoc, 100, 2, 2, 2, 0.1);
+        
+        // Send localized warning message to nearby players
+        MessageManager messageManager = plugin.getMessageManager();
+        for (Player p : world.getPlayers()) {
+            if (p.getLocation().distance(bossLoc) < 50) {
+                String warningMessage = messageManager.getMessage(p, "boss1.wither_skull_attack.warning");
+                p.sendMessage(Component.text(warningMessage).color(NamedTextColor.DARK_PURPLE));
+            }
+        }
+        
+        // Show safe zones for configured duration
+        new BukkitRunnable() {
+            int ticks = 0;
+            final int maxTicks = freezeDurationSeconds * 20; // Convert seconds to ticks
+            
+            @Override
+            public void run() {
+                if (ticks >= maxTicks) {
+                    cancel();
+                    
+                    // Unfreeze boss
+                    if (freezeBoss && boss1Entity instanceof Mob mob) {
+                        mob.setAI(true);
+                    }
+                    
+                    fireWitherSkulls();
+                    return;
+                }
+                for (SafeZone zone : currentSafeZones) {
+                    zone.spawnParticles(20);
+                }
+                ticks++;
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
+    
+    /**
+     * Fire wither skulls in circular pattern.
+     */
+    private void fireWitherSkulls() {
+        if (boss1Entity == null) return;
+        
+        Location bossLoc = boss1Entity.getLocation();
+        World world = bossLoc.getWorld();
+        double damageMultiplier = plugin.getConfig().getDouble("acts.boss1.witherSkullAttack.damageMultiplier", 2.0);
+        
+        // Fire 16 skulls in circle
+        for (int i = 0; i < 16; i++) {
+            double angle = (i / 16.0) * 2 * Math.PI;
+            Vector direction = new Vector(Math.cos(angle), 0.1, Math.sin(angle));
+            
+            WitherSkull skull = world.spawn(bossLoc.clone().add(0, 1.5, 0), WitherSkull.class);
+            skull.setShooter(boss1Entity);
+            skull.setDirection(direction);
+            skull.setYield(0f); // No terrain damage
+            skull.setIsIncendiary(false); // No fire
+            skull.setCharged(false); // Not blue skull
+        }
+        
+        world.playSound(bossLoc, Sound.ENTITY_WITHER_SHOOT, 2.0f, 1.0f);
+        witherSkullAttackState.endAttack();
+    }
+    
+    /**
+     * Handle wither skull explosions - prevent block damage but allow player damage
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onWitherSkullExplode(EntityExplodeEvent event) {
+        // Only handle wither skull explosions from our boss
+        if (!(event.getEntity() instanceof WitherSkull)) {
+            return;
+        }
+        
+        WitherSkull skull = (WitherSkull) event.getEntity();
+        
+        // Check if this skull was shot by our boss
+        if (skull.getShooter() != boss1Entity) {
+            return;
+        }
+        
+        // Prevent all block damage
+        event.blockList().clear();
+        event.setCancelled(true);
+        
+        // Calculate manual player damage with safe zone check
+        Location explosionLoc = event.getLocation();
+        World world = explosionLoc.getWorld();
+        double damageMultiplier = plugin.getConfig().getDouble("acts.boss1.witherSkullAttack.damageMultiplier", 2.0);
+        double explosionRadius = 3.0; // Standard wither skull explosion radius
+        
+        for (Player player : world.getPlayers()) {
+            double distance = player.getLocation().distance(explosionLoc);
+            
+            if (distance <= explosionRadius) {
+                // Check if player is in a safe zone
+                boolean inSafeZone = false;
+                for (SafeZone zone : currentSafeZones) {
+                    if (zone.contains(player.getLocation())) {
+                        inSafeZone = true;
+                        break;
+                    }
+                }
+                
+                // If not in safe zone, apply damage
+                if (!inSafeZone) {
+                    // Calculate damage based on distance (inverse square law)
+                    double damageRatio = 1.0 - (distance / explosionRadius);
+                    double baseDamage = 8.0; // Base wither skull damage
+                    double damage = baseDamage * damageRatio * damageMultiplier;
+                    
+                    // Apply damage
+                    player.damage(damage, skull);
+                    
+                    // Apply wither effect
+                    player.addPotionEffect(new PotionEffect(
+                        PotionEffectType.WITHER,
+                        40, // 2 seconds
+                        1 // Level 2
+                    ));
+                }
+            }
+        }
     }
     
     @EventHandler
@@ -942,8 +1251,22 @@ public class Act2Listener implements Listener {
         
         Player player = (Player) event.getEntity();
         
-        // Apply nausea effect for 5 seconds (100 ticks) - silently, without message
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 100, 0, false, true));
+        // Apply nausea effect from config - Level 127 for 10 seconds (200 ticks)
+        int nauseaLevel = plugin.getConfig().getInt("phase2.archerNausea.level", 127);
+        int nauseaDurationSeconds = plugin.getConfig().getInt("phase2.archerNausea.durationSeconds", 10);
+        int nauseaDurationTicks = nauseaDurationSeconds * 20;
+        
+        player.addPotionEffect(new PotionEffect(
+            PotionEffectType.NAUSEA, 
+            nauseaDurationTicks, 
+            nauseaLevel - 1, // Amplifier is level - 1 (e.g., level 127 = amplifier 126)
+            false, 
+            true // Show particles
+        ));
+        
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("[DEBUG] Applied Nausea (level=" + nauseaLevel + ", duration=" + nauseaDurationSeconds + "s) to " + player.getName());
+        }
     }
     
     private void startBoss1SummonTask(Skeleton boss) {
@@ -1136,6 +1459,208 @@ public class Act2Listener implements Listener {
         }.runTaskTimer(plugin, 20L, 10L); // Check every 0.5 seconds
     }
     
+    // ==========================================
+    // BUG #2 FIX: BOSS PROXIMITY TELEPORT MECHANIC
+    // ==========================================
+    
+    /**
+     * Start proximity teleport mechanic for Boss #1 Phase 2
+     * Teleports boss behind player if they stay within 3 blocks for 3+ seconds
+     */
+    private void startBoss1ProximityTeleportTask(Skeleton boss) {
+        // Get config values
+        double proximityDistance = plugin.getConfig().getDouble("acts.boss1.teleport.proximityDistance", 3.0);
+        long triggerDelay = plugin.getConfig().getLong("acts.boss1.teleport.triggerDelaySeconds", 3) * 1000; // Convert to ms
+        double behindDistance = plugin.getConfig().getDouble("acts.boss1.teleport.behindDistance", 4.0);
+        long cooldownTime = plugin.getConfig().getLong("acts.boss1.teleport.cooldownSeconds", 10) * 1000; // Convert to ms
+        int checkInterval = plugin.getConfig().getInt("acts.boss1.teleport.checkIntervalTicks", 20);
+        
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (boss.isDead() || !boss.isValid()) {
+                    cancel();
+                    // Cleanup tracking maps
+                    playerProximityStart.clear();
+                    teleportCooldown.clear();
+                    return;
+                }
+                
+                // Only in Phase 2
+                if (boss1Phase != 2) {
+                    if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                        plugin.getLogger().info("[DEBUG] Proximity check (Phase " + boss1Phase + "): skipping - only Phase 2 teleports");
+                    }
+                    return;
+                }
+                
+                // Check all nearby players
+                for (Player player : boss.getWorld().getPlayers()) {
+                    if (player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE) {
+                        continue;
+                    }
+                    
+                    UUID playerId = player.getUniqueId();
+                    double distance = player.getLocation().distance(boss.getLocation());
+                    long currentTime = System.currentTimeMillis();
+                    
+                    // Check if player is within proximity distance
+                    if (distance <= proximityDistance) {
+                        // Start tracking if not already tracking
+                        playerProximityStart.putIfAbsent(playerId, currentTime);
+                        
+                        long proximityDuration = currentTime - playerProximityStart.get(playerId);
+                        
+                        // Check if player has been close long enough
+                        if (proximityDuration >= triggerDelay) {
+                            // Check cooldown
+                            Long lastTeleport = teleportCooldown.get(playerId);
+                            if (lastTeleport == null || (currentTime - lastTeleport) >= cooldownTime) {
+                                // Attempt teleport
+                                if (teleportBossBehindPlayer(boss, player, behindDistance)) {
+                                    if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                                        plugin.getLogger().info("[DEBUG] Proximity teleport triggered (Phase 2) for player: " + player.getName());
+                                    }
+                                    // Reset tracking
+                                    playerProximityStart.remove(playerId);
+                                    teleportCooldown.put(playerId, currentTime);
+                                }
+                            }
+                        }
+                    } else {
+                        // Player moved away, reset tracking
+                        playerProximityStart.remove(playerId);
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, checkInterval, checkInterval);
+    }
+    
+    /**
+     * Calculate location behind player
+     */
+    private Location calculateBehindLocation(Player player, double distance) {
+        // Get player's facing direction
+        Vector direction = player.getLocation().getDirection();
+        
+        // Reverse direction (behind player)
+        direction.multiply(-1);
+        
+        // Find location behind player
+        Location behindLoc = player.getLocation().add(direction.multiply(distance));
+        
+        // Set to player's eye level
+        behindLoc.setY(player.getEyeLocation().getY());
+        
+        return behindLoc;
+    }
+    
+    /**
+     * Check if location is safe for boss teleport
+     */
+    private boolean isSafeLocation(Location loc) {
+        if (loc == null || loc.getWorld() == null) {
+            return false;
+        }
+        
+        // Check block at location is air
+        if (!loc.getBlock().getType().isAir()) {
+            return false;
+        }
+        
+        // Check block above is air (2 blocks height for skeleton)
+        if (!loc.clone().add(0, 1, 0).getBlock().getType().isAir()) {
+            return false;
+        }
+        
+        // Check block below is solid
+        if (!loc.clone().add(0, -1, 0).getBlock().getType().isSolid()) {
+            return false;
+        }
+        
+        // Check not in lava/water
+        Material below = loc.clone().add(0, -1, 0).getBlock().getType();
+        if (below == Material.LAVA || below == Material.WATER) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Teleport boss behind player with safety checks
+     * @return true if teleport successful
+     */
+    private boolean teleportBossBehindPlayer(Skeleton boss, Player player, double distance) {
+        // Try direct behind location
+        Location behindLoc = calculateBehindLocation(player, distance);
+        
+        if (isSafeLocation(behindLoc)) {
+            return executeBossTeleport(boss, player, behindLoc);
+        }
+        
+        // Try angles (45, 90, 135, 180, 225, 270, 315 degrees)
+        for (int angle = 45; angle < 360; angle += 45) {
+            double radians = Math.toRadians(angle);
+            Vector offset = new Vector(
+                Math.cos(radians) * distance,
+                0,
+                Math.sin(radians) * distance
+            );
+            
+            Location testLoc = player.getLocation().add(offset);
+            testLoc.setY(player.getEyeLocation().getY());
+            
+            if (isSafeLocation(testLoc)) {
+                return executeBossTeleport(boss, player, testLoc);
+            }
+        }
+        
+        // Try above player as last resort
+        Location aboveLoc = player.getLocation().clone().add(0, 5, 0);
+        if (isSafeLocation(aboveLoc)) {
+            return executeBossTeleport(boss, player, aboveLoc);
+        }
+        
+        // No safe location found
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().warning("Could not find safe teleport location for Boss #1 near " + player.getName());
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Execute the actual teleport with effects
+     */
+    private boolean executeBossTeleport(Skeleton boss, Player player, Location destination) {
+        World world = boss.getWorld();
+        
+        // Teleport boss
+        boss.teleport(destination);
+        
+        // Effects at old location
+        Location oldLoc = boss.getLocation();
+        world.spawnParticle(Particle.PORTAL, oldLoc, 50, 0.5, 0.5, 0.5, 0.3);
+        world.playSound(oldLoc, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.8f);
+        
+        // Effects at new location
+        world.spawnParticle(Particle.PORTAL, destination, 50, 0.5, 0.5, 0.5, 0.3);
+        world.spawnParticle(Particle.SMOKE, destination, 20, 0.3, 0.3, 0.3, 0.05);
+        world.playSound(destination, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.8f);
+        
+        // Message to player
+        plugin.getMessageManager().sendMessage(player, "boss.teleported");
+        
+        // Debug logging
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("Boss #1 teleported behind " + player.getName() + " to " + 
+                destination.getBlockX() + "," + destination.getBlockY() + "," + destination.getBlockZ());
+        }
+        
+        return true;
+    }
+    
     private void startBoss1AntiWallTask(Skeleton boss) {
         new BukkitRunnable() {
             @Override
@@ -1246,7 +1771,8 @@ public class Act2Listener implements Listener {
                             direction.multiply(1.5);
                             player.setVelocity(direction);
                             
-                            player.sendMessage(Component.text("§c§lВы ощущаете гнев Повелителя!").color(NamedTextColor.RED));
+                            String wrathMsg = plugin.getMessageManager().getMessage(player, "boss1.wall_rage_feel");
+                            player.sendMessage(Component.text(wrathMsg).color(NamedTextColor.RED));
                             
                             // Звук удара
                             world.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1.0f, 0.8f);
@@ -1302,7 +1828,8 @@ public class Act2Listener implements Listener {
                         if (!playersAboveBoss.containsKey(uuid)) {
                             // Начинаем отсчет
                             playersAboveBoss.put(uuid, currentTime);
-                            player.sendMessage(Component.text("§c§l⚠ Повелитель чувствует вашу трусость...").color(NamedTextColor.RED));
+                            String cowardiceMsg = plugin.getMessageManager().getMessage(player, "boss1.cowardice");
+                            player.sendMessage(Component.text(cowardiceMsg).color(NamedTextColor.RED));
                             plugin.getLogger().info("Player " + player.getName() + " above boss. Height diff: " + heightDifference + ", Horizontal: " + horizontalDistance);
                         } else {
                             long timeAbove = currentTime - playersAboveBoss.get(uuid);
@@ -1335,7 +1862,8 @@ public class Act2Listener implements Listener {
         pullDirection.multiply(3.0); // Очень сильное притяжение
         
         player.setVelocity(pullDirection);
-        player.sendMessage(Component.text("§4§l⚡ ПОВЕЛИТЕЛЬ ПРИТЯГИВАЕТ ВАС!").color(NamedTextColor.DARK_RED));
+        String pullMsg = plugin.getMessageManager().getMessage(player, "boss1.pull");
+        player.sendMessage(Component.text(pullMsg).color(NamedTextColor.DARK_RED));
         plugin.getLogger().info("Pulling player " + player.getName() + " to boss with block breaking");
         
         World world = player.getWorld();
@@ -1564,6 +2092,49 @@ public class Act2Listener implements Listener {
     }
     
     @EventHandler
+    public void onWitherSkullDamage(org.bukkit.event.entity.EntityDamageByEntityEvent event) {
+        // Check if damage is from wither skull
+        if (!(event.getDamager() instanceof WitherSkull)) {
+            return;
+        }
+        
+        WitherSkull skull = (WitherSkull) event.getDamager();
+        
+        // Only handle skulls from boss
+        if (!(skull.getShooter() instanceof Skeleton) || skull.getShooter() != boss1Entity) {
+            return;
+        }
+        
+        // Prevent damage to skeleton warriors
+        if (event.getEntity() instanceof Skeleton) {
+            Skeleton target = (Skeleton) event.getEntity();
+            if (boss1Warriors.contains(target.getUniqueId()) || target == boss1Entity) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+        
+        // Check if player is in safe zone
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+            Location playerLoc = player.getLocation();
+            
+            for (SafeZone zone : currentSafeZones) {
+                if (zone.contains(playerLoc)) {
+                    event.setCancelled(true);
+                    player.sendMessage(Component.text("§a§l✓ Безопасная зона защитила вас!").color(NamedTextColor.GREEN));
+                    playerLoc.getWorld().playSound(playerLoc, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.5f);
+                    return;
+                }
+            }
+            
+            // Apply damage multiplier if not in safe zone
+            double damageMultiplier = plugin.getConfig().getDouble("acts.boss1.witherSkullAttack.damageMultiplier", 2.0);
+            event.setDamage(event.getDamage() * damageMultiplier);
+        }
+    }
+    
+    @EventHandler
     public void onBoss1Death(EntityDeathEvent event) {
         if (!(event.getEntity() instanceof Skeleton)) {
             return;
@@ -1607,9 +2178,11 @@ public class Act2Listener implements Listener {
         for (Player player : deathLoc.getWorld().getPlayers()) {
             if (player.getLocation().distance(deathLoc) < 100) {
                 if (wasFirstKill) {
-                    player.sendMessage(Component.text("§e§l✦ Найдите Катализатор Пустоты в Бастионе!").color(NamedTextColor.YELLOW));
+                    String catalystMsg = plugin.getMessageManager().getMessage(player, "boss1.defeated_first");
+                    player.sendMessage(Component.text(catalystMsg).color(NamedTextColor.YELLOW));
                 } else {
-                    player.sendMessage(Component.text("§6§l⚔ Повелитель побежден снова!").color(NamedTextColor.GOLD));
+                    String defeatedMsg = plugin.getMessageManager().getMessage(player, "boss1.defeated_again");
+                    player.sendMessage(Component.text(defeatedMsg).color(NamedTextColor.GOLD));
                 }
             }
         }

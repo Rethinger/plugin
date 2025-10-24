@@ -19,6 +19,17 @@ item_protection:
   restored: "§a§l✔ Story items restored!"
   items_saved: "§aYour story items have been saved!"
 
+# Chest search messages
+chest:
+  search:
+    searching: "🔍 Searching chest..."
+    searching_item: "Searching for: {0}"
+    found: "✓ FOUND: {0}!"
+    success: "✓ SUCCESS!"
+    nothing: "✗ Nothing found in this chest ({0}/{1})"
+    broke: "✗ Chest broke after 3 failed attempts!"
+    cooldown: "✗ This chest was already searched recently ({0} sec)"
+
 # Act 1 - Skeleton Wave
 act1:
   skeleton_warrior: "§6Skeleton Warrior"
@@ -43,6 +54,8 @@ boss1:
   pull: "§4§l⚡ THE LORD PULLS YOU IN!"
   defeated_first: "§e§l✦ Find the Void Catalyst in the Bastion!"
   defeated_again: "§6§l⚔ The Lord is defeated again!"
+  wither_skull_attack:
+    warning: "§5§l⚡ The Lord is preparing a devastating attack!"
 
 # Boss 2 - Nether Fiend
 boss2:
@@ -59,6 +72,9 @@ act5:
   exit_blocked: "§c§lExit from the End is blocked! Collect all artifacts to begin the ritual."
   too_far: "§c✗ Too far from the End center! (distance: %distance%/100 blocks)"
   artifacts_count: "§d✦ Artifacts in ritual chests: %count%/5"
+  all_artifacts_collected: "§a§l✔ All artifacts collected!"
+  ritual_starting: "§d§l⚡ Ritual begins..."
+  void_opening: "§5§l⚡ The Void is opening... Phantoms are approaching!"
   returned_overworld: "§6You have returned to the Overworld..."
 
 # Portals
@@ -67,3 +83,166 @@ portal:
   end_instruction: "§aEnter the gate to complete what you started."
   unstable: "§cPortal is unstable! Stabilization required..."
   end_closed: "§cEnd portal is sealed! A special key is required..."
+  # Bug #4 Fix: Portal blocking during Acts 4-5
+  end_trapped: "§c§lYOU ARE TRAPPED IN THE END! The portal is sealed by the Dark Lord."
+  end_trapped_hint: "§eComplete the sealing ritual to break free..."
+  end_unblocked: "§a§lThe portal seal is broken! You can return to the Overworld."
+
+# Bug #5 Fix: Spawn point management
+spawn:
+  saved: "§6Your spawn point has been saved."
+  forced_end: "§cYou respawned in The End. You are trapped here until the ritual is complete..."
+  restored: "§aYour original spawn point has been restored!"
+  restore_failed: "§cFailed to restore spawn point (world not found)."
+
+# Bug #2 Fix: Boss teleport messages
+boss:
+  teleported: "§c§lThe boss teleported behind you!"
+  proximity_warning: "§eThe boss senses your presence..."
+
+# Event messages (Bug #1 Fix: Missing EN translations)
+events:
+  wave_incoming: "§c§lSkeleton wave incoming! Defend until dawn!"
+  wave_survived: "§aYou survived the skeleton warrior wave!"
+
+# Achievement messages (Bug #1 Fix)
+achievements:
+  wave_survived: "§a§l✔ Achievement unlocked: Survivor"
+
+# Item localization - Complete story items
+items:
+  stabilization_core:
+    name: "Stabilization Core"
+    lore:
+      - "Ancient artifact capable of"
+      - "stabilizing portal connections"
+      - ""
+      - "✦ Found in chests of"
+      - "ruined portals"
+      - ""
+      - "▶ Drop (Q) on Obsidian block"
+      - "to activate portals to Nether"
+  
+  act1_skeleton_key:
+    name: "Skeleton Key"
+    lore:
+      - "Ancient key obtained from"
+      - "the Skeleton Lord"
+      - ""
+      - "✦ Opens the path to deeper"
+      - "mysteries"
+      - ""
+      - "▶ Use on the summoning altar"
+  
+  boss1_material:
+    name: "Boss 1 Material"
+    lore:
+      - "Crystallized essence of"
+      - "the defeated Skeleton Lord"
+      - ""
+      - "✦ Required for crafting summon key"
+      - ""
+      - "▶ Combine with Void Catalyst"
+  
+  boss1_catalyst:
+    name: "Void Catalyst"
+    lore:
+      - "Dark energy found deep within"
+      - "the Nether Bastion"
+      - ""
+      - "✦ Empowers summoning materials"
+      - ""
+      - "▶ Find in Bastion treasure room"
+  
+  boss1_summon_key:
+    name: "Boss 1 Summon Key"
+    lore:
+      - "Key capable of summoning"
+      - "the Skeleton Lord again"
+      - ""
+      - "✦ Crafted from Material and Catalyst"
+      - ""
+      - "▶ Use on summoning altar"
+  
+  boss2_structure_key:
+    name: "Boss 2 Structure Key"
+    lore:
+      - "Ancient key that opens the path"
+      - "to the final battle in the Nether"
+      - ""
+      - "✦ Obtained after defeating"
+      - "the Skeleton Lord"
+      - ""
+      - "▶ Find and activate the structure"
+  
+  overworld_portal_key:
+    name: "Overworld Portal Key"
+    lore:
+      - "Key that grants access"
+      - "to the portal to the Overworld"
+      - "from the depths of the Nether"
+      - ""
+      - "✦ Defeat the Nether Depths Fiend"
+      - "to obtain this key"
+      - ""
+      - "▶ Use to create a portal home"
+  
+  end_artifact_1:
+    name: "End Artifact - Eye of the Void"
+    lore:
+      - "First of five artifacts"
+      - "required to seal"
+      - "the Dark Lord"
+      - ""
+      - "✦ Find the remaining four"
+      - "in End cities"
+      - ""
+      - "▶ Collect all 5 for the ritual"
+  
+  end_artifact_2:
+    name: "End Artifact - Heart of Shadow"
+    lore:
+      - "Second of five artifacts"
+      - "required to seal"
+      - "the Dark Lord"
+      - ""
+      - "✦ Find the remaining three"
+      - "in End cities"
+      - ""
+      - "▶ Collect all 5 for the ritual"
+  
+  end_artifact_3:
+    name: "End Artifact - Wing of the Abyss"
+    lore:
+      - "Third of five artifacts"
+      - "required to seal"
+      - "the Dark Lord"
+      - ""
+      - "✦ Find the remaining two"
+      - "in End cities"
+      - ""
+      - "▶ Collect all 5 for the ritual"
+  
+  end_artifact_4:
+    name: "End Artifact - Claw of Night"
+    lore:
+      - "Fourth of five artifacts"
+      - "required to seal"
+      - "the Dark Lord"
+      - ""
+      - "✦ One more artifact remains!"
+      - "Search for it in End cities"
+      - ""
+      - "▶ Collect all 5 for the ritual"
+  
+  end_artifact_5:
+    name: "End Artifact - Crown of Oblivion"
+    lore:
+      - "Fifth and final artifact"
+      - "required to seal"
+      - "the Dark Lord"
+      - ""
+      - "✦ You have all five artifacts!"
+      - ""
+      - "▶ Begin the sealing ritual"
+

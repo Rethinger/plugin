@@ -74,14 +74,20 @@ public class MessageManager {
         FileConfiguration config = configCache.getOrDefault(lang, messagesRu);
         String message = config.getString(path);
         
-        // Fallback to Russian if not found
+        // Fallback to English if not found in requested language
+        if (message == null && !"en".equals(lang)) {
+            message = messagesEn.getString(path);
+        }
+        
+        // Fallback to Russian if not found in English
         if (message == null && !"ru".equals(lang)) {
             message = messagesRu.getString(path);
         }
         
-        // Final fallback
+        // Final fallback - return raw key with warning
         if (message == null) {
-            return "§c[Missing message: " + path + "]";
+            plugin.getLogger().warning("Missing localization key: " + path);
+            return path; // Return raw key instead of error message
         }
         
         return message;
@@ -101,6 +107,34 @@ public class MessageManager {
     }
     
     /**
+     * Get message list (e.g., for item lore) for player's language
+     */
+    public java.util.List<String> getMessageList(Player player, String path) {
+        String lang = getPlayerLanguage(player);
+        return getMessageList(lang, path);
+    }
+    
+    /**
+     * Get message list (e.g., for item lore) for specific language
+     */
+    public java.util.List<String> getMessageList(String lang, String path) {
+        FileConfiguration config = configCache.getOrDefault(lang, messagesRu);
+        java.util.List<String> list = config.getStringList(path);
+        
+        // Fallback to Russian if not found
+        if ((list == null || list.isEmpty()) && !"ru".equals(lang)) {
+            list = messagesRu.getStringList(path);
+        }
+        
+        // Final fallback - return empty list
+        if (list == null) {
+            return new java.util.ArrayList<>();
+        }
+        
+        return list;
+    }
+    
+    /**
      * Get player's language based on client locale
      */
     private String getPlayerLanguage(Player player) {
@@ -113,6 +147,27 @@ public class MessageManager {
         
         // Default to English
         return "en";
+    }
+    
+    /**
+     * Send message to player in their language
+     * @param player Player to send message to
+     * @param path Message key path
+     */
+    public void sendMessage(Player player, String path) {
+        String message = getMessage(player, path);
+        player.sendMessage(message);
+    }
+    
+    /**
+     * Send message with replacements to player
+     * @param player Player to send message to
+     * @param path Message key path
+     * @param replacements Placeholder replacements
+     */
+    public void sendMessage(Player player, String path, Map<String, String> replacements) {
+        String message = getMessage(player, path, replacements);
+        player.sendMessage(message);
     }
     
     /**

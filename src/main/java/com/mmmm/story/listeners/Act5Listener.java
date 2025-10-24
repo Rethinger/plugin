@@ -88,8 +88,9 @@ public class Act5Listener implements Listener {
         double distanceToCenter = chestLoc.distance(new Location(chestLoc.getWorld(), 0, chestLoc.getY(), 0));
         
         if (distanceToCenter > 100) {
-            player.sendMessage(Component.text("§c✗ Слишком далеко от центра Края! (расстояние: " + (int)distanceToCenter + "/100 блоков)")
-                    .color(NamedTextColor.RED));
+            String tooFarMsg = plugin.getMessageManager().getMessage(player, "act5.too_far");
+            tooFarMsg = tooFarMsg.replace("%distance%", String.valueOf((int)distanceToCenter));
+            player.sendMessage(Component.text(tooFarMsg).color(NamedTextColor.RED));
             return;
         }
         
@@ -123,8 +124,9 @@ public class Act5Listener implements Listener {
         
         if (foundAnyArtifact || countTotalArtifactsInRitualChests(chest.getWorld()) > 0) {
             int totalArtifacts = countTotalArtifactsInRitualChests(chest.getWorld());
-            player.sendMessage(Component.text("§d✦ Артефактов в ритуальных сундуках: " + totalArtifacts + "/5")
-                    .color(NamedTextColor.LIGHT_PURPLE));
+            String artifactsMsg = plugin.getMessageManager().getMessage(player, "act5.artifacts_count");
+            artifactsMsg = artifactsMsg.replace("%count%", String.valueOf(totalArtifacts));
+            player.sendMessage(Component.text(artifactsMsg).color(NamedTextColor.LIGHT_PURPLE));
             player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.2f);
         }
     }
@@ -223,11 +225,22 @@ public class Act5Listener implements Listener {
         // Mark final ritual as complete (allows END portal to spawn)
         plugin.getDataManager().setFinalRitualComplete(true);
         
+        // BUG #4 & #5 FIX: Complete ritual - unblock portal and restore spawn points
+        plugin.getDataManager().completeRitual();
+        
+        // BUG #5 FIX: Restore original spawn points for all players
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            restorePlayerSpawn(player);
+        }
+        
         World world = center.getWorld();
         
         // Broadcast
-        plugin.getServer().broadcast(Component.text("§5§l⚡ ВСЕ АРТЕФАКТЫ СОБРАНЫ! ⚡").color(NamedTextColor.DARK_PURPLE));
-        plugin.getServer().broadcast(Component.text("§d§l=== РИТУАЛ НАЧИНАЕТСЯ ===").color(NamedTextColor.LIGHT_PURPLE));
+        String allCollectedMsg = plugin.getMessageManager().getMessage("en", "act5.all_artifacts_collected");
+        String ritualStartMsg = plugin.getMessageManager().getMessage("en", "act5.ritual_starting");
+        
+        plugin.getServer().broadcast(Component.text(allCollectedMsg).color(NamedTextColor.DARK_PURPLE));
+        plugin.getServer().broadcast(Component.text(ritualStartMsg).color(NamedTextColor.LIGHT_PURPLE));
         plugin.getDialogManager().playDialogForAll("final.ritual_start");
         
         // Effects from each chest with artifact and DESTROY them
@@ -458,7 +471,8 @@ public class Act5Listener implements Listener {
             Location spawn = overworld.getSpawnLocation();
             
             player.teleport(spawn);
-            player.sendMessage(Component.text("§6Вы вернулись в Верхний Мир..."));
+            String returnedMsg = plugin.getMessageManager().getMessage(player, "act5.returned_overworld");
+            player.sendMessage(Component.text(returnedMsg));
             
             // Remove effects
             player.removePotionEffect(PotionEffectType.DARKNESS);
@@ -467,6 +481,9 @@ public class Act5Listener implements Listener {
             
             // Destroy portal
             destroyPersonalPortal(player.getUniqueId(), portalLoc);
+            
+            // Cleanup all NPCs (including any leftover tiny messenger NPCs)
+            plugin.getNPCManager().cleanup();
             
             // Play completion dialog
             plugin.getDialogManager().playDialogForAll("final.complete");
@@ -530,5 +547,44 @@ public class Act5Listener implements Listener {
         
         // Sound
         world.playSound(center, Sound.BLOCK_END_PORTAL_SPAWN, 3.0f, 0.5f);
+    }
+    
+    // ==========================================
+    // BUG #5 FIX: SPAWN POINT RESTORATION
+    // ==========================================
+    
+    /**
+     * Restore player's original spawn point after Act 5 ritual completion
+     * @param player Player to restore spawn for
+     */
+    private void restorePlayerSpawn(Player player) {
+        UUID playerId = player.getUniqueId();
+        
+        // Get saved original spawn
+        Location originalSpawn = plugin.getDataManager().getPlayerOriginalSpawn(playerId);
+        
+        if (originalSpawn != null) {
+            // Restore bed spawn location
+            player.setBedSpawnLocation(originalSpawn, true);
+            
+            // Clear trapped flag
+            plugin.getDataManager().setPlayerTrappedInEnd(playerId, false);
+            
+            // Clear saved spawn data
+            plugin.getDataManager().clearPlayerOriginalSpawn(playerId);
+            
+            // Send feedback message
+            plugin.getMessageManager().sendMessage(player, "spawn.restored");
+            
+            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                plugin.getLogger().info("Restored original spawn for " + player.getName() + " at " + 
+                    originalSpawn.getWorld().getName() + " " + originalSpawn.getBlockX() + "," + 
+                    originalSpawn.getBlockY() + "," + originalSpawn.getBlockZ());
+            }
+        } else {
+            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                plugin.getLogger().info("No saved spawn to restore for " + player.getName());
+            }
+        }
     }
 }
