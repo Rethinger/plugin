@@ -6,7 +6,7 @@
 
     <groupId>com.mmmm</groupId>
     <artifactId>story-plugin</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
     <packaging>jar</packaging>
 
     <name>Mmmm Story Plugin</name>
@@ -64,6 +64,32 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Localization Key Validation -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>validate-localization-keys</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>powershell</executable>
+                            <arguments>
+                                <argument>-ExecutionPolicy</argument>
+                                <argument>Bypass</argument>
+                                <argument>-File</argument>
+                                <argument>${project.basedir}\.specify\scripts\powershell\validate-localization-keys.ps1</argument>
+                                <argument>-Language</argument>
+                                <argument>ru</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

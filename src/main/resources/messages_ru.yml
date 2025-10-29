@@ -1,0 +1,304 @@
+# Russian localization
+# Формат: ключ: "текст"
+
+# General messages
+plugin.enabled: "&aПлагин сюжетной кампании загружен!"
+plugin.disabled: "&cПлагин сюжетной кампании выгружен!"
+plugin.reload: "&aКонфигурация перезагружена!"
+
+# Command messages
+commands.no_permission: "&cНедостаточно прав!"
+commands.player_only: "&cЭта команда доступна только игрокам!"
+commands.invalid_syntax: "&cНеверный синтаксис команды!"
+commands.player_not_found: "&cИгрок не найден!"
+
+# Story messages
+story.start: "&aСюжетная кампания запущена!"
+story.already_started: "&eКампания уже запущена!"
+story.act_progress: "&6Переход к акту {act}..."
+story.reset_all: "&aВсе данные сброшены!"
+story.reset_player: "&aПрогресс игрока {player} сброшен!"
+
+# Progress messages
+progress.header: "&6=== Прогресс: {player} ==="
+progress.act: "&eТекущий акт: {act}"
+progress.boss1: "&eBoss 1: {status}"
+progress.boss2: "&eBoss 2: {status}"
+progress.dragon: "&eДракон: {status}"
+progress.artifacts: "&eАртефактов: {count}/5"
+progress.achievements: "&eДостижений: {count}"
+progress.defeated: "&aПобеждён"
+progress.not_defeated: "&cНе побеждён"
+
+# Item messages
+items.kept_on_death: "&aВаши сюжетные предметы сохранены!"
+
+# Chest search messages
+chest:
+  search:
+    searching: "🔍 Обыск сундука..."
+    searching_item: "Искомый предмет: {0}"
+    found: "✓ НАЙДЕНО: {0}!"
+    success: "✓ УСПЕХ!"
+    nothing: "✗ В этом сундуке ничего не найдено ({0}/{1})"
+    broke: "✗ Сундук сломался после 3 неудачных попыток!"
+    cooldown: "✗ Этот сундук уже был обыскан недавно ({0} сек)"
+
+# Story items with detailed translations
+items:
+  stabilization_core:
+    name: "Ядро Стабилизации"
+    lore:
+      - "Древний артефакт, способный"
+      - "стабилизировать порталовые связи"
+      - ""
+      - "✦ Находится в сундуках"
+      - "разрушенных порталов"
+      - ""
+      - "▶ Выбросьте (Q) на блок Обсидиана,"
+      - "чтобы активировать порталы в Ад"
+  
+  act1_skeleton_key:
+    name: "Ключ Скелета"
+    lore:
+      - "Древний ключ, полученный от"
+      - "Повелителя Скелетов"
+      - ""
+      - "✦ Открывает путь к более"
+      - "глубоким тайнам"
+      - ""
+      - "▶ Используйте на алтаре призыва"
+  
+  boss1_material:
+    name: "Материал Босса №1"
+    lore:
+      - "Кристаллизованная сущность"
+      - "поверженного Повелителя Скелетов"
+      - ""
+      - "✦ Требуется для создания ключа призыва"
+      - ""
+      - "▶ Скомбинируйте с Катализатором Пустоты"
+  
+  boss1_catalyst:
+    name: "Катализатор Пустоты"
+    lore:
+      - "Темная энергия, найденная глубоко"
+      - "в Бастионе Незера"
+      - ""
+      - "✦ Усиливает призывные материалы"
+      - ""
+      - "▶ Найдите в сокровищнице Бастиона"
+  
+  boss1_summon_key:
+    name: "Ключ Призыва Босса №1"
+    lore:
+      - "Ключ, способный призвать"
+      - "Повелителя Скелетов вновь"
+      - ""
+      - "✦ Создан из Материала и Катализатора"
+      - ""
+      - "▶ Используйте на алтаре призыва"
+  
+  boss2_structure_key:
+    name: "Ключ Структуры Босса №2"
+    lore:
+      - "Древний ключ, открывающий путь"
+      - "к финальной битве в Незере"
+      - ""
+      - "✦ Получен после победы над"
+      - "Повелителем Скелетов"
+      - ""
+      - "▶ Найдите и активируйте структуру"
+  
+  overworld_portal_key:
+    name: "Ключ Портала Верхнего Мира"
+    lore:
+      - "Ключ, открывающий доступ"
+      - "к порталу в Верхний Мир"
+      - "из глубин Незера"
+      - ""
+      - "✦ Победите Изверга Глубин Незера"
+      - "чтобы получить этот ключ"
+      - ""
+      - "▶ Используйте для создания портала домой"
+  
+  end_artifact_1:
+    name: "Артефакт Края - Око Пустоты"
+    lore:
+      - "Первый из пяти артефактов,"
+      - "необходимых для запечатывания"
+      - "Тёмного Владыки"
+      - ""
+      - "✦ Найдите остальные четыре"
+      - "в городах Края"
+      - ""
+      - "▶ Соберите все 5 для ритуала"
+  
+  end_artifact_2:
+    name: "Артефакт Края - Сердце Тени"
+    lore:
+      - "Второй из пяти артефактов,"
+      - "необходимых для запечатывания"
+      - "Тёмного Владыки"
+      - ""
+      - "✦ Найдите остальные три"
+      - "в городах Края"
+      - ""
+      - "▶ Соберите все 5 для ритуала"
+  
+  end_artifact_3:
+    name: "Артефакт Края - Крыло Бездны"
+    lore:
+      - "Третий из пяти артефактов,"
+      - "необходимых для запечатывания"
+      - "Тёмного Владыки"
+      - ""
+      - "✦ Найдите остальные два"
+      - "в городах Края"
+      - ""
+      - "▶ Соберите все 5 для ритуала"
+  
+  end_artifact_4:
+    name: "Артефакт Края - Коготь Ночи"
+    lore:
+      - "Четвёртый из пяти артефактов,"
+      - "необходимых для запечатывания"
+      - "Тёмного Владыки"
+      - ""
+      - "✦ Остался последний артефакт!"
+      - "Ищите его в городах Края"
+      - ""
+      - "▶ Соберите все 5 для ритуала"
+  
+  end_artifact_5:
+    name: "Артефакт Края - Корона Забвения"
+    lore:
+      - "Пятый и последний артефакт,"
+      - "необходимый для запечатывания"
+      - "Тёмного Владыки"
+      - ""
+      - "✦ У вас есть все пять артефактов!"
+      - ""
+      - "▶ Начните ритуал запечатывания"
+
+# Event messages
+events.wave_incoming: "&c&lВолна скелетов приближается!"
+events.wave_complete: "&aВолна отбита!"
+events.altar_activated: "&dАлтарь активирован!"
+events.node_activated: "&6Узел Перекрёстков активирован!"
+events.boss_summoned: "&4&lБосс призван!"
+events.boss_defeated: "&a&lБосс повержен!"
+events.dragon_defeated: "&5&lДракон Края побеждён!"
+events.artifact_placed: "&dАртефакт {number}/5 размещён!"
+events.ritual_started: "&5&lРИТУАЛ НАЧИНАЕТСЯ..."
+events.story_complete: "&6&l=== ИСТОРИЯ ЗАВЕРШЕНА ==="
+
+# Portal messages (plural for general portal system)
+portals.nether_blocked: "&cПортал в Ад нестабилен! Требуется активация Узла Перекрёстков."
+portals.end_blocked: "&cПортал в Край закрыт! Требуется победить второго босса."
+portals.nether_enabled: "&aПорталы в Ад активированы!"
+portals.end_enabled: "&aПорталы в Край активированы!"
+portals.end_protected: "&c&l⚠ Нельзя размещать блоки возле защищённого портала в Край!"
+# Bug #4 Fix: Portal blocking during Acts 4-5
+portals.end_trapped: "&c&lВЫ ЗАПЕРТЫ В КРАЮ! Портал запечатан Тёмным Владыкой."
+portals.end_trapped_hint: "&eЗавершите ритуал запечатывания, чтобы освободиться..."
+portals.end_unblocked: "&a&lПечать с портала снята! Вы можете вернуться в Верхний Мир."
+
+# Portal messages (singular for specific portal interactions)
+portal.end_opened: "§a§lПортал в Край открылся!"
+portal.end_instruction: "§eВойдите в портал, чтобы продолжить сюжет..."
+
+# Bug #5 Fix: Spawn point management
+spawn.saved: "&6Ваша точка возрождения сохранена."
+spawn.forced_end: "&cВы возродились в Краю. Вы заперты здесь до завершения ритуала..."
+spawn.restored: "&aВаша исходная точка возрождения восстановлена!"
+spawn.restore_failed: "&cНе удалось восстановить точку возрождения (мир не найден)."
+
+# Bug #2 Fix: Boss teleport messages
+boss.teleported: "&c&lБосс телепортировался позади вас!"
+boss.proximity_warning: "&eБосс чувствует вашу близость..."
+
+# Boss 1 messages
+boss1:
+  wither_skull_attack:
+    warning: "§5§l⚡ Повелитель готовит разрушительную атаку!"
+  defeated_first: "§a§lПОВЕЛИТЕЛЬ СКЕЛЕТОВ ПОВЕРЖЕН! Катализатор получен."
+  defeated_again: "§e§lПовелитель снова побеждён. Прогресс продолжается..."
+  wall_rage_feel: "§c§lВы чувствуете ярость Повелителя, разрушающего стены!"
+  pull: "§c§lПовелитель притягивает вас к себе!"
+  cowardice: "§c§lПовелитель карает вас за трусость!"
+
+# Achievement messages
+achievements.crossroads_linked: "&6Достижение получено: &eУзел Связан"
+achievements.boss1_defeated: "&6Достижение получено: &eПовелитель Повержен"
+achievements.boss2_defeated: "&6Достижение получено: &eИзверг Побеждён"
+achievements.dragon_slayer: "&6Достижение получено: &eУбийца Драконов"
+achievements.artifact_hunter: "&6Достижение получено: &eОхотник за Артефактами"
+achievements.story_complete: "&6Достижение получено: &eЛегенда"
+
+# Act 1 messages
+act1.crossroads_activated: "§6§lУзел Перекрёстков активирован!"
+act1.portals_enabled: "§aПорталы в Ад теперь доступны для путешествий."
+
+# Act 5 messages
+act5.too_far: "§c§lВы слишком далеко от ритуального круга!"
+act5.artifacts_count: "§d§lАртефактов размещено: {0}/5"
+act5.all_artifacts_collected: "§5§l⚡ ВСЕ АРТЕФАКТЫ СОБРАНЫ! Ритуал готов к запуску..."
+act5.ritual_starting: "§5§l⚡ РИТУАЛ ЗАПЕЧАТЫВАНИЯ НАЧИНАЕТСЯ..."
+act5.returned_overworld: "§a§lВы вернулись в Верхний Мир. Ритуал завершён."
+
+# Error messages
+errors.structure_not_found: "&cСтруктура не найдена!"
+errors.invalid_location: "&cНеверная локация!"
+errors.boss_already_spawned: "&cБосс уже призван!"
+errors.not_enough_artifacts: "&cНедостаточно артефактов! ({count}/5)"
+errors.artifacts_must_be_together: "&cАртефакты должны быть размещены вместе!"
+
+# Direction marker messages
+marker.received: "&6Вы получили метку направления! (Действует 5 минут)"
+marker.expired: "&eМетка направления исчезла..."
+marker.active: "&6Направление: {direction}"
+
+# NPC messages
+npc.messenger.greeting: "&6Приветствую, странник..."
+npc.messenger.warning: "&cБудьте готовы к испытаниям..."
+npc.messenger.hint: "&eИщите Разрушенный Портал..."
+
+# Debug messages
+debug.teleport_unavailable: "&eТелепортация недоступна (структура не создана)"
+debug.structure_placed: "&aСтруктура {structure} размещена в {location}"
+debug.boss_spawned: "&aБосс {boss} создан в {location}"
+
+# Language Selection Menu (deprecated - plugin now Russian-only)
+menu:
+  language:
+    title: "§6§lВыбор языка"
+    russian: "§a§lРусский"
+    russian_lore1: "§7Переключить интерфейс на русский язык"
+    russian_lore2: "§7§oНажмите, чтобы выбрать"
+    english: "§f§lEnglish"
+    english_lore1: "§7Switch interface to English"
+    english_lore2: "§7§oClick to select"
+    changed_to_ru: "§aЯзык изменён на русский!"
+    changed_to_en: "§aLanguage changed to English!"
+
+# Unified Menu System (v1.4.0+)
+  main:
+    title: "§6Меню плагина Mmmm"
+    settings: "§eНастройки"
+    story: "§6Начать/Продолжить сюжет"
+    info: "§bИнформация"
+    close: "§cЗакрыть"
+  settings:
+    title: "§6Настройки"
+    speed: "§eСкорость диалогов: %speed%"
+    display: "§eРежим отображения: %mode%"
+    back: "§7Назад"
+  info:
+    title: "§6Информация"
+    version: "§7Версия: 1.4.0"
+    author: "§7Автор: Rethinger"
+    back: "§7Назад"
+  blocked:
+    combat: "§cНельзя открыть меню во время боя!"
+    dialog: "§cНельзя открыть меню во время диалога!"

@@ -1,0 +1,225 @@
+﻿{
+    "summary":  {
+                    "totalKeysFound":  48,
+                    "validKeys":  17,
+                    "missingSecondary":  17,
+                    "missingPrimary":  15
+                },
+    "missingPrimary":  [
+                           {
+                               "key":  "act5.too_far",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act5Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "act5.all_artifacts_collected",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act5Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "act5.ritual_starting",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act5Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "act5.artifacts_count",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act5Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "portal.end_instruction",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\PortalListener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "act1.portals_enabled",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act1Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "boss1.defeated_first",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act2Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "boss1.wall_rage_feel",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act2Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "act5.returned_overworld",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act5Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "act1.crossroads_activated",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act1Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "boss1.pull",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act2Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "boss1.cowardice",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act2Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "boss1.defeated_again",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act2Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "portals.end_protected",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\Act3Listener.java"
+                                         ]
+                           },
+                           {
+                               "key":  "portal.end_opened",
+                               "files":  [
+                                             "src\\main\\java\\com\\mmmm\\story\\listeners\\PortalListener.java"
+                                         ]
+                           }
+                       ],
+    "missingSecondary":  [
+                             {
+                                 "key":  "menu.main.info",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.info.title",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.settings.display",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "items.kept_on_death",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\listeners\\LocaleChangeListener.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.info.back",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.main.title",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.blocked.dialog",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.settings.speed",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.settings.back",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "commands.player_only",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\commands\\StoryCommand.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.main.close",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.blocked.combat",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.main.story",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.settings.title",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "portals.end_protected",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\listeners\\Act3Listener.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.main.settings",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             },
+                             {
+                                 "key":  "menu.info.version",
+                                 "files":  [
+                                               "src\\main\\java\\com\\mmmm\\story\\managers\\MenuManager.java"
+                                           ]
+                             }
+                         ],
+    "validKeys":  [
+                      "chest.search.cooldown",
+                      "chest.search.nothing",
+                      "menu.language.changed_to_en",
+                      "boss1.wither_skull_attack.warning",
+                      "chest.search.searching",
+                      "menu.language.title",
+                      "menu.language.english_lore1",
+                      "menu.language.changed_to_ru",
+                      "chest.search.broke",
+                      "chest.search.success",
+                      "chest.search.searching_item",
+                      "chest.search.found",
+                      "menu.language.russian_lore1",
+                      "menu.language.russian",
+                      "menu.language.english_lore2",
+                      "menu.language.russian_lore2",
+                      "menu.language.english"
+                  ]
+}
+
+[FAILED] Missing primary language keys

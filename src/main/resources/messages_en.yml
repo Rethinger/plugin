@@ -1,6 +1,11 @@
 # ================================
 # SYSTEM MESSAGES (ENGLISH)
 # ================================
+# 
+# DEPRECATED: This file is deprecated as of v1.4.0 and will be removed in v1.5.0
+# The plugin now exclusively supports Russian language.
+# This file is kept for backwards compatibility only.
+# ================================
 
 # NPC
 npc:
@@ -245,4 +250,49 @@ items:
       - "✦ You have all five artifacts!"
       - ""
       - "▶ Begin the sealing ritual"
+
+# Language Selection Menu
+menu:
+  language:
+    title: "§6§lLanguage Selection"
+    russian: "§a§lРусский"
+    russian_lore1: "§7Switch interface to Russian"
+    russian_lore2: "§7§oClick to select"
+    english: "§f§lEnglish"
+    english_lore1: "§7Switch interface to English"
+    english_lore2: "§7§oClick to select"
+    changed_to_ru: "§aЯзык изменён на русский!"
+    changed_to_en: "§aLanguage changed to English!"
+  
+  # Unified Menu System (v1.4.0+)
+  main:
+    title: "§6Mmmm Plugin Menu"
+    settings: "§eSettings"
+    story: "§6Start/Continue Story"
+    info: "§bInformation"
+    close: "§cClose"
+  
+  settings:
+    title: "§6Settings"
+    speed: "§eDialog speed: %speed%"
+    display: "§eDisplay mode: %mode%"
+    back: "§7Back"
+  
+  info:
+    title: "§6Information"
+    version: "§7Version: 1.4.0"
+    back: "§7Back"
+  
+  blocked:
+    combat: "§cCannot open menu during combat!"
+    dialog: "§cCannot open menu during dialog!"
+
+# Commands
+commands.player_only: "§cThis command is only available to players!"
+
+# Items
+items.kept_on_death: "§aYour story items have been preserved!"
+
+# Portals
+portals.end_protected: "§c&l⚠ Cannot place blocks near the protected End portal!"
 

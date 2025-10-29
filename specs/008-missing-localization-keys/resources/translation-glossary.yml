@@ -1,0 +1,79 @@
+# Translation Glossary for ServerStoryPlugin
+# Version: 1.0.0
+# Feature: 008-missing-localization-keys
+# Language Pair: Russian (primary) ↔ English (secondary)
+
+# Core Game Concepts
+terms:
+  # Chest Search Feature
+  - term: "chest search"
+    ru: "поиск в сундуке"
+    en: "chest search"
+    context: "Feature for searching items in chests"
+    
+  - term: "searching"
+    ru: "поиск"
+    en: "searching"
+    context: "Action of searching"
+    
+  - term: "nothing found"
+    ru: "ничего не найдено"
+    en: "nothing found"
+    context: "No results from search"
+
+  # Item Names
+  - term: "stabilization core"
+    ru: "ядро стабилизации"
+    en: "stabilization core"
+    context: "Critical quest item"
+    
+  - term: "energy cell"
+    ru: "энергоячейка"
+    en: "energy cell"
+    context: "Power source item"
+    
+  - term: "control chip"
+    ru: "управляющий чип"
+    en: "control chip"
+    context: "Electronic component"
+
+  # UI Elements
+  - term: "click to"
+    ru: "нажмите для"
+    en: "click to"
+    context: "UI instruction prefix"
+    
+  - term: "hover text"
+    ru: "подсказка"
+    en: "tooltip"
+    context: "Hover information"
+
+  # Status Messages
+  - term: "success"
+    ru: "успешно"
+    en: "success"
+    context: "Operation completed"
+    
+  - term: "error"
+    ru: "ошибка"
+    en: "error"
+    context: "Operation failed"
+    
+  - term: "warning"
+    ru: "предупреждение"
+    en: "warning"
+    context: "Cautionary message"
+
+# Naming Conventions
+conventions:
+  key_format: "category.subcategory.action"
+  russian_style: "formal, game-appropriate, no slang"
+  english_style: "clear, concise, standard game terminology"
+  
+# Translation Notes
+notes:
+  - "Russian is the primary language - must be complete and high quality"
+  - "English translations should be literal where possible"
+  - "Game-specific terms should remain consistent across all features"
+  - "Item names should match in-game item display names exactly"
+  - "UI messages should be concise - limited screen space"
