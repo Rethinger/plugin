@@ -28,19 +28,17 @@ public class ConfigManager {
         // Save default configs if they don't exist
         plugin.saveDefaultConfig();
         saveResourceIfNotExists("dialogs.yml");
-        saveResourceIfNotExists("dialogs_en.yml");
         saveResourceIfNotExists("sounds.yml");
-        saveResourceIfNotExists("messages_ru.yml");
+        saveResourceIfNotExists("messages.yml");
         
         // Load configurations
         config = plugin.getConfig();
         dialogs = loadConfig("dialogs.yml");
         sounds = loadConfig("sounds.yml");
-        messages = loadConfig("messages_ru.yml");
+        messages = loadConfig("messages.yml");
         
-        // Load dialog files for different languages
-        dialogsByLanguage.put("ru", loadConfig("dialogs.yml"));
-        dialogsByLanguage.put("en", loadConfig("dialogs_en.yml"));
+        // Load dialog files for different languages (Russian only)
+        dialogsByLanguage.put("ru", dialogs);
         
         configs.put("config", config);
         configs.put("dialogs", dialogs);

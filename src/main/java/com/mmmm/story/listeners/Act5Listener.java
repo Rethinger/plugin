@@ -236,8 +236,8 @@ public class Act5Listener implements Listener {
         World world = center.getWorld();
         
         // Broadcast
-        String allCollectedMsg = plugin.getMessageManager().getMessage("en", "act5.all_artifacts_collected");
-        String ritualStartMsg = plugin.getMessageManager().getMessage("en", "act5.ritual_starting");
+        String allCollectedMsg = plugin.getMessageManager().getMessage("ru", "act5.all_artifacts_collected");
+        String ritualStartMsg = plugin.getMessageManager().getMessage("ru", "act5.ritual_starting");
         
         plugin.getServer().broadcast(Component.text(allCollectedMsg).color(NamedTextColor.DARK_PURPLE));
         plugin.getServer().broadcast(Component.text(ritualStartMsg).color(NamedTextColor.LIGHT_PURPLE));
@@ -471,8 +471,7 @@ public class Act5Listener implements Listener {
             Location spawn = overworld.getSpawnLocation();
             
             player.teleport(spawn);
-            String returnedMsg = plugin.getMessageManager().getMessage(player, "act5.returned_overworld");
-            player.sendMessage(Component.text(returnedMsg));
+            player.sendMessage(Component.text(plugin.getMessageManager().getMessage(player, "act5.returned_overworld")));
             
             // Remove effects
             player.removePotionEffect(PotionEffectType.DARKNESS);
@@ -574,16 +573,14 @@ public class Act5Listener implements Listener {
             plugin.getDataManager().clearPlayerOriginalSpawn(playerId);
             
             // Send feedback message
-            plugin.getMessageManager().sendMessage(player, "spawn.restored");
+            player.sendMessage(Component.text(plugin.getMessageManager().getMessage(player, "spawn.restored")));
             
             if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-                plugin.getLogger().info("Restored original spawn for " + player.getName() + " at " + 
-                    originalSpawn.getWorld().getName() + " " + originalSpawn.getBlockX() + "," + 
-                    originalSpawn.getBlockY() + "," + originalSpawn.getBlockZ());
+                plugin.getLogger().info(plugin.getMessageManager().getMessage("log.spawn_restored").replace("%player%", player.getName()).replace("%world%", originalSpawn.getWorld().getName()).replace("%x%", String.valueOf(originalSpawn.getBlockX())).replace("%y%", String.valueOf(originalSpawn.getBlockY())).replace("%z%", String.valueOf(originalSpawn.getBlockZ())));
             }
         } else {
             if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-                plugin.getLogger().info("No saved spawn to restore for " + player.getName());
+                plugin.getLogger().info(plugin.getMessageManager().getMessage("log.spawn_restore_failed").replace("%player%", player.getName()));
             }
         }
     }

@@ -36,23 +36,12 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         switch (subCommand) {
             case "start":
                 return handleStart(sender);
-            case "skip":
-                return handleSkip(sender, args);
-            case "reset":
-                return handleReset(sender, args);
-            case "progress":
-                return handleProgress(sender, args);
-            case "tp":
-                return handleTeleport(sender, args);
-            case "reload":
-                return handleReload(sender);
             case "give":
                 return handleGive(sender, args);
             case "debug":
                 return handleDebug(sender);
             case "continue":
                 return handleContinue(sender);
-            case "settings":
             case "menu":
                 return handleSettings(sender);
             default:
@@ -63,7 +52,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
     
     private boolean handleContinue(CommandSender sender) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Эту команду может использовать только игрок!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.player_only")).color(NamedTextColor.RED));
             return true;
         }
         
@@ -71,7 +60,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         boolean success = plugin.getDialogManager().continueDialog(player);
         
         if (!success) {
-            player.sendMessage(Component.text("Нет активного диалога для продолжения.").color(NamedTextColor.YELLOW));
+            player.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.no_active_dialog")).color(NamedTextColor.YELLOW));
         }
         
         return true;
@@ -79,174 +68,48 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
     
     private boolean handleSettings(CommandSender sender) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Эту команду может использовать только игрок!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.player_only")).color(NamedTextColor.RED));
             return true;
         }
         
         Player player = (Player) sender;
-        plugin.getSettingsManager().openSettingsMenu(player);
+        plugin.getMenuManager().openStoryMenu(player);
         return true;
     }
     
     private boolean handleStart(CommandSender sender) {
         if (!sender.hasPermission("story.admin")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.insufficient_permissions")).color(NamedTextColor.RED));
             return true;
         }
         
-        // Start campaign with player waiting system
-        plugin.getSettingsManager().startCampaignWithSettings();
-        sender.sendMessage(Component.text("Запуск кампании... Ожидание настройки игроков.").color(NamedTextColor.YELLOW));
-        return true;
-    }
-    
-    private boolean handleSkip(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("story.admin")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
+        // Check if campaign is already started
+        if (plugin.getDataManager().getCurrentAct() > 1) {
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.campaign_already_started")).color(NamedTextColor.RED));
             return true;
         }
         
-        if (args.length < 2) {
-            sender.sendMessage(Component.text("Использование: /story skip <act>").color(NamedTextColor.RED));
-            return true;
+        // Reset all players' ready status
+        plugin.getDataManager().resetAllReadyStatus();
+        
+        // Open server start menu for all online players
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            plugin.getMenuManager().openServerStartMenu(player);
         }
         
-        try {
-            int act = Integer.parseInt(args[1]);
-            plugin.getActManager().progressToAct(act);
-            sender.sendMessage(Component.text("Перешли к акту " + act).color(NamedTextColor.GREEN));
-        } catch (NumberFormatException e) {
-            sender.sendMessage(Component.text("Неверный номер акта!").color(NamedTextColor.RED));
-        }
-        
-        return true;
-    }
-    
-    private boolean handleReset(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("story.admin")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
-            return true;
-        }
-        
-        if (args.length < 2) {
-            sender.sendMessage(Component.text("Использование: /story reset <all|world|player <имя>>").color(NamedTextColor.RED));
-            return true;
-        }
-        
-        String resetType = args[1].toLowerCase();
-        
-        switch (resetType) {
-            case "all":
-                plugin.getDataManager().resetAll();
-                sender.sendMessage(Component.text("Все данные сброшены!").color(NamedTextColor.GREEN));
-                break;
-            case "world":
-                plugin.getDataManager().resetAll();
-                sender.sendMessage(Component.text("Данные мира сброшены!").color(NamedTextColor.GREEN));
-                break;
-            case "player":
-                if (args.length < 3) {
-                    sender.sendMessage(Component.text("Укажите имя игрока!").color(NamedTextColor.RED));
-                    return true;
-                }
-                Player target = Bukkit.getPlayer(args[2]);
-                if (target == null) {
-                    sender.sendMessage(Component.text("Игрок не найден!").color(NamedTextColor.RED));
-                    return true;
-                }
-                plugin.getDataManager().resetPlayer(target.getUniqueId());
-                sender.sendMessage(Component.text("Прогресс игрока " + target.getName() + " сброшен!").color(NamedTextColor.GREEN));
-                break;
-            default:
-                sender.sendMessage(Component.text("Неизвестный тип сброса!").color(NamedTextColor.RED));
-        }
-        
-        return true;
-    }
-    
-    private boolean handleProgress(CommandSender sender, String[] args) {
-        Player target;
-        
-        if (args.length >= 2) {
-            if (!sender.hasPermission("story.progress.view")) {
-                sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
-                return true;
-            }
-            target = Bukkit.getPlayer(args[1]);
-            if (target == null) {
-                sender.sendMessage(Component.text("Игрок не найден!").color(NamedTextColor.RED));
-                return true;
-            }
-        } else {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(Component.text("Только игроки могут использовать эту команду!").color(NamedTextColor.RED));
-                return true;
-            }
-            target = (Player) sender;
-        }
-        
-        showProgress(sender, target);
-        return true;
-    }
-    
-    private void showProgress(CommandSender sender, Player target) {
-        int currentAct = plugin.getDataManager().getCurrentAct();
-        boolean boss1 = plugin.getDataManager().isBoss1Defeated();
-        boolean boss2 = plugin.getDataManager().isBoss2Defeated();
-        boolean dragon = plugin.getDataManager().isDragonDefeated();
-        int artifacts = plugin.getDataManager().getArtifactsCollected();
-        
-        List<String> achievements = plugin.getDataManager().getPlayerAchievements(target.getUniqueId());
-        
-        sender.sendMessage(Component.text("=== Прогресс игрока " + target.getName() + " ===").color(NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("Текущий акт: " + currentAct).color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("Босс 1: " + (boss1 ? "Побежден" : "Не побежден")).color(boss1 ? NamedTextColor.GREEN : NamedTextColor.RED));
-        sender.sendMessage(Component.text("Босс 2: " + (boss2 ? "Побежден" : "Не побежден")).color(boss2 ? NamedTextColor.GREEN : NamedTextColor.RED));
-        sender.sendMessage(Component.text("Дракон: " + (dragon ? "Побежден" : "Не побежден")).color(dragon ? NamedTextColor.GREEN : NamedTextColor.RED));
-        sender.sendMessage(Component.text("Артефактов собрано: " + artifacts + "/5").color(NamedTextColor.AQUA));
-        sender.sendMessage(Component.text("Достижений: " + achievements.size()).color(NamedTextColor.LIGHT_PURPLE));
-    }
-    
-    private boolean handleTeleport(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("story.debug")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
-            return true;
-        }
-        
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(Component.text("Только игроки могут использовать эту команду!").color(NamedTextColor.RED));
-            return true;
-        }
-        
-        if (args.length < 2) {
-            sender.sendMessage(Component.text("Использование: /story tp <structure|boss1|boss2|final>").color(NamedTextColor.RED));
-            return true;
-        }
-        
-        sender.sendMessage(Component.text("Телепортация недоступна (структура не создана)").color(NamedTextColor.YELLOW));
-        return true;
-    }
-    
-    private boolean handleReload(CommandSender sender) {
-        if (!sender.hasPermission("story.admin")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
-            return true;
-        }
-        
-        plugin.reload();
-        sender.sendMessage(Component.text("Конфигурация перезагружена!").color(NamedTextColor.GREEN));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.readiness_menu_opened")).color(NamedTextColor.GREEN));
         return true;
     }
     
     private boolean handleGive(CommandSender sender, String[] args) {
         if (!sender.hasPermission("story.admin")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.insufficient_permissions")).color(NamedTextColor.RED));
             return true;
         }
         
         if (args.length < 3) {
-            sender.sendMessage(Component.text("Использование: /story give <игрок> <предмет>").color(NamedTextColor.RED));
-            sender.sendMessage(Component.text("Доступные предметы:").color(NamedTextColor.YELLOW));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.give_usage")).color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.available_items")).color(NamedTextColor.YELLOW));
             sender.sendMessage(Component.text("- stabilization_core (Ядро стабилизации)").color(NamedTextColor.GRAY));
             sender.sendMessage(Component.text("- boss1_summon_key (Ключ призыва Босса 1)").color(NamedTextColor.GRAY));
             sender.sendMessage(Component.text("- boss1_material (Фрагмент Гнева)").color(NamedTextColor.GRAY));
@@ -263,7 +126,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            sender.sendMessage(Component.text("Игрок не найден!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.player_not_found")).color(NamedTextColor.RED));
             return true;
         }
         
@@ -284,47 +147,41 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         };
         
         if (fullItemId == null) {
-            sender.sendMessage(Component.text("Неизвестный предмет: " + itemId).color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.unknown_item").replace("%item%", itemId)).color(NamedTextColor.RED));
             return true;
         }
         
         ItemStack item = plugin.getItemManager().createStoryItem(fullItemId);
         if (item == null) {
-            sender.sendMessage(Component.text("Ошибка создания предмета!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.item_creation_error")).color(NamedTextColor.RED));
             return true;
         }
         
         target.getInventory().addItem(item);
-        sender.sendMessage(Component.text("Предмет " + itemId + " выдан игроку " + target.getName()).color(NamedTextColor.GREEN));
-        target.sendMessage(Component.text("Вы получили сюжетный предмет!").color(NamedTextColor.GOLD));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.item_give_success").replace("%item%", itemId).replace("%player%", target.getName())).color(NamedTextColor.GREEN));
+        target.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.item_give_receiver")).color(NamedTextColor.GOLD));
         
         return true;
     }
     
     private boolean handleDebug(CommandSender sender) {
         if (!sender.hasPermission("story.admin")) {
-            sender.sendMessage(Component.text("Недостаточно прав!").color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.insufficient_permissions")).color(NamedTextColor.RED));
             return true;
         }
         
-        sender.sendMessage(Component.text("=== Story Plugin Debug Info ===").color(NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("Tracked player-placed blocks: " + 
-            com.mmmm.story.managers.PlayerPlacedBlocksManager.getTrackedBlocksCount()).color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.debug_info_header")).color(NamedTextColor.GOLD));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.debug_tracked_blocks").replace("%count%", String.valueOf(com.mmmm.story.managers.PlayerPlacedBlocksManager.getTrackedBlocksCount()))).color(NamedTextColor.YELLOW));
         
         return true;
     }
     
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(Component.text("=== Story Plugin Commands ===").color(NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("/story start - Запустить кампанию").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story settings - Открыть меню настроек").color(NamedTextColor.GREEN));
-        sender.sendMessage(Component.text("/story skip <act> - Перейти к акту").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story reset <all|world|player <имя>> - Сбросить прогресс").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story progress [игрок] - Показать прогресс").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story give <игрок> <предмет> - Выдать предмет").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story tp <location> - Телепорт (отладка)").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story reload - Перезагрузить конфигурацию").color(NamedTextColor.YELLOW));
-        sender.sendMessage(Component.text("/story debug - Показать отладочную информацию").color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_header")).color(NamedTextColor.GOLD));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_start")).color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_menu")).color(NamedTextColor.GREEN));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_give")).color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_debug")).color(NamedTextColor.YELLOW));
     }
     
     @Override
@@ -332,18 +189,9 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
         
         if (args.length == 1) {
-            completions.addAll(Arrays.asList("start", "settings", "menu", "skip", "reset", "progress", "give", "tp", "reload", "debug"));
+            completions.addAll(Arrays.asList("start", "menu", "give", "debug"));
         } else if (args.length == 2) {
             switch (args[0].toLowerCase()) {
-                case "skip":
-                    completions.addAll(Arrays.asList("1", "2", "3", "4", "5"));
-                    break;
-                case "reset":
-                    completions.addAll(Arrays.asList("all", "world", "player"));
-                    break;
-                case "tp":
-                    completions.addAll(Arrays.asList("structure", "boss1", "boss2", "final"));
-                    break;
                 case "give":
                     // Add online player names
                     for (Player p : Bukkit.getOnlinePlayers()) {

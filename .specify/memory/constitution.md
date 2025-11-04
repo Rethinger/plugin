@@ -1,21 +1,17 @@
 <!--
 Sync Impact Report - Constitution Update
 =========================================
-Version Change: Initial creation → 1.0.0
-Modified Principles: N/A (initial creation)
-Added Sections:
-  - Core Principles (7 principles established)
-  - Technology Stack Requirements
-  - Architecture and Code Organization
-  - Data Management Standards
-  - Development Workflow
-  - Governance
+Version Change: 1.0.1 → 1.1.0
+Modified Principles:
+  - Command Development: Removed several admin and debug commands.
+  - Player Settings: Removed language selection to simplify player experience.
+Added Sections: N/A
 Removed Sections: N/A
 Templates Requiring Updates:
-  ✅ Updated: .specify/templates/plan-template.md - Constitution Check section aligns with 7 principles
-  ✅ Updated: .specify/templates/spec-template.md - Testing requirements align with Test-First principle
-  ✅ Updated: .specify/templates/tasks-template.md - Task categorization reflects architecture principles
-Follow-up TODOs: None - all placeholders filled
+  ✅ Verified: .specify/templates/plan-template.md - No changes needed.
+  ✅ Verified: .specify/templates/spec-template.md - No changes needed.
+  ✅ Verified: .specify/templates/tasks-template.md - No changes needed.
+Follow-up TODOs: None
 =========================================
 -->
 
@@ -95,7 +91,7 @@ MmmmStoryPlugin (singleton)
 
 ### V. Localization-First Message Design
 
-**Rule**: ZERO hardcoded user-facing strings in Java code. All messages MUST route through `MessageManager` with language-specific YAML files.
+**Rule**: ZERO hardcoded user-facing strings in Java code. All messages MUST route through `MessageManager`.
 
 **Implementation**:
 ```java
@@ -106,21 +102,17 @@ messageManager.sendMessage(player, "portal.nether.blocked");
 player.sendMessage("§cThe Nether Portal is sealed!");
 ```
 
-**Supported Languages**: Russian (ru), English (en)
-
 **Rationale**:
-- Global audience support without code changes
 - Centralized text management (non-programmers can translate)
 - A/B testing message variants
 - Consistency (no mixed formatting across codebase)
 
 ### VI. Dialog System with Personalization
 
-**Rule**: All narrative sequences MUST use `DialogManager.playDialog()`. Dialogs MUST support per-player customization (language, speed, display method).
+**Rule**: All narrative sequences MUST use `DialogManager.playDialog()`. Dialogs MUST support per-player customization (speed, display method).
 
 **Features**:
 - Multi-line timed sequences with sound effects
-- Per-player language selection
 - Configurable speed (50/100/150ms per character)
 - Display modes: ActionBar, Title, Hologram (future)
 - PotionEffect integration for ambiance
@@ -277,16 +269,15 @@ nights_elapsed: 0
 **Schema**:
 ```yaml
 settings:
-  language: "ru"  # "ru" | "en"
   dialogSpeed: 100  # 50 (fast) | 100 (normal) | 150 (slow)
   showDialogs: true
 
-stats:  # Future expansion
+stats: # Future expansion
   bossesKilled: 0
   artifactsFound: 0
 ```
 
-**Access Rule**: Use Java `record PlayerSettings(String language, int dialogSpeed, boolean showDialogs)`.
+**Access Rule**: Use Java `record PlayerSettings(int dialogSpeed, boolean showDialogs)`.
 
 ### Save Strategy
 
@@ -366,10 +357,8 @@ if (configManager.isDebug()) {
 public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     switch (args[0].toLowerCase()) {
         case "start" -> handleStart(sender);
-        case "skip" -> handleSkip(sender, args);
-        case "reset" -> handleReset(sender, args);
-        case "settings" -> handleSettings(sender);
-        case "reload" -> handleReload(sender);
+        case "menu" -> handleMenu(sender);
+        case "give" -> handleGive(sender, args);
         default -> sendHelp(sender);
     }
     return true;
@@ -445,4 +434,4 @@ player.getInventory().setItem(0, item);
 - **Deployment**: `DEPLOYMENT_GUIDE.md`
 - **Development Setup**: `README_DEV.md`
 
-**Version**: 1.0.0 | **Ratified**: 2025-10-24 | **Last Amended**: 2025-10-24
+**Version**: 1.1.0 | **Ratified**: 2025-10-24 | **Last Amended**: 2025-11-03

@@ -200,81 +200,6 @@ public class ChestSpawnManager implements Listener {
         }
     }
     
-    /**
-     * Translate story items when player opens ANY inventory containing them
-     * This ensures each player sees items in their own language
-     */
-    @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent event) {
-        if (!(event.getPlayer() instanceof Player)) {
-            return;
-        }
-        
-        Player player = (Player) event.getPlayer();
-        String playerLang = plugin.getDialogManager().getPlayerLanguage(player);
-        
-        // Translate all story items in the opened inventory
-        Inventory inventory = event.getInventory();
-        ItemStack[] contents = inventory.getContents();
-        
-        boolean modified = false;
-        for (int i = 0; i < contents.length; i++) {
-            ItemStack item = contents[i];
-            if (item != null && item.getType() != Material.AIR) {
-                String storyItemId = plugin.getItemManager().getStoryItemId(item);
-                if (storyItemId != null) {
-                    // This is a story item - recreate it in player's language
-                    ItemStack translatedItem = plugin.getItemManager().createStoryItem(storyItemId, playerLang);
-                    if (translatedItem != null) {
-                        // Preserve the amount
-                        translatedItem.setAmount(item.getAmount());
-                        contents[i] = translatedItem;
-                        modified = true;
-                    }
-                }
-            }
-        }
-        
-        // Update inventory if any items were translated
-        if (modified) {
-            // Schedule update for next tick to avoid conflicts
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
-                inventory.setContents(contents);
-            });
-        }
-        
-        // Also translate items in player's own inventory
-        translatePlayerInventory(player, playerLang);
-    }
-    
-    /**
-     * Helper method to translate all story items in player's inventory
-     */
-    private void translatePlayerInventory(Player player, String language) {
-        ItemStack[] inventory = player.getInventory().getContents();
-        boolean modified = false;
-        
-        for (int i = 0; i < inventory.length; i++) {
-            ItemStack item = inventory[i];
-            if (item != null && item.getType() != Material.AIR) {
-                String storyItemId = plugin.getItemManager().getStoryItemId(item);
-                if (storyItemId != null) {
-                    ItemStack translatedItem = plugin.getItemManager().createStoryItem(storyItemId, language);
-                    if (translatedItem != null) {
-                        translatedItem.setAmount(item.getAmount());
-                        inventory[i] = translatedItem;
-                        modified = true;
-                    }
-                }
-            }
-        }
-        
-        if (modified) {
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
-                player.getInventory().setContents(inventory);
-            });
-        }
-    }
     
     private void startSearchingMechanic(Player player, StoryStructureType type, String structureKey) {
         UUID playerId = player.getUniqueId();
@@ -357,14 +282,31 @@ public class ChestSpawnManager implements Listener {
     }
     
     private String getItemNameForStructure(StoryStructureType type, String lang) {
-        boolean isEnglish = lang.equals("en");
-        return switch (type) {
-            case RUINED_PORTAL -> isEnglish ? "Stabilization Core" : "Ядро Стабилизации";
-            case NETHER_FORTRESS -> isEnglish ? "Summon Key" : "Ключ Призыва";
-            case BASTION_REMNANT -> isEnglish ? "Void Catalyst" : "Катализатор Пустоты";
-            case END_CITY -> isEnglish ? "End Artifact" : "Артефакт Края";
-            default -> isEnglish ? "Unknown Item" : "Неизвестный предмет";
+        // Use message system for localization instead of hardcoded strings
+        String messageKey = switch (type) {
+            case RUINED_PORTAL -> "chest.items.stabilization_core.name";
+            case NETHER_FORTRESS -> "chest.items.boss1_summon_key.name";
+            case BASTION_REMNANT -> "chest.items.boss1_catalyst.name";
+            case END_CITY -> "chest.items.end_artifact.name"; // Generic name
+            default -> "unknown.item.name";
         };
+        
+        // Get localized name from message system
+        String itemName = messageManager.getMessage(lang, messageKey);
+        
+        // Fallback to hardcoded values if message not found
+        if (itemName.equals(messageKey)) {
+            boolean isEnglish = lang.equals("en");
+            return switch (type) {
+                case RUINED_PORTAL -> isEnglish ? "Stabilization Core" : "Ядро Стабилизации";
+                case NETHER_FORTRESS -> isEnglish ? "Summon Key" : "Ключ Призыва";
+                case BASTION_REMNANT -> isEnglish ? "Void Catalyst" : "Катализатор Пустоты";
+                case END_CITY -> isEnglish ? "End Artifact" : "Артефакт Края";
+                default -> isEnglish ? "Unknown Item" : "Неизвестный предмет";
+            };
+        }
+        
+        return itemName;
     }
     
     private String getStructureKey(Location loc, StoryStructureType type) {
@@ -395,7 +337,7 @@ public class ChestSpawnManager implements Listener {
                 if (itemId != null && itemId.startsWith("end_artifact_")) {
                     String artifactNum = itemId.replace("end_artifact_", "");
                     plugin.getDataManager().setBoolean("artifacts.artifact_" + artifactNum + "_found", true);
-                    plugin.getLogger().info("Artifact " + artifactNum + " marked as found!");
+                    plugin.getLogger().info(plugin.getMessageManager().getMessage("log.artifact_found").replace("%artifactNum%", String.valueOf(artifactNum)));
                 }
             }
         }
@@ -405,10 +347,7 @@ public class ChestSpawnManager implements Listener {
             for (UUID playerId : structureSearchers.get(structureKey)) {
                 Player p = plugin.getServer().getPlayer(playerId);
                 if (p != null && p.isOnline()) {
-                    String lang = plugin.getDialogManager().getPlayerLanguage(p);
-                    String notifyText = lang.equals("en") 
-                        ? "✓ Material found in this structure!"
-                        : "✓ Материал найден в этой структуре!";
+                    String notifyText = messageManager.getMessage(p, "chest.search.material_found");
                     
                     p.sendMessage(Component.text(notifyText)
                             .color(NamedTextColor.GREEN)
@@ -686,7 +625,7 @@ public class ChestSpawnManager implements Listener {
                     false
                 );
                 if (fortressResult != null && fortressResult.getLocation().distance(location) < 200) {
-                    plugin.getLogger().info("Detected NETHER_FORTRESS at " + location.getBlockX() + ", " + location.getBlockZ());
+                    plugin.getLogger().info(plugin.getMessageManager().getMessage("log.nether_fortress_detected").replace("%location%", location.getBlockX() + ", " + location.getBlockZ()));
                     return StoryStructureType.NETHER_FORTRESS;
                 }
             }
@@ -701,7 +640,7 @@ public class ChestSpawnManager implements Listener {
                     false
                 );
                 if (bastionResult != null && bastionResult.getLocation().distance(location) < 200) {
-                    plugin.getLogger().info("Detected BASTION_REMNANT at " + location.getBlockX() + ", " + location.getBlockZ());
+                    plugin.getLogger().info(plugin.getMessageManager().getMessage("log.bastion_remnant_detected").replace("%location%", location.getBlockX() + ", " + location.getBlockZ()));
                     return StoryStructureType.BASTION_REMNANT;
                 }
             }
@@ -718,7 +657,7 @@ public class ChestSpawnManager implements Listener {
                     false
                 );
                 if (endCityResult != null && endCityResult.getLocation().distance(location) < 200) {
-                    plugin.getLogger().info("Detected END_CITY at " + location.getBlockX() + ", " + location.getBlockZ());
+                    plugin.getLogger().info(plugin.getMessageManager().getMessage("log.end_city_detected").replace("%location%", location.getBlockX() + ", " + location.getBlockZ()));
                     return StoryStructureType.END_CITY;
                 }
             }

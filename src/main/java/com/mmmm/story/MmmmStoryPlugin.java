@@ -1,6 +1,7 @@
 package com.mmmm.story;
 
 import com.mmmm.story.commands.StoryCommand;
+import com.mmmm.story.commands.ServerCommand;
 import com.mmmm.story.listeners.*;
 import com.mmmm.story.managers.*;
 import de.eisi05.npc.api.NpcApi;
@@ -19,7 +20,7 @@ public class MmmmStoryPlugin extends JavaPlugin {
     private ActManager actManager;
     private DialogManager dialogManager;
     private StructureManager structureManager;
-    private SettingsManager settingsManager;
+    private MenuManager menuManager;
     private MessageManager messageManager;
     private Act1Listener act1Listener;
     
@@ -47,11 +48,12 @@ public class MmmmStoryPlugin extends JavaPlugin {
             structureManager = new StructureManager(this);
             npcManager = new NPCManager(this);
             actManager = new ActManager(this);
-            settingsManager = new SettingsManager(this);
             messageManager = new MessageManager(this);
+            menuManager = new MenuManager(this, messageManager, actManager, dialogManager);
             
             // Register commands
             getCommand("story").setExecutor(new StoryCommand(this));
+            getCommand("server").setExecutor(new ServerCommand(this));
             
             // Register event listeners
             registerListeners();
@@ -61,7 +63,7 @@ public class MmmmStoryPlugin extends JavaPlugin {
                 dataManager.save();
             }, 6000L, 6000L);
             
-            getLogger().info("Story plugin enabled successfully!");
+            getLogger().info(getMessageManager().getMessage("log.plugin_enabled"));
             
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, "Failed to initialize plugin!", e);
@@ -81,7 +83,7 @@ public class MmmmStoryPlugin extends JavaPlugin {
             npcManager.cleanup();
         }
         
-        getLogger().info("Story plugin disabled.");
+        getLogger().info(getMessageManager().getMessage("log.plugin_disabled"));
     }
     
     private void registerListeners() {
@@ -98,13 +100,10 @@ public class MmmmStoryPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChestSpawnManager(this), this);
         getServer().getPluginManager().registerEvents(new StoryItemProtectionListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockTrackingListener(), this);
-        getServer().getPluginManager().registerEvents(settingsManager, this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        getServer().getPluginManager().registerEvents(new MenuClickListener(this), this);
     }
     
-    public void reload() {
-        configManager.loadAll();
-        getLogger().info("Configuration reloaded.");
-    }
     
     // Getters
     public static MmmmStoryPlugin getInstance() {
@@ -127,6 +126,10 @@ public class MmmmStoryPlugin extends JavaPlugin {
         return npcManager;
     }
     
+    public NPCManager getNpcManager() {
+        return npcManager;
+    }
+    
     public ActManager getActManager() {
         return actManager;
     }
@@ -143,8 +146,8 @@ public class MmmmStoryPlugin extends JavaPlugin {
         return act1Listener;
     }
     
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
+    public MenuManager getMenuManager() {
+        return menuManager;
     }
     
     public MessageManager getMessageManager() {

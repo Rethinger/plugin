@@ -37,7 +37,7 @@ public class StoryItemProtectionListener implements Listener {
         
         // Return story items to player inventory after respawn
         if (!storyItems.isEmpty()) {
-            player.sendMessage("§6§lСюжетные предметы сохранены и будут возвращены после возрождения!");
+            player.sendMessage(plugin.getMessageManager().getMessage("item_protection.saved_on_death"));
             
             // Schedule to return items after respawn
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
@@ -50,7 +50,7 @@ public class StoryItemProtectionListener implements Listener {
                             player.getWorld().dropItem(player.getLocation(), item);
                         }
                     }
-                    player.sendMessage("§a§l✔ Сюжетные предметы возвращены!");
+                    player.sendMessage(plugin.getMessageManager().getMessage("item_protection.restored"));
                 }
             }, 20L); // Wait 1 second after respawn
         }

@@ -79,9 +79,9 @@ public class StructureManager {
         Block signBlock = world.getBlockAt(center.getBlockX(), center.getBlockY() + 3, center.getBlockZ());
         signBlock.setType(Material.OAK_WALL_SIGN);
         if (signBlock.getState() instanceof Sign sign) {
-            sign.setLine(0, "§6§l[АЛТАРЬ]");
-            sign.setLine(1, "§7Забытый алтарь");
-            sign.setLine(2, "§eАкт 1");
+            sign.setLine(0, plugin.getMessageManager().getMessage("structures.forgotten_altar.line1"));
+            sign.setLine(1, plugin.getMessageManager().getMessage("structures.forgotten_altar.line2"));
+            sign.setLine(2, plugin.getMessageManager().getMessage("structures.forgotten_altar.line3"));
             sign.update();
         }
     }
@@ -174,9 +174,9 @@ public class StructureManager {
         Block signBlock = world.getBlockAt(center.getBlockX(), center.getBlockY() + 4, center.getBlockZ());
         signBlock.setType(Material.OAK_WALL_SIGN);
         if (signBlock.getState() instanceof Sign sign) {
-            sign.setLine(0, "§c§l[БОСС 1]");
-            sign.setLine(1, "§7Арена Гнева");
-            sign.setLine(2, "§eАкт 2");
+            sign.setLine(0, plugin.getMessageManager().getMessage("structures.boss1_arena.line1"));
+            sign.setLine(1, plugin.getMessageManager().getMessage("structures.boss1_arena.line2"));
+            sign.setLine(2, plugin.getMessageManager().getMessage("structures.boss1_arena.line3"));
             sign.update();
         }
     }
@@ -217,9 +217,9 @@ public class StructureManager {
         Block signBlock = world.getBlockAt(center.getBlockX(), center.getBlockY() + 6, center.getBlockZ());
         signBlock.setType(Material.OAK_WALL_SIGN);
         if (signBlock.getState() instanceof Sign sign) {
-            sign.setLine(0, "§5§l[БОСС 2]");
-            sign.setLine(1, "§7Арена Конца");
-            sign.setLine(2, "§eАкт 3");
+            sign.setLine(0, plugin.getMessageManager().getMessage("structures.boss2_arena.line1"));
+            sign.setLine(1, plugin.getMessageManager().getMessage("structures.boss2_arena.line2"));
+            sign.setLine(2, plugin.getMessageManager().getMessage("structures.boss2_arena.line3"));
             sign.update();
         }
     }
@@ -263,9 +263,9 @@ public class StructureManager {
         Block signBlock = world.getBlockAt(center.getBlockX() + 2, center.getBlockY() + 2, center.getBlockZ());
         signBlock.setType(Material.OAK_WALL_SIGN);
         if (signBlock.getState() instanceof Sign sign) {
-            sign.setLine(0, "§d§l[ПОРТАЛ]");
-            sign.setLine(1, "§7Портал в Край");
-            sign.setLine(2, "§eАкт 5");
+            sign.setLine(0, plugin.getMessageManager().getMessage("structures.end_portal_frame.line1"));
+            sign.setLine(1, plugin.getMessageManager().getMessage("structures.end_portal_frame.line2"));
+            sign.setLine(2, plugin.getMessageManager().getMessage("structures.end_portal_frame.line3"));
             sign.update();
         }
     }

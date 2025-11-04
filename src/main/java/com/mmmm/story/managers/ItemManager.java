@@ -67,56 +67,44 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "Stabilization Core" : "Ядро Стабилизации")
+        String coreName = plugin.getMessageManager().getMessage(lang, "chest.items.stabilization_core.name");
+        meta.displayName(Component.text(coreName)
                 .color(NamedTextColor.LIGHT_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Ancient artifact capable of")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("stabilizing portal connections")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("✦ Found in chests of")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.stabilization_core.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.DARK_PURPLE)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("ruined portals")
+        }
+        if (loreLines.size() > 3) {
+            lore.set(3, Component.text(loreLines.get(3))
                     .color(NamedTextColor.DARK_PURPLE)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Drop (Q) on Obsidian block")
+        }
+        if (loreLines.size() > 4) {
+            lore.set(4, Component.text(loreLines.get(4))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("to activate portals to Nether")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Древний артефакт, способный")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("стабилизировать портальные связи")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("✦ Появляется в сундуках")
-                    .color(NamedTextColor.DARK_PURPLE)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("разрушенных порталов")
-                    .color(NamedTextColor.DARK_PURPLE)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Выбросьте (Q) на блок Обсидиана")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("для активации порталов в Ад")
+        }
+        if (loreLines.size() > 5) {
+            lore.set(5, Component.text(loreLines.get(5))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
+        
         meta.lore(lore);
         
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, STABILIZATION_CORE);
@@ -133,42 +121,34 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.BONE);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "Bone Key" : "Костяной Ключ")
+        String keyName = plugin.getMessageManager().getMessage(lang, "chest.items.act1_skeleton_key.name");
+        meta.displayName(Component.text(keyName)
                 .color(NamedTextColor.WHITE)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Ancient bone key")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("that summons warriors of darkness")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Drop (Q) on block of")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.act1_skeleton_key.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Ancient Debris to summon")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Древний ключ из кости")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("призывающий воинов тьмы")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Выбросьте (Q) на блок")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Древних Обломков для призыва")
+        }
+        if (loreLines.size() > 3) {
+            lore.set(3, Component.text(loreLines.get(3))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
+        
         meta.lore(lore);
         
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, ACT1_SKELETON_KEY);
@@ -185,45 +165,35 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.NETHERITE_SCRAP);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "Wrath Fragment" : "Фрагмент Гнева")
+        String itemName = plugin.getMessageManager().getMessage(lang, "chest.items.boss1_material.name");
+        meta.displayName(Component.text(itemName)
                 .color(NamedTextColor.DARK_RED)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Material infused with the fury")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("of the defeated Skeleton Overlord")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Combine with Void Catalyst")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.boss1_material.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("on Ancient Debris block")
+        }
+        if (loreLines.size() > 3) {
+            lore.set(3, Component.text(loreLines.get(3))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("to summon the End Guardian")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Материал, пропитанный яростью")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("побеждённого Повелителя Скелетов")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Соедините с Катализатором Пустоты")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("на блоке Древних Обломков")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("для призыва Стража Края")
+        }
+        if (loreLines.size() > 4) {
+            lore.set(4, Component.text(loreLines.get(4))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
@@ -243,48 +213,39 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.NETHERITE_INGOT);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "Void Catalyst" : "Катализатор Пустоты")
+        String catalystName = plugin.getMessageManager().getMessage(lang, "chest.items.boss1_catalyst.name");
+        meta.displayName(Component.text(catalystName)
                 .color(NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Mysterious catalyst from")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Bastion treasuries")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Combine with Wrath Fragment")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.boss1_catalyst.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("on Ancient Debris block")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("to summon the End Guardian")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Загадочный катализатор из")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("сокровищниц Бастиона")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Соедините с Фрагментом Гнева")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("на блоке Древних Обломков")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("для призыва Стража Края")
+        }
+        if (loreLines.size() > 3) {
+            lore.set(3, Component.text(loreLines.get(3))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
+        if (loreLines.size() > 4) {
+            lore.set(4, Component.text(loreLines.get(4))
+                    .color(NamedTextColor.GOLD)
+                    .decoration(TextDecoration.ITALIC, false));
+        }
+        
         meta.lore(lore);
         
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS1_CATALYST);
@@ -301,36 +262,34 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.BLAZE_ROD);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "Summon Key" : "Ключ Призыва")
+        String keyName = plugin.getMessageManager().getMessage(lang, "chest.items.boss1_summon_key.name");
+        meta.displayName(Component.text(keyName)
                 .color(NamedTextColor.RED)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Summons the Skeleton Overlord")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Drop (Q) on block of")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.boss1_summon_key.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 1) {
+            lore.set(1, Component.text(loreLines.get(1))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Ancient Debris to summon boss")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Призывает Повелителя Скелетов")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Выбросьте (Q) на блок")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Древних Обломков для призыва босса")
+        }
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
+        
         meta.lore(lore);
         
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS1_SUMMON_KEY);
@@ -347,36 +306,34 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.NETHERITE_INGOT);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "Boss II Summon Key" : "Ключ Призыва Босса II")
+        String keyName = plugin.getMessageManager().getMessage(lang, "chest.items.boss2_structure_key.name");
+        meta.displayName(Component.text(keyName)
                 .color(NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Summons the End Guardian")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Drop (Q) on Dragon Egg")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.boss2_structure_key.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 1) {
+            lore.set(1, Component.text(loreLines.get(1))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("in Boss 2 Arena to summon")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Призывает Стража Края")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Выбросьте (Q) на Яйцо Дракона")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("в Арене Босса 2 для призыва")
+        }
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
+        
         meta.lore(lore);
         
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS2_STRUCTURE_KEY);
@@ -393,42 +350,34 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.END_CRYSTAL);
         ItemMeta meta = item.getItemMeta();
         
-        boolean isEn = lang.equals("en");
-        
-        meta.displayName(Component.text(isEn ? "End Portal Key" : "Ключ Врат Эндера")
+        String keyName = plugin.getMessageManager().getMessage(lang, "chest.items.overworld_portal_key.name");
+        meta.displayName(Component.text(keyName)
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("This key summons")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("portal to the End")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Drop (Q) on Beacon")
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.overworld_portal_key.lore");
+        for (String line : loreLines) {
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                lore.add(Component.text(line)
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+        }
+        // Apply specific colors for certain lines
+        if (loreLines.size() > 2) {
+            lore.set(2, Component.text(loreLines.get(2))
                     .color(NamedTextColor.YELLOW)
                     .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("to open the portal")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Этот ключ призывает")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("врата в Эндер Мир")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Выбросьте (Q) на Маяк")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("для открытия портала")
+        }
+        if (loreLines.size() > 3) {
+            lore.set(3, Component.text(loreLines.get(3))
                     .color(NamedTextColor.GOLD)
                     .decoration(TextDecoration.ITALIC, false));
         }
+        
         meta.lore(lore);
         
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, OVERWORLD_PORTAL_KEY);
@@ -442,8 +391,6 @@ public class ItemManager {
     }
     
     private ItemStack createEndArtifact(int number, String lang) {
-        boolean isEn = lang.equals("en");
-        
         Material material = switch (number) {
             case 1 -> Material.ECHO_SHARD;
             case 2 -> Material.DRAGON_BREATH;
@@ -456,62 +403,32 @@ public class ItemManager {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         
-        String[] namesRu = {
-            "Осколок Бездны",
-            "Дыхание Времени",
-            "Плод Пустоты",
-            "Око Измерений",
-            "Крылья Свободы"
-        };
+        String name = plugin.getMessageManager().getMessage(lang, "chest.items.end_artifact_" + number + ".name");
         
-        String[] namesEn = {
-            "Void Shard",
-            "Breath of Time",
-            "Fruit of Emptiness",
-            "Eye of Dimensions",
-            "Wings of Freedom"
-        };
-        
-        meta.displayName(Component.text(isEn ? namesEn[number - 1] : namesRu[number - 1])
+        meta.displayName(Component.text(name)
                 .color(NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.ITALIC, false));
         
         List<Component> lore = new ArrayList<>();
-        if (isEn) {
-            lore.add(Component.text("Ancient artifact " + number + " of 5")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Required for the final ritual")
-                    .color(NamedTextColor.DARK_GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Place all 5 artifacts")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("in the ritual chests")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("Древний артефакт " + number + " из 5")
-                    .color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Необходим для финального ритуала")
-                    .color(NamedTextColor.DARK_GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.empty());
-            lore.add(Component.text("▶ Поместите все 5 артефактов")
-                    .color(NamedTextColor.YELLOW)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("в ритуальные сундуки")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false));
+        java.util.List<String> loreLines = plugin.getMessageManager().getMessageList(lang, "chest.items.end_artifact_" + number + ".lore");
+        for (int i = 0; i < loreLines.size(); i++) {
+            String line = loreLines.get(i);
+            if (line.isEmpty()) {
+                lore.add(Component.empty());
+            } else {
+                // First line is gray, line with ✦ is yellow, line with ▶ is gold
+                NamedTextColor color = NamedTextColor.GRAY;
+                if (line.startsWith("✦")) {
+                    color = NamedTextColor.YELLOW;
+                } else if (line.startsWith("▶")) {
+                    color = NamedTextColor.GOLD;
+                }
+                lore.add(Component.text(line)
+                        .color(color)
+                        .decoration(TextDecoration.ITALIC, false));
+            }
         }
-        lore.add(Component.text("в сундуки у центра Края (0, 0)")
-                .color(NamedTextColor.GOLD)
-                .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("для активации финального ритуала")
-                .color(NamedTextColor.GOLD)
-                .decoration(TextDecoration.ITALIC, false));
+        
         meta.lore(lore);
         
         String artifactId = "end_artifact_" + number;

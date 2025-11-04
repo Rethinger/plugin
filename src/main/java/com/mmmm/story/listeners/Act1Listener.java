@@ -216,8 +216,8 @@ public class Act1Listener implements Listener {
                             
                             if (activeWavePlayers.getOrDefault(uuid, false) && !playerReceivedAchievement.getOrDefault(uuid, false) && !hasAchievement) {
                                 // Player survived the night for the first time
-                                player.sendMessage("§a§l✔ Достижение разблокировано: Выживший");
-                                player.sendMessage("§7Вы пережили волну воинов-скелетов!");
+                                player.sendMessage(plugin.getMessageManager().getMessage("achievements.wave_survived"));
+                                player.sendMessage(plugin.getMessageManager().getMessage("events.wave_survived"));
                                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                                 plugin.getDataManager().addPlayerAchievement(uuid, "survived_skeleton_wave");
                                 playerReceivedAchievement.put(uuid, true);
@@ -255,7 +255,7 @@ public class Act1Listener implements Listener {
         if (!activeWavePlayers.getOrDefault(uuid, false)) {
             activeWavePlayers.put(uuid, true);
             playerReceivedAchievement.put(uuid, false);
-            player.sendMessage("§c§lВолна скелетов началась! Защищайтесь до рассвета!");
+            player.sendMessage(plugin.getMessageManager().getMessage("events.wave_incoming"));
             player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 0.5f, 1.0f);
         }
         
@@ -371,6 +371,8 @@ public class Act1Listener implements Listener {
             return;
         }
         
+        plugin.getLogger().info("Ядро стабилизации выброшено, начинается проверка на обсидиан...");
+        
         // Schedule a check for obsidian block below after a short delay
         new BukkitRunnable() {
             @Override
@@ -381,10 +383,17 @@ public class Act1Listener implements Listener {
                 }
                 
                 Location itemLoc = droppedItem.getLocation();
-                Location blockBelow = itemLoc.subtract(0, 1, 0);
+                Location blockBelow = itemLoc.clone().subtract(0, 1, 0);
+                Material blockType = blockBelow.getBlock().getType();
+                
+                // Debug logging
+                if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+                    plugin.getLogger().info("Проверка: блок под ядром = " + blockType.name());
+                }
                 
                 // Check if item is on obsidian
-                if (blockBelow.getBlock().getType() == Material.OBSIDIAN) {
+                if (blockType == Material.OBSIDIAN) {
+                    plugin.getLogger().info("Обсидиан обнаружен! Активируем узел...");
                     // Activate the node!
                     activateCrossroadsNode(droppedItem);
                     cancel();
@@ -402,6 +411,9 @@ public class Act1Listener implements Listener {
         
         // Remove the item
         droppedItem.remove();
+        
+        // Log activation for debugging
+        plugin.getLogger().info("Активация узла перекрестков в " + location.toString());
         
         // Enable nether portals
         plugin.getDataManager().setNetherEnabled(true);
@@ -424,14 +436,18 @@ public class Act1Listener implements Listener {
         }
         
         // Notify nearby players
+        int playerCount = 0;
         for (Player player : world.getPlayers()) {
             if (player.getLocation().distance(location) < 100) {
-                player.sendMessage(Component.text("§6§l⚡ Узел Перекрёстков активирован!").color(NamedTextColor.GOLD));
-                player.sendMessage(Component.text("§aПорталы в Ад теперь работают!").color(NamedTextColor.GREEN));
+                playerCount++;
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
                 plugin.getDataManager().addPlayerAchievement(player.getUniqueId(), "crossroads_linked");
+                
+                // Play dialog (без сообщений в чат, только диалог)
                 plugin.getDialogManager().playDialog(player, "node.crossroads");
             }
         }
+        
+        plugin.getLogger().info("Узел активирован для " + playerCount + " игроков");
     }
 }

@@ -59,7 +59,12 @@ public class DialogManager {
     
     public void playDialog(Player player, String dialogKey) {
         // Always use automatic dialog playback
-        playAutomaticDialog(player, dialogKey);
+        playAutomaticDialog(player, dialogKey, null);
+    }
+    
+    public void playDialog(Player player, String dialogKey, Runnable onComplete) {
+        // Always use automatic dialog playback
+        playAutomaticDialog(player, dialogKey, onComplete);
     }
     
     private void playInteractiveDialog(Player player, String dialogKey) {
@@ -182,7 +187,7 @@ public class DialogManager {
         }
     }
     
-    private void playAutomaticDialog(Player player, String dialogKey) {
+    private void playAutomaticDialog(Player player, String dialogKey, Runnable onComplete) {
         // Get player settings
         var playerSettings = plugin.getDataManager().getPlayerSettings(player.getUniqueId());
         
@@ -191,11 +196,10 @@ public class DialogManager {
             return; // Skip dialog completely
         }
         
-        // Get dialogs for player's language
-        String language = playerSettings.getLanguage();
-        ConfigurationSection dialog = plugin.getConfigManager().getDialogs(language).getConfigurationSection(dialogKey);
+        // Get dialogs for default language (Russian)
+        ConfigurationSection dialog = plugin.getConfigManager().getDialogs().getConfigurationSection(dialogKey);
         if (dialog == null) {
-            plugin.getLogger().warning("Dialog not found: " + dialogKey + " for language: " + language);
+            plugin.getLogger().warning("Dialog not found: " + dialogKey);
             return;
         }
         
@@ -215,6 +219,12 @@ public class DialogManager {
         
         // Check for clear weather flag
         boolean clearWeather = dialog.getBoolean("clearWeather", false);
+        
+        // Check for disappearance line parameter
+        int disappearanceLine = dialog.getInt("disappearanceLine", -1);
+        
+        // Track the last line to execute onComplete after it
+        int lastDelay = 0;
         
         for (Map<String, Object> line : lines) {
             int delay = ((Number) line.getOrDefault("delay", 0)).intValue();
@@ -281,6 +291,52 @@ public class DialogManager {
                     }
                 }
             }.runTaskLater(plugin, adjustedDelay * 20L);
+            
+            lastDelay = adjustedDelay;
+        }
+        
+        // Execute onComplete callback after the last line
+        if (onComplete != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    onComplete.run();
+                }
+            }.runTaskLater(plugin, (lastDelay + 1) * 20L);
+        }
+        
+        // Handle NPC disappearance effect if specified
+        if (disappearanceLine >= 0) {
+            // Calculate when to trigger the disappearance effect
+            int disappearanceDelay = (int) (disappearanceLine * speedMultiplier);
+            
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!player.isOnline()) {
+                        return;
+                    }
+                    
+                    // Find and remove the "Посланник" NPC
+                    plugin.getNpcManager().removeNpcByName(player, "Посланник");
+                    
+                    // Play particle effect at NPC location
+                    Location npcLocation = player.getLocation().add(0, 1, 0); // Approximate NPC location
+                    World world = npcLocation.getWorld();
+                    
+                    // Create smoke effect
+                    for (int i = 0; i < 20; i++) {
+                        double offsetX = (Math.random() - 0.5) * 2;
+                        double offsetY = Math.random() * 2;
+                        double offsetZ = (Math.random() - 0.5) * 2;
+                        
+                        world.spawnParticle(Particle.SMOKE, npcLocation, 10, offsetX, offsetY, offsetZ, 0.1);
+                    }
+                    
+                    // Play disappearance sound
+                    player.playSound(npcLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+                }
+            }.runTaskLater(plugin, disappearanceDelay * 20L);
         }
     }
     
@@ -301,7 +357,7 @@ public class DialogManager {
         Location coreLocation = plugin.getAct1Listener().getCoreDropLocation();
         
         if (coreLocation == null) {
-            plugin.getLogger().warning("Core location not found for portal ignition!");
+            plugin.getLogger().warning(plugin.getConfigManager().getMessage("dialog.core_location_not_found"));
             return;
         }
         
@@ -314,21 +370,19 @@ public class DialogManager {
             world.playSound(coreLocation, Sound.ITEM_FIRECHARGE_USE, 1.5f, 0.8f);
             world.spawnParticle(Particle.FLAME, coreLocation, 100, 0.5, 0.5, 0.5, 0.1);
             world.spawnParticle(Particle.LAVA, coreLocation, 30, 0.3, 0.3, 0.3, 0.05);
-            plugin.getLogger().info("Portal ignited at core location: " + coreLocation);
+            plugin.getLogger().info(plugin.getConfigManager().getMessage("dialog.portal_ignited_at").replace("%location%", coreLocation.toString()));
         } else {
-            plugin.getLogger().warning("Cannot ignite portal - block is " + blockToIgnite.getType());
+            plugin.getLogger().warning(plugin.getConfigManager().getMessage("dialog.cannot_ignite_portal").replace("%block%", blockToIgnite.getType().toString()));
         }
     }
     
     /**
-     * Get player's preferred language (en or ru)
-     * Can be extended to support player-specific language settings
+     * Get player's language based on client locale
      */
     public String getPlayerLanguage(Player player) {
-        // For now, check if the player's client locale starts with "en"
-        // You can later store this in player data or config
-        String locale = player.locale().toString().toLowerCase();
-        return locale.startsWith("en") ? "en" : "ru";
+        // Since only Russian is supported, always return "ru"
+        return "ru";
     }
+    
 }
 

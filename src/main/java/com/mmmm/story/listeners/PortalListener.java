@@ -102,8 +102,8 @@ public class PortalListener implements Listener {
         // Notify all players
         for (Player player : world.getPlayers()) {
             if (player.getLocation().distance(location) < 200) {
-                player.sendMessage(Component.text("§5§l⚡ Врата в Край появились!").color(NamedTextColor.DARK_PURPLE));
-                player.sendMessage(Component.text("§aПройдите во врата, чтобы завершить начатое.").color(NamedTextColor.GREEN));
+                player.sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.end_opened")).color(NamedTextColor.DARK_PURPLE));
+                player.sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.end_instruction")).color(NamedTextColor.GREEN));
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
             }
         }
@@ -187,7 +187,7 @@ public class PortalListener implements Listener {
         // Check if nether is enabled
         if (!plugin.getDataManager().isNetherEnabled()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("§cПортал нестабилен! Требуется стабилизация..."));
+            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.unstable")));
             
             event.getPlayer().playSound(
                 event.getPlayer().getLocation(),
@@ -207,7 +207,7 @@ public class PortalListener implements Listener {
         // Check if end is enabled
         if (!plugin.getDataManager().isEndEnabled()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("§cПортал в Край закрыт! Требуется специальный ключ..."));
+            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.end_closed")));
             
             event.getPlayer().playSound(
                 event.getPlayer().getLocation(),

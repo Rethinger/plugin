@@ -668,3 +668,22 @@ artifacts:
 - Boss Bar для Boss 2 (Изверг Адских Глубин)
 - Звуковое сопровождение при приближении к нужной структуре
 
+---
+
+## Версия 1.4.0 - Меню сервера и система готовности игроков (3 истории пользователя)
+
+### ✨ Новые функции
+
+#### US6 (P3): Reworked Story Menu
+- **Описание**: Реализация переработанных меню для `/story menu` и `/server start`
+- **Реализация**:
+  - Создан PlayerJoinListener для автоматического открытия меню сервера при входе игрока
+  - Добавлен ServerCommand для обработки команды `/server start`
+  - Создан MenuClickListener для обработки кликов по меню
+  - Добавлен метод openServerStartMenu() в MenuManager с настройками диалога и кнопкой "Готов"
+  - Добавлена система отслеживания готовности игроков в DataManager
+  - Автоматический запуск сюжета когда все игроки готовы
+  - Обновлён метод openStoryMenu() для соответствия новым требованиям
+  - **Файлы**: PlayerJoinListener.java, ServerCommand.java, MenuClickListener.java, MenuManager.java, DataManager.java, MenuType.java, MmmmStoryPlugin.java
+  - **Тестирование**: Меню открываются при входе игрока и через команду `/server start`
+

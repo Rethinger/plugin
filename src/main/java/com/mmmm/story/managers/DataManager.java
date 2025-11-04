@@ -104,6 +104,7 @@ public class DataManager {
     private void initializePlayerData(FileConfiguration cfg) {
         cfg.set("achievements", new ArrayList<String>());
         cfg.set("firstJoin", System.currentTimeMillis());
+        cfg.set("currentAct", 1); // Default to act 1 for new players
     }
     
     public void savePlayerData(UUID uuid) {
@@ -284,11 +285,10 @@ public class DataManager {
         FileConfiguration cfg = getPlayerData(uuid);
         
         boolean showDialogs = cfg.getBoolean("settings.showDialogs", true);
-        String language = cfg.getString("settings.language", "ru");
         String speedStr = cfg.getString("settings.dialogSpeed", "NORMAL");
         PlayerSettings.DialogSpeed speed = PlayerSettings.DialogSpeed.fromString(speedStr);
         
-        return new PlayerSettings(showDialogs, language, speed);
+        return new PlayerSettings(showDialogs, speed);
     }
     
     /**
@@ -298,7 +298,6 @@ public class DataManager {
         FileConfiguration cfg = getPlayerData(uuid);
         
         cfg.set("settings.showDialogs", settings.isShowDialogs());
-        cfg.set("settings.language", settings.getLanguage());
         cfg.set("settings.dialogSpeed", settings.getDialogSpeed().name());
         
         savePlayerData(uuid);
@@ -318,6 +317,126 @@ public class DataManager {
     public void markSettingsConfigured(UUID uuid) {
         FileConfiguration cfg = getPlayerData(uuid);
         cfg.set("settings.configured", true);
+        savePlayerData(uuid);
+    }
+    
+    // ==========================================
+    // RITUAL AND END GAME METHODS
+    // ==========================================
+    
+    /**
+     * Complete the final ritual
+     */
+    public void completeRitual() {
+        globalData.set("ritual.final.complete", true);
+        saveGlobal();
+    }
+    
+    /**
+     * Get player's original spawn location before End trap
+     */
+    public Location getPlayerOriginalSpawn(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        if (!cfg.contains("originalSpawn.world")) {
+            return null;
+        }
+        
+        String worldName = cfg.getString("originalSpawn.world");
+        double x = cfg.getDouble("originalSpawn.x");
+        double y = cfg.getDouble("originalSpawn.y");
+        double z = cfg.getDouble("originalSpawn.z");
+        
+        return new Location(plugin.getServer().getWorld(worldName), x, y, z);
+    }
+    
+    /**
+     * Set player's original spawn location
+     */
+    public void setPlayerOriginalSpawn(UUID uuid, Location location) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        cfg.set("originalSpawn.world", location.getWorld().getName());
+        cfg.set("originalSpawn.x", location.getX());
+        cfg.set("originalSpawn.y", location.getY());
+        cfg.set("originalSpawn.z", location.getZ());
+        savePlayerData(uuid);
+    }
+    
+    /**
+     * Check if player is trapped in the End
+     */
+    public boolean isPlayerTrappedInEnd(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        return cfg.getBoolean("trappedInEnd", false);
+    }
+    
+    /**
+     * Set player trapped in End status
+     */
+    public void setPlayerTrappedInEnd(UUID uuid, boolean trapped) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        cfg.set("trappedInEnd", trapped);
+        savePlayerData(uuid);
+    }
+    
+    /**
+     * Clear player's original spawn location
+     */
+    public void clearPlayerOriginalSpawn(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        cfg.set("originalSpawn", null);
+        savePlayerData(uuid);
+    }
+    
+    // ==========================================
+    // PLAYER READY STATUS METHODS
+    // ==========================================
+    
+    /**
+     * Set player ready status
+     */
+    public void setPlayerReady(UUID uuid, boolean ready) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        cfg.set("ready", ready);
+        savePlayerData(uuid);
+    }
+    
+    /**
+     * Get player ready status
+     */
+    public boolean isPlayerReady(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        return cfg.getBoolean("ready", false);
+    }
+    
+    /**
+     * Reset all players' ready status
+     */
+    public void resetAllReadyStatus() {
+        for (UUID uuid : playerData.keySet()) {
+            FileConfiguration cfg = getPlayerData(uuid);
+            cfg.set("ready", false);
+            savePlayerData(uuid);
+        }
+    }
+    
+    /**
+     * Get current act for a specific player
+     * @param uuid Player UUID
+     * @return Current act number (1-5)
+     */
+    public int getPlayerCurrentAct(UUID uuid) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        return cfg.getInt("currentAct", 1);
+    }
+    
+    /**
+     * Set current act for a specific player
+     * @param uuid Player UUID
+     * @param act Act number (1-5)
+     */
+    public void setPlayerCurrentAct(UUID uuid, int act) {
+        FileConfiguration cfg = getPlayerData(uuid);
+        cfg.set("currentAct", act);
         savePlayerData(uuid);
     }
 }

@@ -160,7 +160,7 @@ public class Act3Listener implements Listener {
         // Spawn Boss 2 (Enderman boss)
         Location spawnLoc = location.clone().add(0, 3, 0);
         Enderman boss = (Enderman) world.spawnEntity(spawnLoc, EntityType.ENDERMAN);
-        boss.setCustomName("§5§lСтраж Края");
+        boss.setCustomName(plugin.getMessageManager().getMessage("entities.end_guardian"));
         boss.setCustomNameVisible(true);
         
         // Set attributes
@@ -303,7 +303,7 @@ public class Act3Listener implements Listener {
         }
         
         IronGolem guardian = (IronGolem) crystal.getWorld().spawnEntity(spawnLoc, EntityType.IRON_GOLEM);
-        guardian.setCustomName("§5§lСтраж Кристалла");
+        guardian.setCustomName(plugin.getMessageManager().getMessage("entities.crystal_guardian"));
         guardian.setCustomNameVisible(true);
         guardian.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(25.0);
         guardian.setHealth(25.0);
@@ -328,7 +328,7 @@ public class Act3Listener implements Listener {
     private void startPhantomBurst(World world) {
         phantomSpawningActive = true;
         
-        plugin.getServer().broadcast(Component.text("§5§lПустота открывается... Фантомы надвигаются!"));
+        plugin.getServer().broadcast(Component.text(plugin.getMessageManager().getMessage("events.wave_incoming")));
         
         int duration = plugin.getConfigManager().getConfig().getInt("acts.end.phantomBurst.durationSeconds", 15);
         int interval = plugin.getConfigManager().getConfig().getInt("acts.end.phantomBurst.intervalSeconds", 3);
@@ -508,7 +508,20 @@ public class Act3Listener implements Listener {
         plugin.getDataManager().setDragonDefeated(true);
         plugin.getActManager().progressToAct(4);
         
-        // Broadcast
+        // Broadcast victory message
+        String victoryMsg = plugin.getMessageManager().getMessage("ru", "dragon.defeated_message");
+        if (victoryMsg == null || victoryMsg.equals("dragon.defeated_message")) {
+            victoryMsg = "§5§l⚔ Эндер Дракон повержен!";
+        }
+        plugin.getServer().broadcast(Component.text(victoryMsg).color(NamedTextColor.DARK_PURPLE));
+        
+        String nextStepMsg = plugin.getMessageManager().getMessage("ru", "dragon.next_step");
+        if (nextStepMsg == null || nextStepMsg.equals("dragon.next_step")) {
+            nextStepMsg = "§d✦ Соберите артефакты в городах Края для начала финального ритуала!";
+        }
+        plugin.getServer().broadcast(Component.text(nextStepMsg).color(NamedTextColor.LIGHT_PURPLE));
+        
+        // Play dialog
         plugin.getDialogManager().playDialogForAll("dragon.defeated");
         
         // Break the portal but keep the egg
@@ -812,7 +825,7 @@ public class Act3Listener implements Listener {
         // Prevent end_stone placement near portal
         if (block.getType() == Material.END_STONE && isNearProtectedPortal(blockLoc)) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("§c§l⚠ Cannot place blocks near the protected End Portal!").color(NamedTextColor.RED));
+            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage("portals.end_protected")).color(NamedTextColor.RED));
             
             if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
                 plugin.getLogger().info("[Portal Protection] Prevented " + event.getPlayer().getName() + 

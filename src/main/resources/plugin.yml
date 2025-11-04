@@ -9,9 +9,14 @@ website: https://pidoras.uno
 commands:
   story:
     description: Main story plugin command
-    usage: /story <start|skip|reset|progress|tp|reload>
+    usage: /story <start|menu|give|debug>
     permission: story.admin
     aliases: [st]
+  server:
+    description: Server start command
+    usage: /server start
+    permission: story.admin
+    aliases: [srv]
 
 permissions:
   story.admin:

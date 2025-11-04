@@ -544,7 +544,7 @@ public class Act2Listener implements Listener {
                                                     @Override
                                                     public void run() {
                                                         Skeleton boss = (Skeleton) world.spawnEntity(spawnLoc.clone().add(0, 1, 0), EntityType.SKELETON);
-                                                        boss.setCustomName("§4§lПовелитель Скелетов");
+                                                        boss.setCustomName(plugin.getMessageManager().getMessage("entities.skeleton_lord"));
                                                         boss.setCustomNameVisible(true);
                                                         
                                                         // More epic particles on spawn
@@ -774,7 +774,8 @@ public class Act2Listener implements Listener {
                             // Teleport player on top of boss (punishment for exploiting)
                             Location teleportLoc = bossLocation.clone().add(0, 2, 0);
                             player.teleport(teleportLoc);
-                            player.sendMessage(Component.text("§c§l⚡ Повелитель наказывает вас за трусость!").color(NamedTextColor.RED));
+                            String cowardiceMsg = plugin.getMessageManager().getMessage(player, "boss1.cowardice_punishment");
+                            player.sendMessage(Component.text(cowardiceMsg).color(NamedTextColor.RED));
                             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.7f);
                             bossLocation.getWorld().spawnParticle(Particle.PORTAL, teleportLoc, 50, 0.5, 1, 0.5, 0.5);
                             
@@ -1034,12 +1035,14 @@ public class Act2Listener implements Listener {
                             mainHand.setAmount(0);
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                             player.getWorld().spawnParticle(Particle.ITEM, player.getLocation().add(0, 1, 0), 20, 0.3, 0.3, 0.3, 0.1, mainHand);
-                            player.sendMessage(Component.text("§c§l⚡ Повелитель разбивает ваш щит!").color(NamedTextColor.RED));
+                            String shieldBreakMsg = plugin.getMessageManager().getMessage(player, "boss1.shield_break");
+                            player.sendMessage(Component.text(shieldBreakMsg).color(NamedTextColor.RED));
                         } else if (offHand.getType() == Material.SHIELD) {
                             offHand.setAmount(0);
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                             player.getWorld().spawnParticle(Particle.ITEM, player.getLocation().add(0, 1, 0), 20, 0.3, 0.3, 0.3, 0.1, offHand);
-                            player.sendMessage(Component.text("§c§l⚡ Повелитель разбивает ваш щит!").color(NamedTextColor.RED));
+                            String shieldBreakMsg = plugin.getMessageManager().getMessage(player, "boss1.shield_break");
+                            player.sendMessage(Component.text(shieldBreakMsg).color(NamedTextColor.RED));
                         }
                     }
                 }
@@ -1097,7 +1100,8 @@ public class Act2Listener implements Listener {
             player.setVelocity(direction);
             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_IRON_GOLEM_ATTACK, 1.5f, 0.8f);
             player.getWorld().spawnParticle(Particle.EXPLOSION, player.getLocation(), 1);
-            player.sendMessage(Component.text("§c§l⚡ Повелитель отбрасывает вас!").color(NamedTextColor.RED));
+            String knockbackMsg = plugin.getMessageManager().getMessage(player, "boss1.knockback");
+            player.sendMessage(Component.text(knockbackMsg).color(NamedTextColor.RED));
         }
     }
     
@@ -1205,7 +1209,8 @@ public class Act2Listener implements Listener {
             
             arrow.setVelocity(direction);
             arrow.setShooter(skeleton); // Boss becomes the shooter
-            arrow.setBounce(false);
+            // setBounce is deprecated, but we need to keep it for compatibility
+            // arrow.setBounce(false); // Deprecated method removed
             
             // Epic deflection effects
             World world = skeleton.getWorld();
@@ -1370,7 +1375,8 @@ public class Act2Listener implements Listener {
         // Notify nearby players
         for (Player player : boss.getWorld().getPlayers()) {
             if (player.getLocation().distance(boss.getLocation()) < 100) {
-                player.sendMessage(Component.text("§5§l⚡ Повелитель входит во ВТОРУЮ ФАЗУ!").color(NamedTextColor.DARK_PURPLE));
+                String phase2Msg = plugin.getMessageManager().getMessage(player, "boss1.phase2");
+                player.sendMessage(Component.text(phase2Msg).color(NamedTextColor.DARK_PURPLE));
                 player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.0f, 1.5f);
             }
         }
@@ -1650,7 +1656,7 @@ public class Act2Listener implements Listener {
         world.playSound(destination, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 0.8f);
         
         // Message to player
-        plugin.getMessageManager().sendMessage(player, "boss.teleported");
+        player.sendMessage(Component.text(plugin.getMessageManager().getMessage(player, "boss.teleported")));
         
         // Debug logging
         if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
@@ -1717,7 +1723,8 @@ public class Act2Listener implements Listener {
                     // Сообщение всем игрокам
                     for (Player player : world.getPlayers()) {
                         if (player.getLocation().distance(bossLoc) < 50) {
-                            player.sendMessage(Component.text("§4§l⚡⚡⚡ ПОВЕЛИТЕЛЬ В ЯРОСТИ! ОН РАЗРУШАЕТ СТЕНЫ! ⚡⚡⚡").color(NamedTextColor.DARK_RED));
+                            String wallRageMsg = plugin.getMessageManager().getMessage(player, "boss1.wall_rage");
+                            player.sendMessage(Component.text(wallRageMsg).color(NamedTextColor.DARK_RED));
                         }
                     }
                     
@@ -2122,7 +2129,8 @@ public class Act2Listener implements Listener {
             for (SafeZone zone : currentSafeZones) {
                 if (zone.contains(playerLoc)) {
                     event.setCancelled(true);
-                    player.sendMessage(Component.text("§a§l✓ Безопасная зона защитила вас!").color(NamedTextColor.GREEN));
+                    String safeZoneMsg = plugin.getMessageManager().getMessage(player, "boss1.safe_zone_protection");
+                    player.sendMessage(Component.text(safeZoneMsg).color(NamedTextColor.GREEN));
                     playerLoc.getWorld().playSound(playerLoc, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.5f);
                     return;
                 }
@@ -2222,7 +2230,7 @@ public class Act2Listener implements Listener {
         Location spawnLoc = location.clone().add(0, 5, 0);
         
         Wither boss = (Wither) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.WITHER);
-        boss.setCustomName("§4§lИзверг Адских Глубин");
+        boss.setCustomName(plugin.getMessageManager().getMessage("entities.nether_fiend"));
         boss.setCustomNameVisible(true);
         
         // Set attributes
@@ -2259,7 +2267,14 @@ public class Act2Listener implements Listener {
         event.getDrops().add(key);
         event.getDrops().add(new ItemStack(Material.NETHER_STAR, 2));
         
-        // Broadcast
+        // Broadcast victory message
+        String victoryMsg = plugin.getMessageManager().getMessage("ru", "boss2.defeated_message");
+        if (victoryMsg == null || victoryMsg.equals("boss2.defeated_message")) {
+            victoryMsg = "§6§l⚔ Изверг Адских Глубин повержен!";
+        }
+        plugin.getServer().broadcast(Component.text(victoryMsg).color(NamedTextColor.GOLD));
+        
+        // Play dialog
         plugin.getDialogManager().playDialogForAll("boss2.defeated");
         
         // Create portal in Overworld
@@ -2271,6 +2286,13 @@ public class Act2Listener implements Listener {
         plugin.getStructureManager().placeStructure("overworld_portal", portalLoc);
         plugin.getDataManager().saveLocation("structures.overworld_portal", portalLoc);
         
-        plugin.getLogger().info("Overworld portal placed at: " + portalLoc);
+        // Announce portal creation
+        String portalMsg = plugin.getMessageManager().getMessage("ru", "boss2.portal_created");
+        if (portalMsg == null || portalMsg.equals("boss2.portal_created")) {
+            portalMsg = "§5§l⚡ Портал в Край создан в Верхнем Мире!";
+        }
+        plugin.getServer().broadcast(Component.text(portalMsg).color(NamedTextColor.LIGHT_PURPLE));
+        
+        plugin.getLogger().info(plugin.getMessageManager().getMessage("log.overworld_portal_placed").replace("%location%", portalLoc.getBlockX() + ", " + portalLoc.getBlockY() + ", " + portalLoc.getBlockZ()));
     }
 }

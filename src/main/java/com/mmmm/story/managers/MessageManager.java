@@ -16,8 +16,7 @@ import java.util.Map;
 public class MessageManager {
     
     private final MmmmStoryPlugin plugin;
-    private FileConfiguration messagesRu;
-    private FileConfiguration messagesEn;
+    private FileConfiguration messages;
     private final Map<String, FileConfiguration> configCache = new HashMap<>();
     
     public MessageManager(MmmmStoryPlugin plugin) {
@@ -26,15 +25,11 @@ public class MessageManager {
     }
     
     private void loadMessages() {
-        // Load Russian messages
-        messagesRu = loadMessageFile("messages.yml");
-        
-        // Load English messages
-        messagesEn = loadMessageFile("messages_en.yml");
+        // Load messages
+        messages = loadMessageFile("messages.yml");
         
         // Cache for quick access
-        configCache.put("ru", messagesRu);
-        configCache.put("en", messagesEn);
+        configCache.put("ru", messages);
     }
     
     private FileConfiguration loadMessageFile(String filename) {
@@ -63,26 +58,16 @@ public class MessageManager {
      * Get message for player's language
      */
     public String getMessage(Player player, String path) {
-        String lang = getPlayerLanguage(player);
-        return getMessage(lang, path);
+        // Since only Russian is supported, ignore player and return Russian
+        return getMessage("ru", path);
     }
     
     /**
      * Get message for specific language
      */
     public String getMessage(String lang, String path) {
-        FileConfiguration config = configCache.getOrDefault(lang, messagesRu);
+        FileConfiguration config = configCache.getOrDefault(lang, messages);
         String message = config.getString(path);
-        
-        // Fallback to English if not found in requested language
-        if (message == null && !"en".equals(lang)) {
-            message = messagesEn.getString(path);
-        }
-        
-        // Fallback to Russian if not found in English
-        if (message == null && !"ru".equals(lang)) {
-            message = messagesRu.getString(path);
-        }
         
         // Final fallback - return raw key with warning
         if (message == null) {
@@ -96,13 +81,29 @@ public class MessageManager {
     /**
      * Get message with replacements
      */
-    public String getMessage(Player player, String path, Map<String, String> replacements) {
+    public String getMessage(Player player, String path, Map<String, String> placeholders) {
         String message = getMessage(player, path);
+        if (message == null) return "Message not found: " + path;
         
-        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             message = message.replace("%" + entry.getKey() + "%", entry.getValue());
         }
+        return message;
+    }
+
+    public String getMessage(String messageKey) {
+        // Since only Russian is supported, always return Russian
+        return messages.getString(messageKey);
+    }
+
+    public String getMessage(String lang, String messageKey, Map<String, String> placeholders) {
+        // Since only Russian is supported, ignore lang and return Russian
+        String message = messages.getString(messageKey);
+        if (message == null) return "Message not found: " + messageKey;
         
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            message = message.replace("%" + entry.getKey() + "%", entry.getValue());
+        }
         return message;
     }
     
@@ -118,13 +119,8 @@ public class MessageManager {
      * Get message list (e.g., for item lore) for specific language
      */
     public java.util.List<String> getMessageList(String lang, String path) {
-        FileConfiguration config = configCache.getOrDefault(lang, messagesRu);
+        FileConfiguration config = configCache.getOrDefault(lang, messages);
         java.util.List<String> list = config.getStringList(path);
-        
-        // Fallback to Russian if not found
-        if ((list == null || list.isEmpty()) && !"ru".equals(lang)) {
-            list = messagesRu.getStringList(path);
-        }
         
         // Final fallback - return empty list
         if (list == null) {
@@ -138,15 +134,8 @@ public class MessageManager {
      * Get player's language based on client locale
      */
     private String getPlayerLanguage(Player player) {
-        String locale = player.locale().toString().toLowerCase();
-        
-        // Russian locales
-        if (locale.startsWith("ru")) {
-            return "ru";
-        }
-        
-        // Default to English
-        return "en";
+        // Since only Russian is supported, always return "ru"
+        return "ru";
     }
     
     /**

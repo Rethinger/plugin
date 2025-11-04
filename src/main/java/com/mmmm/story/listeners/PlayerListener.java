@@ -108,7 +108,7 @@ public class PlayerListener implements Listener {
                     for (ItemStack item : itemsToKeep) {
                         player.getInventory().addItem(item);
                     }
-                    player.sendMessage(Component.text("§aВаши сюжетные предметы сохранены!"));
+                    player.sendMessage(Component.text(plugin.getMessageManager().getMessage("items.kept_on_death")));
                 }
             }, 20L);
         }

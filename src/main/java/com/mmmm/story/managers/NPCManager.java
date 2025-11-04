@@ -724,6 +724,44 @@ public class NPCManager {
         }
     }
     
+    /**
+     * Remove NPC by name (for messenger NPC)
+     * @param player The player who triggered the removal
+     * @param npcName The name of the NPC to remove
+     */
+    public void removeNpcByName(Player player, String npcName) {
+        // Find the messenger NPC by checking if the name contains "Посланник"
+        for (Map.Entry<String, NPC> entry : npcEntities.entrySet()) {
+            if (entry.getKey().contains("messenger") || entry.getKey().contains("Messenger")) {
+                NPC npc = entry.getValue();
+                if (npc != null) {
+                    // Play disappearance effect at NPC location
+                    Location npcLocation = npc.getLocation();
+                    World world = npcLocation.getWorld();
+                    
+                    // Create smoke effect
+                    for (int i = 0; i < 20; i++) {
+                        double offsetX = (Math.random() - 0.5) * 2;
+                        double offsetY = Math.random() * 2;
+                        double offsetZ = (Math.random() - 0.5) * 2;
+                        
+                        world.spawnParticle(Particle.SMOKE, npcLocation, 10, offsetX, offsetY, offsetZ, 0.1);
+                    }
+                    
+                    // Play disappearance sound
+                    world.playSound(npcLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+                    
+                    // Remove the NPC
+                    npc.hideNpcFromAllPlayers();
+                    npcEntities.remove(entry.getKey());
+                    
+                    plugin.getLogger().info("[NPC] Removed messenger NPC: " + entry.getKey());
+                    return;
+                }
+            }
+        }
+    }
+    
     public void removeNPC(UUID npcId) {
         // Legacy UUID-based removal - redirect to string-based
         removeNPC(npcId.toString());
