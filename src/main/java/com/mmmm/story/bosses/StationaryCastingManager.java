@@ -39,13 +39,14 @@ public class StationaryCastingManager {
 
     // Configuration constants
     private static final int CASTING_DURATION_TICKS = 60; // 3 seconds
-    private static final double ATTACK_RADIUS = 20.0; // Expanded to 20 blocks
+    private static final double ATTACK_RADIUS = 15.0; // Back to 15 blocks for performance
     private static final double SAFE_ZONE_RADIUS = 1.5;
     private static final int MAX_SAFE_ZONES = 5;
     private static final int FANGS_PER_WAVE = 8;
 
     // Particle colors
     private static final DustOptions RED_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 50, 50), 1.5f);
+    private static final DustOptions WHITE_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 255, 255), 2.0f);
 
     /**
      * Create a new stationary casting manager
@@ -203,6 +204,49 @@ public class StationaryCastingManager {
                 }
             }
         }
+
+        // Visualize safe zones with white circles
+        visualizeSafeZones();
+    }
+
+    /**
+     * Visualize safe zones with white circles
+     */
+    private void visualizeSafeZones() {
+        if (safeZoneManager == null) return;
+
+        World world = bossPosition.getWorld();
+        if (world == null) return;
+
+        // Get active safe zones
+        List<com.mmmm.story.bosses.SafeZone> activeZones = safeZoneManager.getActiveSafeZones();
+
+        for (com.mmmm.story.bosses.SafeZone zone : activeZones) {
+            Location center = zone.getCenter();
+            double radius = zone.getRadius();
+
+            // Find ground level for safe zone center
+            double groundY = findGroundLevel(world, center.getX(), center.getZ(), center.getY());
+            center.setY(groundY);
+
+            // Create white circle for safe zone
+            int particles = (int) (2 * Math.PI * radius * 3); // 3 particles per block of circumference
+            for (int i = 0; i < particles; i++) {
+                double angle = (i / (double) particles) * 2 * Math.PI;
+                double x = center.getX() + radius * Math.cos(angle);
+                double z = center.getZ() + radius * Math.sin(angle);
+
+                Location particleLoc = new Location(world, x, groundY + 0.1, z);
+
+                // Spawn white particle
+                world.spawnParticle(Particle.DUST, particleLoc, 1, 0, 0, 0, 0, WHITE_DUST);
+            }
+
+            // Add some glow particles in the center
+            for (int i = 0; i < 5; i++) {
+                world.spawnParticle(Particle.GLOW, center, 1, radius * 0.5, 0.2, radius * 0.5, 0.1);
+            }
+        }
     }
 
     /**
@@ -318,19 +362,48 @@ public class StationaryCastingManager {
     }
 
     /**
-     * Spawn triple fang attack - all three waves instantly
+     * Spawn triple fang attack with staggered waves for performance
      */
     private void spawnTripleFangAttack(List<Location> positions) {
         if (positions.isEmpty()) return;
 
-        logger.info("[StationaryCastingManager] Starting triple fang attack - " + positions.size() + " fangs per wave");
+        logger.info("[StationaryCastingManager] Starting staggered triple fang attack - " + positions.size() + " fangs per wave");
 
-        // Spawn all three waves instantly with slight pitch variations
-        spawnFangs(positions, 1.0f); // First wave - normal pitch
-        spawnFangs(positions, 1.1f); // Second wave - slightly higher pitch
-        spawnFangs(positions, 1.2f); // Third wave - highest pitch
+        // Calculate positions for each of the 3 waves to distribute load
+        int totalPositions = positions.size();
+        int waveSize = Math.max(50, totalPositions / 3); // At least 50 fangs per wave for better performance
 
-        logger.info("[StationaryCastingManager] Triple fang attack completed - " + (positions.size() * 3) + " total fangs spawned");
+        // Wave 1 - immediate
+        int endIdx1 = Math.min(waveSize, totalPositions);
+        List<Location> wave1Positions = positions.subList(0, endIdx1);
+        spawnFangs(wave1Positions, 1.0f);
+
+        // Wave 2 - after 5 ticks (0.25 seconds) to reduce performance impact
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                int startIdx = waveSize;
+                int endIdx = Math.min(startIdx + waveSize, totalPositions);
+                if (startIdx < totalPositions) {
+                    List<Location> wave2Positions = positions.subList(startIdx, endIdx);
+                    spawnFangs(wave2Positions, 1.1f);
+                }
+            }
+        }.runTaskLater(plugin, 5L);
+
+        // Wave 3 - after 10 ticks (0.5 seconds)
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                int startIdx = waveSize * 2;
+                if (startIdx < totalPositions) {
+                    List<Location> wave3Positions = positions.subList(startIdx, totalPositions);
+                    spawnFangs(wave3Positions, 1.2f);
+                }
+            }
+        }.runTaskLater(plugin, 10L);
+
+        logger.info("[StationaryCastingManager] Staggered triple fang attack initiated - " + totalPositions + " total fangs across 3 waves");
     }
 
     /**
