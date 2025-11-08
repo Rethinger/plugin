@@ -139,6 +139,7 @@ public class DialogManager {
                     if (!soundName.isEmpty() && !soundName.equals("null")) {
                         try {
                             Sound sound = Sound.valueOf(soundName.toUpperCase().replace("MINECRAFT:", ""));
+                            // Player-centered sound: dialog feedback should play at player location
                             player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
                         } catch (IllegalArgumentException e) {
                             plugin.getLogger().warning("Invalid sound: " + soundName);
@@ -173,6 +174,7 @@ public class DialogManager {
                     
                     player.sendMessage(Component.empty());
                     player.sendMessage(continueButton);
+                    // Player-centered sound: continue button feedback should play at player location
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 1.5f);
                 }
             }.runTaskLater(plugin, finalDelay);
@@ -253,6 +255,23 @@ public class DialogManager {
                         igniteNearbyNetherPortal(player);
                     }
                     
+                    // Trigger Messenger despawn exactly when the disappearance line begins rendering
+                    try {
+                        String triggerText = dialog.getString("disappearanceTriggerText", "Посланник исчезает в тумане");
+                        boolean matchesConfiguredDelay = (disappearanceLine >= 0 && delay == disappearanceLine);
+                        // Clean text for matching by removing color codes and formatting
+                        String cleanText = text != null ? text.replaceAll("§[0-9a-fk-or]", "").replace("*", "") : "";
+                        String cleanTriggerText = triggerText != null ? triggerText.replaceAll("§[0-9a-fk-or]", "").replace("*", "") : "";
+                        boolean matchesTriggerText = !cleanTriggerText.isEmpty() && cleanText.contains(cleanTriggerText);
+
+                        if (matchesConfiguredDelay || matchesTriggerText) {
+                            plugin.getLogger().info("[Dialog] Triggering messenger despawn for text: " + text);
+                            plugin.getNpcManager().despawnMessenger();
+                        }
+                    } catch (Exception e) {
+                        plugin.getLogger().warning("[Dialog] Error while triggering messenger despawn: " + e.getMessage());
+                    }
+                    
                     // Parse color codes and formatting (включая &k для обфускации)
                     Component message = Component.text(text.replace("&", "§"));
                     
@@ -284,6 +303,7 @@ public class DialogManager {
                                 pitch = 1.0f;
                             }
                             
+                            // Player-centered sound: dialog sound effects should play at player location
                             player.playSound(player.getLocation(), sound, volume, pitch);
                         } catch (IllegalArgumentException e) {
                             plugin.getLogger().warning("Invalid sound: " + soundName);
@@ -305,39 +325,7 @@ public class DialogManager {
             }.runTaskLater(plugin, (lastDelay + 1) * 20L);
         }
         
-        // Handle NPC disappearance effect if specified
-        if (disappearanceLine >= 0) {
-            // Calculate when to trigger the disappearance effect
-            int disappearanceDelay = (int) (disappearanceLine * speedMultiplier);
-            
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (!player.isOnline()) {
-                        return;
-                    }
-                    
-                    // Find and remove the "Посланник" NPC
-                    plugin.getNpcManager().removeNpcByName(player, "Посланник");
-                    
-                    // Play particle effect at NPC location
-                    Location npcLocation = player.getLocation().add(0, 1, 0); // Approximate NPC location
-                    World world = npcLocation.getWorld();
-                    
-                    // Create smoke effect
-                    for (int i = 0; i < 20; i++) {
-                        double offsetX = (Math.random() - 0.5) * 2;
-                        double offsetY = Math.random() * 2;
-                        double offsetZ = (Math.random() - 0.5) * 2;
-                        
-                        world.spawnParticle(Particle.SMOKE, npcLocation, 10, offsetX, offsetY, offsetZ, 0.1);
-                    }
-                    
-                    // Play disappearance sound
-                    player.playSound(npcLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-                }
-            }.runTaskLater(plugin, disappearanceDelay * 20L);
-        }
+        // Disappearance is now triggered inline when the configured line renders (see above)
     }
     
     public void playDialogForAll(String dialogKey) {
@@ -367,6 +355,7 @@ public class DialogManager {
         Block blockToIgnite = coreLocation.getBlock();
         if (blockToIgnite.getType() == Material.AIR || blockToIgnite.getType() == Material.OBSIDIAN) {
             blockToIgnite.setType(Material.FIRE);
+            // Location-centered effects: portal ignition effects play at core location, not player location
             world.playSound(coreLocation, Sound.ITEM_FIRECHARGE_USE, 1.5f, 0.8f);
             world.spawnParticle(Particle.FLAME, coreLocation, 100, 0.5, 0.5, 0.5, 0.1);
             world.spawnParticle(Particle.LAVA, coreLocation, 30, 0.3, 0.3, 0.3, 0.05);

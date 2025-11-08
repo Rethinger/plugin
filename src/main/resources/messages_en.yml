@@ -1,0 +1,534 @@
+# ================================
+# SYSTEM MESSAGES (ENGLISH)
+# ================================
+
+# NPC
+npc:
+  messenger_name: "§6Messenger"
+  direction_marker: "§6You received a direction marker! (Lasts 5 minutes)"
+
+# Act Manager
+act:
+  divider: "§8§m                                                    "
+  title_prefix: "§8» "
+  subtitle_prefix: "§8» §7"
+
+# Story Item Protection
+item_protection:
+  saved_on_death: "§6§l✔ Story items saved and will be returned after respawn!"
+  restored: "§a§l✔ Story items returned!"
+  items_saved: "§aYour story items have been saved!"
+
+# Act 1 - Skeleton Wave
+act1:
+  skeleton_warrior: "§6Skeleton Warrior"
+  skeleton_archer: "§6Skeleton Archer"
+  achievement_survivor: "§a§l✔ Achievement unlocked: Survivor"
+  achievement_survivor_desc: "§7You survived the skeleton warrior wave!"
+  wave_started: "§c§lSkeleton wave started! Defend yourselves until dawn!"
+  crossroads_activated: "§6§l⚡ Crossroads Node activated!"
+  portals_enabled: "§aNether portals are now working!"
+
+# Boss 1 - Skeleton Lord
+boss1:
+  name: "§4§lSkeleton Lord"
+  warrior: "§6Lord's Warrior"
+  archer: "§6Lord's Archer"
+  shield_break: "§c§l⚡ Lord breaks your shield!"
+  knockback: "§c§l⚡ Lord knocks you back!"
+  phase2: "§5§l⚡ Lord enters PHASE 2!"
+  wall_rage: "§4§l⚡⚡⚡ LORD IN RAGE! HE'S DESTROYING WALLS! ⚡⚡⚡"
+  wall_rage_feel: "§c§lYou feel the Lord's wrath!"
+  cowardice: "§c§l⚠ Lord senses your cowardice..."
+  cowardice_punishment: "§c§l⚡ Lord punishes you for cowardice!"
+  pull: "§4§l⚡ LORD PULLS YOU!"
+  safe_zone_protection: "§a§l✓ Safe zone protected you!"
+  defeated_first: "§e§l✦ Find the Void Catalyst in the Bastion!"
+  defeated_again: "§6§l⚔ Lord defeated again!"
+  wither_skull_attack:
+    warning: "§5§l⚡ LORD SUMMONS WITHER SKULLS!"
+  special_attack:
+    warning: "§5§l⚡ Boss is preparing a special attack! Move away from the center!"
+
+# Boss 2 - Nether Fiend
+boss2:
+  name: "§4§lNether Fiend"
+  defeated_message: "§6§l⚔ Nether Fiend defeated!"
+  portal_created: ""
+
+# Boss 3 - End Guardian
+boss3:
+  name: "§5§lEnd Guardian"
+  materialized: "§5§l⚔ End Guardian materializes!"
+  crystal_guardian: "§5§lCrystal Guardian"
+
+# Dragon
+dragon:
+  defeated_message: "§5§l⚔ Ender Dragon defeated!"
+  next_step: "§d✦ Collect the artifacts in End cities to begin the final ritual!"
+
+# Act 5 - Final Ritual
+act5:
+  exit_blocked: "§c§lExit from the End is blocked! Collect all artifacts to begin the ritual."
+  too_far: "§c✗ Too far from End center! (distance: %distance%/100 blocks)"
+  artifacts_count: "§d✦ Artifacts in ritual chests: %count%/5"
+  returned_overworld: "§6You have returned to the Overworld..."
+  all_artifacts_collected: "§a§l✔ All artifacts collected!"
+  ritual_starting: "§d§l⚡ Ritual begins..."
+
+# Portals
+portal:
+  end_opened: "§5§l⚡ End gates have appeared!"
+  end_instruction: "§aPass through the gates to complete what you started"
+  unstable: "§cPortal is unstable! Stabilization required..."
+  end_closed: "§cPortal to the End is closed! Special key required..."
+
+# Chest search messages
+chest:
+  search:
+    searching: "🔍 Searching chest..."
+    searching_item: "Item sought: {0}"
+    found: "✓ FOUND: {0}!"
+    success: "✓ SUCCESS!"
+    nothing: "✗ Nothing found in this chest. ({0}/{1})"
+    broke: "✗ Chest broke after 3 failed attempts!"
+    cooldown: "✗ This chest was recently searched ({0} sec)"
+    material_found: "✓ Item found!"
+
+  # Item finding messages
+  item:
+    found: "§a§l✔ Item found: {0}!"
+    found_multiple: "§a§l✔ Items found: {0}!"
+    lore_updated: "§7Item description updated!"
+    lore_added: "§7Item description added!"
+    lore_removed: "§7Item description removed!"
+    enchantment_added: "§7Enchantment added to item!"
+    enchantment_removed: "§7Enchantment removed from item!"
+    durability_changed: "§7Item durability changed!"
+    durability_full: "§7Item is fully restored!"
+    durability_low: "§cItem is about to break!"
+    durability_critical: "§4§l⚠ Item is in critical condition!"
+    repair_success: "§a§l✔ Item repaired!"
+    repair_failed: "§c✗ Failed to repair item!"
+    upgrade_success: "§a§l✔ Item upgraded!"
+    upgrade_failed: "§c✗ Failed to upgrade item!"
+    custom_name_added: "§7Custom name added to item!"
+    custom_name_removed: "§7Custom name removed from item!"
+    attribute_added: "§7Attribute added to item!"
+    attribute_removed: "§7Attribute removed from item!"
+    attribute_changed: "§7Attribute changed on item!"
+    flag_added: "§7Flag added to item!"
+    flag_removed: "§7Flag removed from item!"
+    flag_changed: "§7Flag changed on item!"
+    nbt_added: "§7NBT data added to item!"
+    nbt_removed: "§7NBT data removed from item!"
+    nbt_changed: "§7NBT data changed on item!"
+    unbreakable_added: "§7Item made unbreakable!"
+    unbreakable_removed: "§7Item made breakable!"
+    glow_added: "§7Item starts glowing!"
+    glow_removed: "§7Item stops glowing!"
+    hide_attributes_added: "§7Item attributes hidden!"
+    hide_attributes_removed: "§7Item attributes no longer hidden!"
+    hide_enchantments_added: "§7Item enchantments hidden!"
+    hide_enchantments_removed: "§7Item enchantments no longer hidden!"
+    hide_tooltip_added: "§7Item tooltip hidden!"
+    hide_tooltip_removed: "§7Item tooltip no longer hidden!"
+    stored_success: "§a§l✔ Item stored in inventory!"
+    stored_failed: "§c✗ Failed to store item in inventory!"
+    retrieved_success: "§a§l✔ Item retrieved from inventory!"
+    retrieved_failed: "§c✗ Failed to retrieve item from inventory!"
+    converted_success: "§a§l✔ Item converted!"
+    converted_failed: "§c✗ Failed to convert item!"
+    renamed_success: "§a§l✔ Item renamed!"
+    renamed_failed: "§c✗ Failed to rename item!"
+    copied_success: "§a§l✔ Item copied!"
+    copied_failed: "§c✗ Failed to copy item!"
+    moved_success: "§a§l✔ Item moved!"
+    moved_failed: "§c✗ Failed to move item!"
+    dropped_success: "§a§l✔ Item dropped!"
+    dropped_failed: "§c✗ Failed to drop item!"
+    picked_up_success: "§a§l✔ Item picked up!"
+    picked_up_failed: "§c✗ Failed to pick up item!"
+    placed_success: "§a§l✔ Item placed!"
+    placed_failed: "§c✗ Failed to place item!"
+    used_success: "§a§l✔ Item used!"
+    used_failed: "§c✗ Failed to use item!"
+    broken_success: "§a§l✔ Item broken!"
+    broken_failed: "§c✗ Failed to break item!"
+    consumed_success: "§a§l✔ Item consumed!"
+    consumed_failed: "§c✗ Failed to consume item!"
+    crafted_success: "§a§l✔ Item crafted!"
+    crafted_failed: "§c✗ Failed to craft item!"
+    smelted_success: "§a§l✔ Item smelted!"
+    smelted_failed: "§c✗ Failed to smelt item!"
+    brewed_success: "§a§l✔ Potion brewed!"
+    brewed_failed: "§c✗ Failed to brew potion!"
+    enchanted_success: "§a§l✔ Item enchanted!"
+    enchanted_failed: "§c✗ Failed to enchant item!"
+    repaired_success: "§a§l✔ Item processed on anvil!"
+    repaired_failed: "§c✗ Failed to process item on anvil!"
+    grindstone_success: "§a§l✔ Item processed on grindstone!"
+    grindstone_failed: "§c✗ Failed to process item on grindstone!"
+    brewing_stand_success: "§a§l✔ Item processed on brewing stand!"
+    brewing_stand_failed: "§c✗ Failed to process item on brewing stand!"
+    enchanting_table_success: "§a§l✔ Item enchanted on enchanting table!"
+    enchanting_table_failed: "§c✗ Failed to enchant item on enchanting table!"
+    furnace_success: "§a§l✔ Item smelted in furnace!"
+    furnace_failed: "§c✗ Failed to smelt item in furnace!"
+    blast_furnace_success: "§a§l✔ Item smelted in blast furnace!"
+    blast_furnace_failed: "§c✗ Failed to smelt item in blast furnace!"
+    smoker_success: "§a§l✔ Item cooked in smoker!"
+    smoker_failed: "§c✗ Failed to cook item in smoker!"
+    campfire_success: "§a§l✔ Item cooked on campfire!"
+    campfire_failed: "§c✗ Failed to cook item on campfire!"
+    cartography_table_success: "§a§l✔ Item processed on cartography table!"
+    cartography_table_failed: "§c✗ Failed to process item on cartography table!"
+    loom_success: "§a§l✔ Item processed on loom!"
+    loom_failed: "§c✗ Failed to process item on loom!"
+    smithing_table_success: "§a§l✔ Item processed on smithing table!"
+    smithing_table_failed: "§c✗ Failed to process item on smithing table!"
+    stonecutter_success: "§a§l✔ Item processed on stonecutter!"
+    stonecutter_failed: "§c✗ Failed to process item on stonecutter!"
+
+  # Item localization - Complete story items
+  items:
+    stabilization_core:
+      name: "Stabilization Core"
+      lore:
+        - "Ancient artifact capable of"
+        - "stabilizing portal connections"
+        - ""
+        - "✦ Found near destroyed portals"
+        - ""
+        - "▶ Drop (Q) on obsidian block"
+        - "to activate Nether portals"
+    
+    act1_skeleton_key:
+      name: "Skeleton Key"
+      lore:
+        - "Ancient key obtained from"
+        - "the Skeleton Lord"
+        - ""
+        - "✦ Opens the path to"
+        - "deeper secrets"
+        - ""
+        - "▶ Use on summoning altar"
+    
+    boss1_material:
+      name: "Rage Fragment"
+      lore:
+        - "Fragment infused with the rage"
+        - "of the defeated Skeleton Lord"
+        - ""
+        - "✦ Required to merge with Void Catalyst"
+        - ""
+        - "▶ Combine with Void Catalyst on Ancient Debris block"
+    
+    boss1_catalyst:
+      name: "Void Catalyst"
+      lore:
+        - "Dark energy found deep in"
+        - "the Piglin Bastion"
+        - ""
+        - "✦ Enhances Rage Fragment"
+        - ""
+        - "▶ Combine with Rage Fragment on Ancient Debris block"
+    
+    boss1_summon_key:
+      name: "Lord's Summon Key"
+      lore:
+        - "Key capable of summoning"
+        - "the Skeleton Lord again"
+        - ""
+        - "✦ Created from Material and Catalyst"
+        - ""
+        - "▶ Use on summoning altar"
+    boss2_structure_key:
+      name: "Boss 2 Structure Key"
+      lore:
+        - "Summons the End Guardian"
+        - ""
+        - "▶ Drop (Q) on Dragon Egg"
+        - "in Boss 2 Arena for summoning"
+    overworld_portal_key:
+      name: "End Gates Key"
+      lore:
+        - "This key summons"
+        - "End Gates to the Overworld"
+        - ""
+        - "▶ Drop (Q) on Beacon"
+        - "to open the portal"
+    end_artifact_1:
+      name: "Void Shard"
+      description: "A piece of night in which whispers of forgotten worlds are trapped."
+      lore:
+        - "A piece of night in which whispers of forgotten worlds are trapped."
+        - ""
+        - "Artifact required to seal the"
+        - "Dark Lord"
+        - ""
+        - "✦ Place all 5 artifacts"
+        - "in ritual chests around End center (0, 0)"
+        - "for the final sealing ritual"
+    end_artifact_2:
+      name: "Breath of Time"
+      description: "The last breath of a clock, escaped from a cracked spiral of ages."
+      lore:
+        - "The last breath of a clock, escaped from a cracked spiral of ages."
+        - ""
+        - "Artifact required to seal the"
+        - "Dark Lord"
+        - ""
+        - "✦ Place all 5 artifacts"
+        - "in ritual chests around End center (0, 0)"
+        - "for the final sealing ritual"
+    end_artifact_3:
+      name: "Fruit of the Void"
+      description: "Seed of stellar darkness, sprouting in the silence of interdimensional space."
+      lore:
+        - "Seed of stellar darkness, sprouting in the silence of interdimensional space."
+        - ""
+        - "Artifact required to seal the"
+        - "Dark Lord"
+        - ""
+        - "✦ Place all 5 artifacts"
+        - "in ritual chests around End center (0, 0)"
+        - "for the final sealing ritual"
+    end_artifact_4:
+      name: "Eye of Dimensions"
+      description: "A transparent pupil that can discern the seams of reality and the paths between them."
+      lore:
+        - "A transparent pupil that can discern the seams of reality and the paths between them."
+        - ""
+        - "Artifact required to seal the"
+        - "Dark Lord"
+        - ""
+        - "✦ Place all 5 artifacts"
+        - "in ritual chests around End center (0, 0)"
+        - "for the final sealing ritual"
+    end_artifact_5:
+      name: "Wings of Freedom"
+      description: "Opal feathers of wind that know no walls or chains."
+      lore:
+        - "Opal feathers of wind that know no walls or chains."
+        - ""
+        - "Artifact required to seal the"
+        - "Dark Lord"
+        - ""
+        - "✦ Place all 5 artifacts"
+        - "in ritual chests around End center (0, 0)"
+        - "for the final sealing ritual"
+    end_artifact:
+      name: "End Artifact"
+      description: "Ancient artifact {0} of 5"
+      ritual_required: "Required for the final ritual"
+      place_all: "▶ Place all 5 artifacts"
+      in_ritual_chests: "in ritual chests around End center (0, 0)"
+      for_ritual: "for the final sealing ritual"
+
+# Menu System Messages
+menu:
+  main:
+    title: "§6Plugin Menu"
+    settings: "§eSettings"
+    story: "§6Story"
+    info: "§eInfo"
+    close: "§cClose"
+  
+  story:
+    title: "§6Story Menu"
+    progress: "§eProgress: Act %act%"
+    act: "§eCurrent act: %status%"
+    quests: "§eActive quests"
+    lore: "§eLore"
+  
+  settings:
+    title: "§6Settings"
+    speed: "§eDialog speed: %speed%"
+    display: "§eDisplay mode: %mode%"
+    back: "§7Back"
+  
+  info:
+    title: "§eInformation"
+    version: "§7Version: 1.4.0"
+    back: "§7Back"
+  
+  blocked:
+    combat: "§cCannot open menu during combat!"
+    dialog: "§cCannot open menu during dialog!"
+  
+  server_start:
+    title: "§6§lServer Settings"
+    ready: "§a§lReady!"
+    not_ready: "§eWaiting for other players..."
+    player_not_ready: "§7- %player% §cnot ready"
+    all_ready: "§6§lAll players ready! Starting story..."
+    waiting: "§eWaiting for player readiness..."
+
+# Additional messages from English file, now in Russian
+act5:
+  all_artifacts_collected: "§a§l✔ All artifacts collected!"
+  ritual_starting: "§d§l⚡ Ritual begins..."
+
+# Spawn point management (Bug #5 Fix)
+spawn:
+  saved: "§6Your respawn point has been saved."
+  forced_end: "§cYou have respawned in the End. You are trapped here until the ritual is completed..."
+  restored: "§aYour original respawn point has been restored!"
+  restore_failed: "§cFailed to restore respawn point (world not found)."
+
+# Boss teleport messages (Bug #2 Fix)
+boss:
+  teleported: "§c§lBoss teleported behind you!"
+  proximity_warning: "§eBoss senses your fear!"
+
+# Event messages (Bug #1 Fix: Missing EN translations)
+events:
+  wave_incoming: "§c§lSkeleton wave incoming! Defend yourselves until dawn!"
+  wave_survived: "§aYou survived the skeleton warrior wave!"
+
+# Achievement messages (Bug #1 Fix)
+achievements:
+  wave_survived: "§a§l✔ Achievement unlocked: Survivor"
+
+# Commands
+commands.player_only: "§cThis command is available only to players!"
+
+# Items
+items.kept_on_death: "§aYour story items were saved!"
+
+# Portals
+portals.end_protected: "§c§l⚠ Cannot place blocks near protected End portal!"
+
+# Structure Signs
+structures:
+  forgotten_altar:
+    line1: "§6§l[ALTAR]"
+    line2: "§7Forgotten Altar"
+    line3: "§eAct 1"
+  crossroads_node:
+    line1: "§b§l[NODE]"
+    line2: "§7Crossroads"
+  boss1_arena:
+    line1: "§c§l[BOSS 1]"
+    line2: "§7Rage Arena"
+    line3: "§eAct 2"
+  boss2_arena:
+    line1: "§5§l[BOSS 2]"
+    line2: "§7End Arena"
+    line3: "§eAct 3"
+  end_portal_frame:
+    line1: "§d§l[PORTAL]"
+    line2: "§7End Portal"
+    line3: "§eAct 5"
+
+# NPC and Entity Names
+npc:
+  messenger_name: "§6Messenger"
+entities:
+  skeleton_lord: "§4§lSkeleton Lord"
+  nether_fiend: "§4§lNether Fiend"
+  end_guardian: "§5§lEnd Guardian"
+  crystal_guardian: "§5§lCrystal Guardian"
+
+# Server Start Menu
+server_start_menu:
+  title: "§6§lDialog Settings"
+  speed: "§eDialog speed: %speed%"
+  display: "§eDisplay mode: %mode%"
+  ready: "§a§lYou are marked as ready!"
+  you_ready: "§aYou are marked as ready!"
+  all_ready: "§6§lYou are ready! Starting story..."
+  all_ready_others: "§6§lAll players are ready! Starting story..."
+  waiting: "§eWaiting for other players..."
+  player_not_ready: "§7- %player% §cis not ready"
+
+# Player Progress Display
+progress:
+  title: "§6=== Current Progress ==="
+  act: "§7Act %act%: %status%"
+  act1_complete: "§a✓ §fFound Stabilization Core"
+  act1_complete2: "§a✓ §fActivated Crossroads Node"
+  act2_complete: "§a✓ §fObtained Summon Key"
+  act2_complete2: "§a✓ §fCreate Lord's summon structure"
+  act3_complete: "§a✓ §fDefeated Skeleton Lord"
+  act3_complete2: "§a✓ §fObtained Rage Fragment"
+  act4_complete: "§a✓ §fDefeated Nether Fiend"
+  act4_complete2: "§a✓ §fObtained End Gates Key"
+  act5_complete: "§a✓ §fObtained all 5 End artifacts"
+  act5_complete2: "§a✓ §fRitual sealing completed"
+  quest_header: "§e• §fActive quests:"
+  quest1: "§e• §fFind the Ruined Portal"
+  quest2: "§e• §fUse the Stabilization Core"
+  quest3: "§e• §fExplore the Nether Fortresses"
+  quest4: "§e• §fFind the Void Catalyst in the Bastion"
+  quest5: "§e• §fSummon and defeat the Skeleton Lord"
+  quest6: "§e• §fCreate Lord's summon structure"
+  quest7: "§e• §fDefeat the Nether Fiend"
+  quest8: "§e• §fUse the End Gates Key"
+  quest9: "§e• §fCollect all 5 End artifacts"
+  quest10: "§e• §fPerform the ritual sealing"
+
+# Item Names (for ChestSpawnManager fallback)
+item_names:
+  stabilization_core: "Stabilization Core"
+  summon_key: "Summon Key"
+  void_catalyst: "Void Catalyst"
+  end_artifact: "End Artifact"
+  unknown_item: "Unknown Item"
+
+# Log Messages (for administrators)
+log:
+  plugin_enabled: "Story plugin successfully enabled!"
+  plugin_disabled: "Story plugin disabled."
+  campaign_started: "Story campaign started!"
+  progressed_to_act: "Progressed to Act %act%"
+  nether_portals_enabled: "Nether portals enabled!"
+  end_portals_enabled: "End portals enabled!"
+  invalid_act: "Invalid act number: %act%"
+  campaign_already_started: "Campaign already started!"
+  portal_ignited: "Portal ignited at location: %location%"
+  portal_ignite_failed: "Failed to ignite portal - block: %block%"
+  npc_cleanup: "Cleaning up all NPCs and animations..."
+  npc_cleanup_complete: "Cleanup complete - removed %count% NPCs"
+  npc_removed: "Removed messenger NPC: %npcId%"
+  npc_spawned: "NPC spawned with default skin"
+  npc_skin_applied: "Skin successfully applied to NPC"
+  chest_cleanup: "Cleaned up %count% old chest records"
+  artifact_found: "Artifact %artifactNum% marked as found!"
+  overworld_portal_placed: "Overworld portal placed at: %location%"
+  end_city_detected: "END CITY detected at %location%"
+  nether_fortress_detected: "NETHER FORTRESS detected at %location%"
+  bastion_remnant_detected: "BASTION detected at %location%"
+  ruined_portal_detected: "RUINED PORTAL detected at %location%"
+
+# Dialog Manager
+dialog:
+  continue_button: "[ ▶ Continue ]"
+  continue_hover: "Click to continue dialog"
+  npc_disappear_name: "Messenger"
+  core_location_not_found: "Core location not found for portal ignition!"
+  cannot_ignite_portal: "Cannot ignite portal - block is %block%"
+  portal_ignited_at: "Portal ignited at core location: %location%"
+
+# Story Command
+command:
+  player_only: "This command can only be used by a player!"
+  no_active_dialog: "No active dialog to continue."
+  insufficient_permissions: "Insufficient permissions!"
+  campaign_already_started: "Campaign already launched!"
+  readiness_menu_opened: "Readiness menu opened for all players!"
+  give_usage: "Usage: /story give <player> <item>"
+  available_items: "Available items:"
+  item_give_success: "Item %item% given to player %player%"
+  item_give_receiver: "You received a story item!"
+  unknown_item: "Unknown item: %item%"
+  item_creation_error: "Error creating item!"
+  player_not_found: "Player not found!"
+  debug_info_header: "=== Story Plugin Debug Info ==="
+  debug_tracked_blocks: "Tracked player-placed blocks: %count%"
+  help_header: "=== Story Plugin Commands ==="
+  help_start: "/story start - Launch campaign"
+  help_menu: "/story menu - Open settings menu"
+  help_give: "/story give <player> <item> - Give item"
+  help_debug: "/story debug - Show debug information"

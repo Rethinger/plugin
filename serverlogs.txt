@@ -1,0 +1,796 @@
+[21:50:41 INFO]: [ServerStoryPlugin] Enabling ServerStoryPlugin v1.4.0
+[21:50:41 INFO]: [ServerStoryPlugin] === Mmmm Story Plugin ===
+[21:50:41 INFO]: [ServerStoryPlugin] Initializing story campaign...
+[21:50:41 INFO]: [ServerStoryPlugin] NPC API initialized
+[21:50:41 INFO]: [ServerStoryPlugin] Сюжетный плагин успешно включён!
+[21:50:41 INFO]: [Sleeper] Enabling Sleeper v1.6.2
+[21:50:41 INFO]: [Sleeper] Sleeper Version 1.6.2 Has Been Enabled!
+[21:50:41 INFO]: [ProjectWebsite] Enabling ProjectWebsite v1.0-SNAPSHOT
+[21:50:41 INFO]: [ProjectWebsite] ProjectWebsite plugin has been enabled!
+[21:50:41 INFO]: [playit-gg] Enabling playit-gg v0.1.4
+[21:50:42 INFO]: [gg.playit.minecraft.PlayitKeysSetup] secret key found, checking
+[21:50:42 INFO]: [gg.playit.minecraft.PlayitKeysSetup] check secret
+[21:50:42 INFO]: [NpcPlugin-Paper] Enabling NpcPlugin-Paper v1.2.1-SNAPSHOT
+[21:50:42 INFO]: [NpcPlugin-Paper] Registering commands...
+[21:50:42 INFO]: [NpcPlugin-Paper] Registering listeners...
+[21:50:42 INFO]: [NpcPlugin-Paper] Loading items...
+[21:50:42 WARN]: [org.bukkit.craftbukkit.legacy.CraftLegacy] Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!
+[21:50:43 INFO]: [gg.playit.minecraft.PlayitKeysSetup] found minecraft java tunnel: facilities-dependent.gl.joinmc.link
+[21:50:43 INFO]: [gg.playit.minecraft.PlayitManager] keys and tunnel setup
+[21:50:44 INFO]: [gg.playit.control.ChannelSetup] request queued, waiting 1 second before resend
+[21:50:55 INFO]: [NpcPlugin-Paper] Loading language files...
+[21:50:56 INFO]: [MyCommand] Enabling MyCommand v5.7.4
+[21:50:56 INFO]: *-=-=-=-=-=-=-=-=-* MyCommand v.5.7.4*-=-=-=-=-=-=-=-=-=-*
+[21:50:56 INFO]: | Vault plugin not found. Using BukkitPermissions
+[21:50:56 INFO]: | No Economy support without Vault!
+[21:50:56 INFO]: | Command file(s) found : 1
+[21:50:56 INFO]: | Config : Ready.
+[21:50:56 INFO]: | ProtocolLib not found.
+[21:50:56 INFO]: [PlaceholderAPI] Successfully registered internal expansion: mycommand [1.0.0]
+[21:50:56 INFO]: | Placeholder_API : Hooked, Ok.
+[21:50:56 INFO]: | Custom commands loaded : 44
+[21:50:56 INFO]: | New update available : MyCommand v5.7.5
+[21:50:56 INFO]: |          by emmerrei a.k.a. ivanfromitaly.
+[21:50:56 INFO]: *-=-=-=-=-=-=-=-=-=-*   Done!   *-=-=-=-=-=-=-=-=-=-=-*
+[21:50:56 INFO]: [GSit] Enabling GSit v2.1.0
+[21:50:56 INFO]: [PlaceholderAPI] Successfully registered internal expansion: gsit [2.1.0]
+[21:50:56 INFO]: [GSit] The plugin was successfully enabled.
+[21:50:56 INFO]: [GSit] Link with PlaceholderAPI successful!
+[21:50:56 INFO]: [Chunky] Enabling Chunky v1.4.28
+[21:50:56 INFO]: [AdvancedServerList] Enabling AdvancedServerList v5.5.1
+[21:50:56 INFO]: [AdvancedServerList] Registering internal Placeholders...
+[21:50:56 INFO]: [AdvancedServerList] Starting AdvancedServerList v5.5.1...
+[21:50:56 INFO]: [AdvancedServerList]      __      _______ ___
+[21:50:56 INFO]: [AdvancedServerList]     /\ \    / ____|_| | |
+[21:50:56 INFO]: [AdvancedServerList]    /  \ \  | (_(___ | | |
+[21:50:56 INFO]: [AdvancedServerList]   / /\ \ \  \___ \ \| | |
+[21:50:56 INFO]: [AdvancedServerList]  / ____ \ \ ____) | | |_|____
+[21:50:56 INFO]: [AdvancedServerList] /_/_/  \_\_\_____/_/|______|_|
+[21:50:56 INFO]: [AdvancedServerList]
+[21:50:56 INFO]: [AdvancedServerList] Platform: Paper (ID: papermc:paper, Version: 1.21.4, Build: 151)
+[21:50:56 INFO]: [AdvancedServerList]
+[21:50:56 INFO]: [AdvancedServerList] [-] Loading profiles...
+[21:50:56 INFO]: [AdvancedServerList] [✓] Successfully loaded 1 profile(s)!
+[21:50:56 INFO]: [AdvancedServerList] [-] Loading local image files as Favicons...
+[21:50:56 INFO]: [AdvancedServerList] [✓] Loaded 0 local Favicons.
+[21:50:57 INFO]: [AdvancedServerList] [✓] Loaded Command /advancedserverlist!
+[21:50:57 INFO]: [AdvancedServerList] [✓] Loaded 31 players into cache!
+[21:50:57 INFO]: [AdvancedServerList] [✓] AdvancedServerList is ready!
+[21:50:57 INFO]: [AdvancedServerList] [-] Looking for an update...
+[21:50:57 INFO]: [PlaceholderAPI] Successfully registered internal expansion: asl [5.5.1]
+[21:50:57 INFO]: [spark] Starting background profiler...
+[21:50:57 INFO]: [spark] The async-profiler engine is not supported for your os/arch (windows11/amd64), so the built-in Java engine will be used instead.
+[21:50:57 INFO]: [PlaceholderAPI] Placeholder expansion registration initializing...
+[21:50:57 INFO]: [NpcPlugin-Paper] Loading NpcApi...
+[21:50:57 INFO]: [NpcPlugin-Paper] Loading paths...
+[21:50:57 INFO]: Done preparing level "world" (19.132s)
+[21:50:57 INFO]: Running delayed init tasks
+[21:50:57 INFO]: Done (40.095s)! For help, type "help"
+[21:50:57 INFO]: [voicechat] Loading plugins
+[21:50:57 INFO]: [voicechat] Loaded 0 plugin(s)
+[21:50:57 INFO]: [voicechat] Initializing plugins
+[21:50:57 INFO]: [voicechat] Initialized 0 plugin(s)
+[21:50:57 WARN]: [voicechat] Running in offline mode - Voice chat encryption is not secure!
+[21:50:57 INFO]: [voicechat] Voice chat server started at 0.0.0.0:25565
+[21:50:57 INFO]: [PlaceholderAPI] Successfully registered external expansion: player [2.0.8]
+[21:50:57 INFO]: [PlaceholderAPI] Successfully registered external expansion: statistic [2.0.1]
+[21:50:57 INFO]: [PAPI] [Javascript-Expansion] 2 scripts loaded!
+[21:50:57 INFO]: [PlaceholderAPI] Successfully registered external expansion: javascript [2.1.2]
+[21:50:57 INFO]: 3 placeholder hook(s) registered! 2 placeholder hook(s) have an update available.
+[21:50:57 WARN]: [JustTPA] Failed to check for updates
+[21:51:07 INFO]: [MyCommand] found an update for MyCommand. Type /mycommand for more infos.
+[21:54:52 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[21:55:05 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[21:59:02 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[21:59:15 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:03:13 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:03:25 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:07:23 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:07:35 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:11:30 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:11:43 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:15:38 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:15:50 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:16:12 INFO]: UUID of player Rethinger is a1c49e47-d09e-3dc9-94d5-05944571b0f8
+[22:16:13 INFO]: [ServerStoryPlugin] Player joined. Online: 1, Act: 1, Task active: false
+[22:16:13 ERROR]: [ProjectWebsite] Error validating player: Connection refused: connect
+[22:16:13 INFO]: Rethinger joined the game
+[22:16:13 INFO]: Rethinger[/127.0.0.1:58334] logged in with entity id 41 at ([world]-104.51781699313611, 64.0, 85.90673627709822)
+[22:16:19 INFO]: Rethinger issued server command: /gamemode survival
+[22:16:19 INFO]: [Rethinger: Set own game mode to Survival Mode]
+[22:16:20 INFO]: Rethinger issued server command: /gamemode creative
+[22:16:20 INFO]: [Rethinger: Set own game mode to Creative Mode]
+[22:16:35 INFO]: Rethinger issued server command: /story give Rethinger boss1_summon_key
+[22:17:22 INFO]: Rethinger issued server command: /story give Rethinger stabilization_core
+[22:17:28 INFO]: Rethinger issued server command: /story start
+[22:17:29 INFO]: Вы готовы! Начинаем сюжет...
+[22:17:29 INFO]: [ServerStoryPlugin] [NPC] Cleaning up all NPCs and animations...
+[22:17:29 INFO]: [ServerStoryPlugin] [NPC] Cleanup complete - removed 0 NPCs
+[22:17:29 INFO]: [ServerStoryPlugin] Сюжетная кампания началась!
+[22:17:29 INFO]: [ServerStoryPlugin] [NPC] Используется кастомный скин из конфига
+[22:17:40 INFO]: [ServerStoryPlugin] [NPC] Скин успешно применён к NPC
+[22:18:32 INFO]: [ServerStoryPlugin] [Dialog] Triggering messenger despawn for text: &7&o*Посланник исчезает в тумане*
+[22:18:32 INFO]: [ServerStoryPlugin] [NPC] Starting enhanced despawn animation for messenger: messenger_155afc25
+[22:18:32 INFO]: [ServerStoryPlugin] [NPC] Marked messenger_155afc25 as despawning at Location{world=CraftWorld{name=world},x=-96.0,y=64.0,z=-48.0,pitch=0.0,yaw=0.0}
+[22:18:32 INFO]: [ServerStoryPlugin] [NPC] Enhanced particle cleanup using method: override
+[22:18:32 INFO]: [ServerStoryPlugin] [NPC] Starting immediate particle cleanup for messenger despawn
+[22:18:32 INFO]: [ServerStoryPlugin] [NPC] Enhanced particle cleanup using method: override
+[22:18:37 INFO]: [ServerStoryPlugin] [NPC] Performing final cleanup for messenger despawn
+[22:18:37 INFO]: [ServerStoryPlugin] [NPC] Enhanced particle cleanup using method: override
+[22:18:37 INFO]: [ServerStoryPlugin] [NPC] Successfully cancelled 1 tasks for NPC messenger_155afc25
+[22:18:41 INFO]: [ServerStoryPlugin] Ядро стабилизации выброшено, начинается проверка на обсидиан...
+[22:18:41 INFO]: [ServerStoryPlugin] Проверка: блок под ядром = OBSIDIAN
+[22:18:41 INFO]: [ServerStoryPlugin] Обсидиан обнаружен! Активируем узел...
+[22:18:41 INFO]: [ServerStoryPlugin] Активация узла перекрестков в Location{world=CraftWorld{name=world},x=-107.875,y=65.0,z=-46.390625,pitch=0.0,yaw=331.58774}
+[22:18:41 INFO]: [ServerStoryPlugin] Прогресс до акта 2
+[22:18:41 INFO]: [ServerStoryPlugin] Узел активирован для 1 игроков
+[22:19:01 INFO]: [ServerStoryPlugin] Portal ignited at core location: Location{world=CraftWorld{name=world},x=-107.875,y=65.0,z=-46.390625,pitch=0.0,yaw=331.58774}
+[22:19:45 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:19:58 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:21:52 INFO]: Rethinger issued server command: /gamemode survival
+[22:21:52 INFO]: [Rethinger: Set own game mode to Survival Mode]
+[22:22:27 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §4§lПовелитель Скелетов
+[22:22:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.66 blocks, tracking=in progress
+[22:22:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.26 blocks, tracking=in progress
+[22:22:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.95 blocks, tracking=in progress
+[22:22:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.49 blocks, tracking=in progress
+[22:22:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.38 blocks, tracking=in progress
+[22:22:28 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.97 blocks, tracking=in progress
+[22:22:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.71 blocks, tracking=in progress
+[22:22:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.47 blocks, tracking=in progress
+[22:22:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.34 blocks, tracking=in progress
+[22:22:29 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.65 blocks, tracking=in progress
+[22:22:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.35 blocks, tracking=in progress
+[22:22:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.75 blocks, tracking=in progress
+[22:22:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.51 blocks, tracking=in progress
+[22:22:30 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.10 blocks, tracking=in progress
+[22:22:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.41 blocks, tracking=in progress
+[22:22:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.21 blocks, tracking=in progress
+[22:22:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.20 blocks, tracking=in progress
+[22:22:31 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.13 blocks, tracking=in progress
+[22:22:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.00 blocks, tracking=in progress
+[22:22:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.18 blocks, tracking=in progress
+[22:22:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.87 blocks, tracking=in progress
+[22:22:32 INFO]: [ServerStoryPlugin] [Special Attack] Cadence requirements not met, skipping special attack. Spacing met: true, Warrior summon: false
+[22:22:32 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.93 blocks, tracking=in progress
+[22:22:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.45 blocks, tracking=in progress
+[22:22:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.11 blocks, tracking=in progress
+[22:22:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.97 blocks, tracking=in progress
+[22:22:33 INFO]: [ServerStoryPlugin] [Special Attack] Cadence requirements not met, skipping special attack. Spacing met: true, Warrior summon: false
+[22:22:33 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.81 blocks, tracking=in progress
+[22:22:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.52 blocks, tracking=in progress
+[22:22:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.96 blocks, tracking=in progress
+[22:22:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.36 blocks, tracking=in progress
+[22:22:34 INFO]: [ServerStoryPlugin] [Special Attack] Cadence requirements not met, skipping special attack. Spacing met: true, Warrior summon: false
+[22:22:34 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.48 blocks, tracking=in progress
+[22:22:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.71 blocks, tracking=in progress
+[22:22:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.71 blocks, tracking=in progress
+[22:22:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.27 blocks, tracking=in progress
+[22:22:35 INFO]: [ServerStoryPlugin] [Special Attack] Cadence requirements not met, skipping special attack. Spacing met: true, Warrior summon: false
+[22:22:35 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.54 blocks, tracking=in progress
+[22:22:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.30 blocks, tracking=in progress
+[22:22:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.11 blocks, tracking=in progress
+[22:22:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.23 blocks, tracking=in progress
+[22:22:36 INFO]: [ServerStoryPlugin] [Special Attack] Cadence requirements not met, skipping special attack. Spacing met: true, Warrior summon: false
+[22:22:36 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.42 blocks, tracking=in progress
+[22:22:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.64 blocks, tracking=in progress
+[22:22:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.78 blocks, tracking=in progress
+[22:22:37 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:37 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:37 INFO]: [ServerStoryPlugin] [Summon Task] Recorded complete warrior summon wave (wave #1) for hemisphere attack
+[22:22:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.21 blocks, tracking=in progress
+[22:22:37 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 0.0s
+[22:22:37 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.44 blocks, tracking=in progress
+[22:22:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.10 blocks, tracking=in progress
+[22:22:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.38 blocks, tracking=in progress
+[22:22:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.09 blocks, tracking=in progress
+[22:22:38 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 1.0s
+[22:22:38 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.55 blocks, tracking=in progress
+[22:22:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.91 blocks, tracking=in progress
+[22:22:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.45 blocks, tracking=in progress
+[22:22:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.08 blocks, tracking=in progress
+[22:22:39 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 2.0s
+[22:22:39 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.43 blocks, tracking=in progress
+[22:22:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.56 blocks, tracking=in progress
+[22:22:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.29 blocks, tracking=in progress
+[22:22:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.12 blocks, tracking=in progress
+[22:22:40 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 3.0s
+[22:22:40 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.80 blocks, tracking=in progress
+[22:22:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.95 blocks, tracking=in progress
+[22:22:41 INFO]: Named entity Skeleton['Воин Повелителя'/1358, uuid='5179a88c-ded6-44d3-8707-da46de51acda', l='ServerLevel[world]', x=-118.10, y=64.00, z=77.49, cpos=[-8, 4], tl=75, v=true] died: Воин Повелителя was slain by Rethinger
+[22:22:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.28 blocks, tracking=in progress
+[22:22:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.90 blocks, tracking=in progress
+[22:22:41 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 4.0s
+[22:22:41 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.73 blocks, tracking=in progress
+[22:22:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.15 blocks, tracking=in progress
+[22:22:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.43 blocks, tracking=in progress
+[22:22:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.95 blocks, tracking=in progress
+[22:22:42 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 5.0s
+[22:22:42 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.17 blocks, tracking=in progress
+[22:22:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.10 blocks, tracking=in progress
+[22:22:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.95 blocks, tracking=in progress
+[22:22:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.08 blocks, tracking=in progress
+[22:22:43 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 6.0s
+[22:22:43 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.50 blocks, tracking=in progress
+[22:22:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.89 blocks, tracking=in progress
+[22:22:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.76 blocks, tracking=in progress
+[22:22:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.00 blocks, tracking=in progress
+[22:22:44 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 7.0s
+[22:22:44 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.71 blocks, tracking=in progress
+[22:22:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.15 blocks, tracking=in progress
+[22:22:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.43 blocks, tracking=in progress
+[22:22:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.77 blocks, tracking=in progress
+[22:22:45 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 8.0s
+[22:22:45 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.85 blocks, tracking=in progress
+[22:22:45 INFO]: Named entity Skeleton['Воин Повелителя'/1359, uuid='58095711-b26a-4100-a387-96edef76bce6', l='ServerLevel[world]', x=-120.64, y=64.00, z=87.58, cpos=[-8, 5], tl=170, v=true] died: Воин Повелителя was slain by Rethinger
+[22:22:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.81 blocks, tracking=in progress
+[22:22:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.05 blocks, tracking=in progress
+[22:22:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.96 blocks, tracking=in progress
+[22:22:46 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 1, Time since last wave: 9.0s
+[22:22:46 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.63 blocks, tracking=in progress
+[22:22:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.46 blocks, tracking=in progress
+[22:22:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.82 blocks, tracking=in progress
+[22:22:47 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:47 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:47 INFO]: [ServerStoryPlugin] [Summon Task] Recorded complete warrior summon wave (wave #2) for hemisphere attack
+[22:22:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.50 blocks, tracking=in progress
+[22:22:47 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 0.0s
+[22:22:47 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.80 blocks, tracking=in progress
+[22:22:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.26 blocks, tracking=in progress
+[22:22:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.24 blocks, tracking=in progress
+[22:22:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.51 blocks, tracking=in progress
+[22:22:48 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 1.0s
+[22:22:48 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.99 blocks, tracking=in progress
+[22:22:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.11 blocks, tracking=in progress
+[22:22:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.89 blocks, tracking=in progress
+[22:22:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.97 blocks, tracking=in progress
+[22:22:49 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 2.0s
+[22:22:49 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.09 blocks, tracking=in progress
+[22:22:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.50 blocks, tracking=in progress
+[22:22:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.36 blocks, tracking=in progress
+[22:22:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.51 blocks, tracking=in progress
+[22:22:50 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 3.0s
+[22:22:50 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.56 blocks, tracking=in progress
+[22:22:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.22 blocks, tracking=in progress
+[22:22:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.23 blocks, tracking=in progress
+[22:22:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.93 blocks, tracking=in progress
+[22:22:51 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 4.0s
+[22:22:51 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.25 blocks, tracking=in progress
+[22:22:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.68 blocks, tracking=in progress
+[22:22:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.42 blocks, tracking=in progress
+[22:22:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.16 blocks, tracking=in progress
+[22:22:52 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 5.0s
+[22:22:52 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.17 blocks, tracking=in progress
+[22:22:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.34 blocks, tracking=in progress
+[22:22:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.30 blocks, tracking=in progress
+[22:22:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.68 blocks, tracking=in progress
+[22:22:53 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 6.0s
+[22:22:53 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.84 blocks, tracking=in progress
+[22:22:53 INFO]: Named entity Skeleton['Воин Повелителя'/1404, uuid='b2d8c0fd-dd3f-44ed-a580-bf9c26aa553d', l='ServerLevel[world]', x=-117.31, y=64.00, z=78.52, cpos=[-8, 4], tl=129, v=true] died: Воин Повелителя was slain by Rethinger
+[22:22:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.91 blocks, tracking=in progress
+[22:22:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.93 blocks, tracking=in progress
+[22:22:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.43 blocks, tracking=in progress
+[22:22:54 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 7.0s
+[22:22:54 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.51 blocks, tracking=in progress
+[22:22:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.21 blocks, tracking=in progress
+[22:22:55 INFO]: Named entity Skeleton['Воин Повелителя'/1403, uuid='13bc559f-46cd-46ca-8f03-fc0543544b98', l='ServerLevel[world]', x=-114.65, y=64.00, z=79.31, cpos=[-8, 4], tl=153, v=true] died: Воин Повелителя was slain by Rethinger
+[22:22:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.96 blocks, tracking=in progress
+[22:22:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.97 blocks, tracking=in progress
+[22:22:55 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 8.0s
+[22:22:55 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.84 blocks, tracking=in progress
+[22:22:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.20 blocks, tracking=in progress
+[22:22:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.69 blocks, tracking=in progress
+[22:22:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.94 blocks, tracking=in progress
+[22:22:56 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 2, Time since last wave: 9.0s
+[22:22:56 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.53 blocks, tracking=in progress
+[22:22:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.37 blocks, tracking=in progress
+[22:22:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.99 blocks, tracking=in progress
+[22:22:57 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:57 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:57 INFO]: [ServerStoryPlugin] [Wolves Fear] Removed wolves' fear mechanic from skeleton: §6Воин Повелителя
+[22:22:57 INFO]: [ServerStoryPlugin] [Summon Task] Recorded complete warrior summon wave (wave #3) for hemisphere attack
+[22:22:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.47 blocks, tracking=in progress
+[22:22:57 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 3, Time since last wave: 0.0s
+[22:22:57 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.44 blocks, tracking=in progress
+[22:22:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.61 blocks, tracking=in progress
+[22:22:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.63 blocks, tracking=in progress
+[22:22:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.12 blocks, tracking=in progress
+[22:22:58 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 3, Time since last wave: 1.0s
+[22:22:58 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.93 blocks, tracking=in progress
+[22:22:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.25 blocks, tracking=in progress
+[22:22:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.65 blocks, tracking=in progress
+[22:22:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.58 blocks, tracking=in progress
+[22:22:59 INFO]: [ServerStoryPlugin] [Stationary Casting] Hemisphere requirements not met. Warrior waves: 3, Time since last wave: 2.0s
+[22:22:59 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:22:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.75 blocks, tracking=in progress
+[22:22:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.67 blocks, tracking=in progress
+[22:23:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.62 blocks, tracking=in progress
+[22:23:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.18 blocks, tracking=in progress
+[22:23:00 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Starting stationary casting attack
+[22:23:00 INFO]: [ServerStoryPlugin] [Stationary Casting] Started stationary casting attack in phase 1
+[22:23:00 INFO]: [ServerStoryPlugin] [Stationary Casting] Attack radius: 15.0 blocks, Safe zone radius: 1.5 blocks
+[22:23:00 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.89 blocks, tracking=in progress
+[22:23:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.20 blocks, tracking=in progress
+[22:23:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.62 blocks, tracking=in progress
+[22:23:01 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Creating 2 safe zones for 1 players
+[22:23:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.77 blocks, tracking=in progress
+[22:23:01 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:01 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.09 blocks, tracking=in progress
+[22:23:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.27 blocks, tracking=in progress
+[22:23:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.59 blocks, tracking=in progress
+[22:23:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.93 blocks, tracking=in progress
+[22:23:02 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:02 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.38 blocks, tracking=in progress
+[22:23:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.19 blocks, tracking=in progress
+[22:23:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.76 blocks, tracking=in progress
+[22:23:03 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Starting evoker fangs attack
+[22:23:03 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Spawned 8 evoker fangs
+[22:23:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.21 blocks, tracking=in progress
+[22:23:03 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:03 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.69 blocks, tracking=in progress
+[22:23:03 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Spawned 8 evoker fangs
+[22:23:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.28 blocks, tracking=in progress
+[22:23:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.40 blocks, tracking=in progress
+[22:23:04 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Spawned 5 evoker fangs
+[22:23:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.02 blocks, tracking=in progress
+[22:23:04 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:04 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.78 blocks, tracking=in progress
+[22:23:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.66 blocks, tracking=in progress
+[22:23:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.86 blocks, tracking=in progress
+[22:23:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.45 blocks, tracking=in progress
+[22:23:05 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:05 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.77 blocks, tracking=in progress
+[22:23:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.57 blocks, tracking=in progress
+[22:23:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.43 blocks, tracking=in progress
+[22:23:06 INFO]: [ServerStoryPlugin] [SafeZoneManager] Sequential appearance stopped
+[22:23:06 INFO]: [ServerStoryPlugin] [StationaryCastingManager] Casting attack stopped, completed=true
+[22:23:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.29 blocks, tracking=in progress
+[22:23:06 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:06 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.92 blocks, tracking=in progress
+[22:23:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.44 blocks, tracking=in progress
+[22:23:07 INFO]: Named entity Skeleton['Воин Повелителя'/1430, uuid='85ee0e87-ca43-4aa4-a590-78500d0c32f4', l='ServerLevel[world]', x=-117.10, y=64.00, z=81.26, cpos=[-8, 5], tl=194, v=true] died: Воин Повелителя was slain by Rethinger
+[22:23:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.80 blocks, tracking=in progress
+[22:23:07 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:23:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.05 blocks, tracking=in progress
+[22:23:07 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:07 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.37 blocks, tracking=in progress
+[22:23:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.23 blocks, tracking=in progress
+[22:23:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.80 blocks, tracking=in progress
+[22:23:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.27 blocks, tracking=in progress
+[22:23:08 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:08 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.69 blocks, tracking=in progress
+[22:23:08 INFO]: Named entity Skeleton['Воин Повелителя'/1432, uuid='701badba-2eb9-43fc-a972-0363dfe58bbd', l='ServerLevel[world]', x=-118.15, y=64.00, z=77.21, cpos=[-8, 4], tl=230, v=true] died: Воин Повелителя was slain by Rethinger
+[22:23:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.52 blocks, tracking=in progress
+[22:23:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.69 blocks, tracking=in progress
+[22:23:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.53 blocks, tracking=in progress
+[22:23:09 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:09 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:09 INFO]: Named entity Skeleton['Воин Повелителя'/1431, uuid='2cf6af0a-aa0e-477e-8363-999f8b7c8a4a', l='ServerLevel[world]', x=-118.71, y=64.00, z=76.04, cpos=[-8, 4], tl=244, v=true] died: Воин Повелителя was slain by Rethinger
+[22:23:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.73 blocks, tracking=in progress
+[22:23:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.32 blocks, tracking=in progress
+[22:23:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.53 blocks, tracking=in progress
+[22:23:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.82 blocks, tracking=in progress
+[22:23:10 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:10 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.46 blocks, tracking=in progress
+[22:23:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.57 blocks, tracking=in progress
+[22:23:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.33 blocks, tracking=in progress
+[22:23:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.64 blocks, tracking=in progress
+[22:23:11 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:11 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.39 blocks, tracking=in progress
+[22:23:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.06 blocks, tracking=in progress
+[22:23:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.17 blocks, tracking=in progress
+[22:23:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.05 blocks, tracking=in progress
+[22:23:12 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:12 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.95 blocks, tracking=in progress
+[22:23:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.48 blocks, tracking=in progress
+[22:23:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.64 blocks, tracking=in progress
+[22:23:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.16 blocks, tracking=in progress
+[22:23:13 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:13 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.68 blocks, tracking=in progress
+[22:23:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.13 blocks, tracking=in progress
+[22:23:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.25 blocks, tracking=in progress
+[22:23:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.53 blocks, tracking=in progress
+[22:23:14 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:14 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.00 blocks, tracking=in progress
+[22:23:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.92 blocks, tracking=in progress
+[22:23:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.95 blocks, tracking=in progress
+[22:23:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.15 blocks, tracking=in progress
+[22:23:15 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:15 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.01 blocks, tracking=in progress
+[22:23:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.12 blocks, tracking=in progress
+[22:23:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.23 blocks, tracking=in progress
+[22:23:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.56 blocks, tracking=in progress
+[22:23:16 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:16 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.73 blocks, tracking=in progress
+[22:23:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.66 blocks, tracking=in progress
+[22:23:17 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.04 blocks, tracking=in progress
+[22:23:17 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:23:17 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.43 blocks, tracking=in progress
+[22:23:17 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:17 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:17 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.49 blocks, tracking=in progress
+[22:23:17 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.46 blocks, tracking=in progress
+[22:23:18 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.46 blocks, tracking=in progress
+[22:23:18 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.45 blocks, tracking=in progress
+[22:23:18 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:18 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:18 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.59 blocks, tracking=in progress
+[22:23:18 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.27 blocks, tracking=in progress
+[22:23:19 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.99 blocks, tracking=in progress
+[22:23:19 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.00 blocks, tracking=in progress
+[22:23:19 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:19 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:19 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.67 blocks, tracking=in progress
+[22:23:19 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.14 blocks, tracking=in progress
+[22:23:20 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.96 blocks, tracking=in progress
+[22:23:20 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.12 blocks, tracking=in progress
+[22:23:20 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:20 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:20 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.01 blocks, tracking=in progress
+[22:23:20 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.46 blocks, tracking=in progress
+[22:23:21 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.19 blocks, tracking=in progress
+[22:23:21 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.78 blocks, tracking=in progress
+[22:23:21 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:21 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:21 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.32 blocks, tracking=in progress
+[22:23:21 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.50 blocks, tracking=in progress
+[22:23:22 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.20 blocks, tracking=in progress
+[22:23:22 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.48 blocks, tracking=in progress
+[22:23:22 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:22 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:22 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.30 blocks, tracking=in progress
+[22:23:22 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.97 blocks, tracking=in progress
+[22:23:23 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.88 blocks, tracking=in progress
+[22:23:23 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.69 blocks, tracking=in progress
+[22:23:23 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:23 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:23 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.93 blocks, tracking=in progress
+[22:23:23 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.36 blocks, tracking=in progress
+[22:23:24 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.84 blocks, tracking=in progress
+[22:23:24 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.55 blocks, tracking=in progress
+[22:23:24 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:24 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:24 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.94 blocks, tracking=in progress
+[22:23:24 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.19 blocks, tracking=in progress
+[22:23:25 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.74 blocks, tracking=in progress
+[22:23:25 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.59 blocks, tracking=in progress
+[22:23:25 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:25 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:25 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.43 blocks, tracking=in progress
+[22:23:25 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.01 blocks, tracking=in progress
+[22:23:26 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.60 blocks, tracking=in progress
+[22:23:26 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.45 blocks, tracking=in progress
+[22:23:26 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:26 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:26 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.02 blocks, tracking=in progress
+[22:23:26 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.16 blocks, tracking=in progress
+[22:23:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.98 blocks, tracking=in progress
+[22:23:27 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:23:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.89 blocks, tracking=in progress
+[22:23:27 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:27 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.35 blocks, tracking=in progress
+[22:23:27 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.77 blocks, tracking=in progress
+[22:23:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.65 blocks, tracking=in progress
+[22:23:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.01 blocks, tracking=in progress
+[22:23:28 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:28 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.72 blocks, tracking=in progress
+[22:23:28 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.63 blocks, tracking=in progress
+[22:23:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.80 blocks, tracking=in progress
+[22:23:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.82 blocks, tracking=in progress
+[22:23:29 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:29 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.05 blocks, tracking=in progress
+[22:23:29 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.46 blocks, tracking=in progress
+[22:23:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.87 blocks, tracking=in progress
+[22:23:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.00 blocks, tracking=in progress
+[22:23:30 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:30 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.31 blocks, tracking=in progress
+[22:23:30 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.56 blocks, tracking=in progress
+[22:23:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.01 blocks, tracking=in progress
+[22:23:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.76 blocks, tracking=in progress
+[22:23:31 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:31 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.31 blocks, tracking=in progress
+[22:23:31 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.42 blocks, tracking=in progress
+[22:23:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.78 blocks, tracking=in progress
+[22:23:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.84 blocks, tracking=in progress
+[22:23:32 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:32 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.05 blocks, tracking=in progress
+[22:23:32 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.06 blocks, tracking=in progress
+[22:23:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.54 blocks, tracking=in progress
+[22:23:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.88 blocks, tracking=in progress
+[22:23:33 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:33 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.56 blocks, tracking=in progress
+[22:23:33 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.65 blocks, tracking=in progress
+[22:23:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.29 blocks, tracking=in progress
+[22:23:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.80 blocks, tracking=in progress
+[22:23:34 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:34 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.34 blocks, tracking=in progress
+[22:23:34 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.17 blocks, tracking=in progress
+[22:23:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.40 blocks, tracking=in progress
+[22:23:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.51 blocks, tracking=in progress
+[22:23:35 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:35 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.42 blocks, tracking=in progress
+[22:23:35 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.73 blocks, tracking=in progress
+[22:23:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.23 blocks, tracking=in progress
+[22:23:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.31 blocks, tracking=in progress
+[22:23:36 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:36 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.11 blocks, tracking=in progress
+[22:23:36 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.95 blocks, tracking=in progress
+[22:23:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.86 blocks, tracking=in progress
+[22:23:37 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:23:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.00 blocks, tracking=in progress
+[22:23:37 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:37 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.43 blocks, tracking=in progress
+[22:23:37 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.33 blocks, tracking=in progress
+[22:23:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.33 blocks, tracking=in progress
+[22:23:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.97 blocks, tracking=in progress
+[22:23:38 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:38 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.64 blocks, tracking=in progress
+[22:23:38 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.06 blocks, tracking=in progress
+[22:23:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.62 blocks, tracking=in progress
+[22:23:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.72 blocks, tracking=in progress
+[22:23:39 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:39 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.46 blocks, tracking=in progress
+[22:23:39 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.42 blocks, tracking=in progress
+[22:23:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.88 blocks, tracking=in progress
+[22:23:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.90 blocks, tracking=in progress
+[22:23:40 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:40 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.13 blocks, tracking=in progress
+[22:23:40 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.35 blocks, tracking=in progress
+[22:23:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.66 blocks, tracking=in progress
+[22:23:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.80 blocks, tracking=in progress
+[22:23:41 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:41 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.01 blocks, tracking=in progress
+[22:23:41 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.66 blocks, tracking=in progress
+[22:23:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.69 blocks, tracking=in progress
+[22:23:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.31 blocks, tracking=in progress
+[22:23:42 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:42 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.11 blocks, tracking=in progress
+[22:23:42 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.26 blocks, tracking=in progress
+[22:23:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.77 blocks, tracking=in progress
+[22:23:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.73 blocks, tracking=in progress
+[22:23:43 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:43 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.77 blocks, tracking=in progress
+[22:23:43 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.51 blocks, tracking=in progress
+[22:23:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.93 blocks, tracking=in progress
+[22:23:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.85 blocks, tracking=in progress
+[22:23:44 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:44 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.96 blocks, tracking=in progress
+[22:23:44 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.42 blocks, tracking=in progress
+[22:23:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.12 blocks, tracking=in progress
+[22:23:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.53 blocks, tracking=in progress
+[22:23:45 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:45 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.92 blocks, tracking=in progress
+[22:23:45 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.84 blocks, tracking=in progress
+[22:23:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.08 blocks, tracking=in progress
+[22:23:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.85 blocks, tracking=in progress
+[22:23:46 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:46 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.44 blocks, tracking=in progress
+[22:23:46 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.10 blocks, tracking=in progress
+[22:23:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.62 blocks, tracking=in progress
+[22:23:47 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:23:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.88 blocks, tracking=in progress
+[22:23:47 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:47 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.62 blocks, tracking=in progress
+[22:23:47 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.59 blocks, tracking=in progress
+[22:23:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.85 blocks, tracking=in progress
+[22:23:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.59 blocks, tracking=in progress
+[22:23:48 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:48 INFO]: [ServerStoryPlugin] Boss teleported away from 1 crowding players
+[22:23:48 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=12.35 blocks, tracking=in progress
+[22:23:48 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=12.28 blocks, tracking=in progress
+[22:23:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=11.84 blocks, tracking=in progress
+[22:23:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=9.45 blocks, tracking=in progress
+[22:23:49 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:49 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=6.97 blocks, tracking=in progress
+[22:23:49 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.08 blocks, tracking=in progress
+[22:23:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.92 blocks, tracking=in progress
+[22:23:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.06 blocks, tracking=in progress
+[22:23:50 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:50 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.31 blocks, tracking=in progress
+[22:23:50 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.40 blocks, tracking=in progress
+[22:23:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.69 blocks, tracking=in progress
+[22:23:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.20 blocks, tracking=in progress
+[22:23:51 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:51 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.41 blocks, tracking=in progress
+[22:23:51 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.15 blocks, tracking=in progress
+[22:23:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.26 blocks, tracking=in progress
+[22:23:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.77 blocks, tracking=in progress
+[22:23:52 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:52 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.31 blocks, tracking=in progress
+[22:23:52 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.72 blocks, tracking=in progress
+[22:23:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.75 blocks, tracking=in progress
+[22:23:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.59 blocks, tracking=in progress
+[22:23:53 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:53 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.66 blocks, tracking=in progress
+[22:23:53 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.10 blocks, tracking=in progress
+[22:23:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.61 blocks, tracking=in progress
+[22:23:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.46 blocks, tracking=in progress
+[22:23:54 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:54 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.07 blocks, tracking=in progress
+[22:23:54 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.40 blocks, tracking=in progress
+[22:23:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.69 blocks, tracking=in progress
+[22:23:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.43 blocks, tracking=in progress
+[22:23:55 INFO]: [ServerStoryPlugin] [Special Attack] Attack already in progress, skipping new attack initiation.
+[22:23:55 INFO]: [ServerStoryPlugin] [DEBUG] Proximity check (Phase 1): skipping - only Phase 2 teleports
+[22:23:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.06 blocks, tracking=in progress
+[22:23:55 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.19 blocks, tracking=in progress
+[22:23:56 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:23:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.63 blocks, tracking=in progress
+[22:23:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.50 blocks, tracking=in progress
+[22:23:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.82 blocks, tracking=in progress
+[22:23:56 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.05 blocks, tracking=in progress
+[22:23:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.87 blocks, tracking=in progress
+[22:23:57 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:23:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.86 blocks, tracking=in progress
+[22:23:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=5.07 blocks, tracking=in progress
+[22:23:57 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.77 blocks, tracking=in progress
+[22:23:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.41 blocks, tracking=in progress
+[22:23:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.36 blocks, tracking=in progress
+[22:23:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.48 blocks, tracking=in progress
+[22:23:58 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.21 blocks, tracking=in progress
+[22:23:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.65 blocks, tracking=in progress
+[22:23:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.62 blocks, tracking=in progress
+[22:23:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.05 blocks, tracking=in progress
+[22:23:59 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.30 blocks, tracking=in progress
+[22:24:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.37 blocks, tracking=in progress
+[22:24:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.40 blocks, tracking=in progress
+[22:24:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.66 blocks, tracking=in progress
+[22:24:00 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.12 blocks, tracking=in progress
+[22:24:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.43 blocks, tracking=in progress
+[22:24:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.51 blocks, tracking=in progress
+[22:24:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.00 blocks, tracking=in progress
+[22:24:01 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.73 blocks, tracking=in progress
+[22:24:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.32 blocks, tracking=in progress
+[22:24:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.83 blocks, tracking=in progress
+[22:24:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.57 blocks, tracking=in progress
+[22:24:02 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.02 blocks, tracking=in progress
+[22:24:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.05 blocks, tracking=in progress
+[22:24:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.83 blocks, tracking=in progress
+[22:24:03 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.08 blocks, tracking=in progress
+[22:24:03 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.92 blocks, tracking=in progress
+[22:24:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.88 blocks, tracking=in progress
+[22:24:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.54 blocks, tracking=in progress
+[22:24:04 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.10 blocks, tracking=in progress
+[22:24:04 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.10 blocks, tracking=in progress
+[22:24:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.38 blocks, tracking=in progress
+[22:24:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.31 blocks, tracking=in progress
+[22:24:05 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.37 blocks, tracking=in progress
+[22:24:05 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.58 blocks, tracking=in progress
+[22:24:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.75 blocks, tracking=in progress
+[22:24:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.46 blocks, tracking=in progress
+[22:24:06 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.75 blocks, tracking=in progress
+[22:24:06 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.43 blocks, tracking=in progress
+[22:24:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.48 blocks, tracking=in progress
+[22:24:07 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:24:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.45 blocks, tracking=in progress
+[22:24:07 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.46 blocks, tracking=in progress
+[22:24:07 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.92 blocks, tracking=in progress
+[22:24:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.57 blocks, tracking=in progress
+[22:24:08 INFO]: [gg.playit.control.ChannelSetup] send keep alive
+[22:24:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.29 blocks, tracking=in progress
+[22:24:08 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.97 blocks, tracking=in progress
+[22:24:08 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=0.93 blocks, tracking=in progress
+[22:24:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.83 blocks, tracking=in progress
+[22:24:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.45 blocks, tracking=in progress
+[22:24:09 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.26 blocks, tracking=in progress
+[22:24:09 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.48 blocks, tracking=in progress
+[22:24:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.39 blocks, tracking=in progress
+[22:24:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.47 blocks, tracking=in progress
+[22:24:10 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.57 blocks, tracking=in progress
+[22:24:10 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.02 blocks, tracking=in progress
+[22:24:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.90 blocks, tracking=in progress
+[22:24:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.60 blocks, tracking=in progress
+[22:24:11 WARN]: [ServerStoryPlugin] Could not find safe teleport location for Boss #1 near Rethinger
+[22:24:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.25 blocks, tracking=in progress
+[22:24:11 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.11 blocks, tracking=in progress
+[22:24:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.27 blocks, tracking=in progress
+[22:24:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=5.24 blocks, tracking=in progress
+[22:24:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.93 blocks, tracking=in progress
+[22:24:12 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.10 blocks, tracking=in progress
+[22:24:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.50 blocks, tracking=in progress
+[22:24:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.65 blocks, tracking=in progress
+[22:24:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.10 blocks, tracking=in progress
+[22:24:13 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.18 blocks, tracking=in progress
+[22:24:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.43 blocks, tracking=in progress
+[22:24:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.39 blocks, tracking=in progress
+[22:24:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.80 blocks, tracking=in progress
+[22:24:14 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.86 blocks, tracking=in progress
+[22:24:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.08 blocks, tracking=in progress
+[22:24:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=5.13 blocks, tracking=in progress
+[22:24:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=5.25 blocks, tracking=in progress
+[22:24:15 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.86 blocks, tracking=in progress
+[22:24:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=4.16 blocks, tracking=in progress
+[22:24:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=3.42 blocks, tracking=in progress
+[22:24:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.80 blocks, tracking=in progress
+[22:24:16 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=2.35 blocks, tracking=in progress
+[22:24:17 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.59 blocks, tracking=in progress
+[22:24:17 INFO]: [ServerStoryPlugin] [Summon Task] Skipping skeleton spawn due to active special attack (recorded for cadence)
+[22:24:17 INFO]: [ServerStoryPlugin] [Circle-Strafe] Rethinger distance=1.63 blocks, tracking=in progress
+[22:24:17 INFO]: Named entity Skeleton['Повелитель Скелетов'/1339, uuid='1e5cc0d7-8c5f-4dae-9c23-9edf301c1ba6', l='ServerLevel[world]', x=-89.15, y=64.00, z=65.58, cpos=[-6, 4], tl=2204, v=true] died: Повелитель Скелетов was slain by Rethinger
+[22:24:23 INFO]: Rethinger lost connection: Disconnected
+[22:24:23 INFO]: [voicechat] Disconnecting client Rethinger
+[22:24:23 INFO]: Rethinger left the game
+>

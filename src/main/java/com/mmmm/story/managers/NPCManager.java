@@ -11,6 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -43,9 +44,27 @@ public class NPCManager {
     private final MmmmStoryPlugin plugin;
     private final Map<String, NPC> npcEntities = new HashMap<>();
     private final Map<String, BukkitRunnable> auraTask = new HashMap<>();
+    private final Map<String, java.util.List<BukkitTask>> scheduledTasks = new HashMap<>();
+    private final Map<String, Long> despawningNpcs = new HashMap<>(); // Track despawning NPCs for idempotency
     private String currentMessengerId = null; // Track the current messenger NPC
     private Location currentMessengerLocation = null; // Track messenger spawn location for despawn animation
     
+    private void trackTask(String npcId, BukkitTask task) {
+        if (npcId == null || task == null) return;
+        scheduledTasks.computeIfAbsent(npcId, k -> new java.util.ArrayList<>()).add(task);
+    }
+
+    private void cancelScheduledTasks(String npcId) {
+        java.util.List<BukkitTask> tasks = scheduledTasks.remove(npcId);
+        if (tasks != null) {
+            for (BukkitTask t : tasks) {
+                if (t != null) {
+                    t.cancel();
+                }
+            }
+        }
+    }
+
     public NPCManager(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
     }
@@ -62,11 +81,11 @@ public class NPCManager {
         world.playSound(location, Sound.AMBIENT_CAVE, 1.5f, 0.8f);
         
         // PHASE 2: Portal effect (delay: 5s) - "???: ...is someone there?"
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             world.spawnParticle(Particle.REVERSE_PORTAL, location, 200, 0.5, 1.5, 0.5, 0.3);
             world.spawnParticle(Particle.DRAGON_BREATH, location, 80, 0.8, 1, 0.8, 0.05);
             world.playSound(location, Sound.ENTITY_ENDERMAN_STARE, 1.0f, 0.7f);
-        }, 100L); // 5 seconds
+        }, 100L)); // 5 seconds
         
         // PHASE 3: Materialization (delay: 10s) - "A figure materializes from the mist"
         // First fetch skin asynchronously, then create NPC
@@ -102,7 +121,7 @@ public class NPCManager {
             final Skin finalSkin = skin;
             
             // Create NPC on main thread
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 Component npcName = Component.text("Посланник").color(NamedTextColor.GOLD);
                 UUID npcUuid = UUID.randomUUID();
                 
@@ -146,51 +165,51 @@ public class NPCManager {
                 startIdleAnimations(npcId, location);
                 
                 // Wait a bit for NPC to be fully loaded, then start dialog animations
-                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                     startMessengerAnimations(npcId, location);
-                }, 20L); // Wait 1 second after spawn
+                }, 20L)); // Wait 1 second after spawn
                 
                 // Despawn timing now controlled by DialogManager via despawnMessenger() call
                 // This ensures exact synchronization with the "*Посланник исчезает в тумане*" dialog line
-            }, 200L); // 10 seconds from async skin fetch
+            }, 200L)); // 10 seconds from async skin fetch
         }); // End of async task
         
         // PHASE 4: Mystical whispers (delay: 15s) - "Finally... You have arrived"
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             world.spawnParticle(Particle.ENCHANT, location, 80, 1.5, 1.5, 1.5, 0.5);
             world.spawnParticle(Particle.END_ROD, location, 40, 1, 1.5, 1, 0.05);
             world.playSound(location, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.2f);
-        }, 300L); // 15 seconds
+        }, 300L)); // 15 seconds
         
         // PHASE 5: Ancient power reveal (delay: 27s) - "Portals are crumbling"
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             world.spawnParticle(Particle.REVERSE_PORTAL, location, 100, 2, 1.5, 2, 0.2);
             world.spawnParticle(Particle.SMOKE, location, 60, 1.5, 1, 1.5, 0.05);
             world.playSound(location, Sound.BLOCK_GLASS_BREAK, 1.5f, 0.8f);
-        }, 540L); // 27 seconds
+        }, 540L)); // 27 seconds
         
         // PHASE 6: Hope spark (delay: 35s) - "But you can stop this"
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             world.spawnParticle(Particle.GLOW, location, 100, 1, 1.5, 1, 0);
             world.spawnParticle(Particle.END_ROD, location, 50, 1, 1.5, 1, 0.1);
             world.playSound(location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.5f);
-        }, 700L); // 35 seconds
+        }, 700L)); // 35 seconds
         
         // PHASE 7: Ancient altar power (delay: 49s) - "Only it can restore the balance"
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             world.spawnParticle(Particle.ENCHANT, location, 120, 1.5, 1.5, 1.5, 1);
             world.spawnParticle(Particle.PORTAL, location, 80, 1, 1, 1, 0.5);
             world.playSound(location, Sound.BLOCK_BEACON_AMBIENT, 1.5f, 1.2f);
-        }, 980L); // 49 seconds
+        }, 980L)); // 49 seconds
         
         // PHASE 8: Final mystical guidance (delay: 63s) - "The Messenger vanishes"
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             world.spawnParticle(Particle.REVERSE_PORTAL, location, 250, 0.5, 1.5, 0.5, 0.5);
             world.spawnParticle(Particle.END_ROD, location, 100, 0.8, 1.5, 0.8, 0.15);
             world.spawnParticle(Particle.ENCHANT, location, 150, 1, 1.5, 1, 1.5);
             world.playSound(location, Sound.ENTITY_ENDERMAN_TELEPORT, 1.5f, 1.2f);
             world.playSound(location, Sound.BLOCK_PORTAL_TRAVEL, 1.0f, 1.5f);
-        }, 1260L); // 63 seconds
+        }, 1260L)); // 63 seconds
         
         // Play dialog immediately
         plugin.getDialogManager().playDialogForAll("messenger.spawn");
@@ -201,23 +220,23 @@ public class NPCManager {
         World world = location.getWorld();
         
         // Dialog at 0s: "???: ...Здесь есть кто-нибудь?" - Mysterious look around
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             animateTalkingMovement(npc, location, 80, 3); // 4 seconds of talking motion
-        }, 0L);
+        }, 0L));
         
         // Dialog at 5s: "*Голос становится яснее*" - Head tilt
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             animateHeadTilt(npc, location, 20, 15); // Slight tilt
-        }, 100L);
+        }, 100L));
         
         // Dialog at 10s: "*Из тумана материализуется фигура*" - Materializing (handled by spawn)
         
         // Animation at 15s: "Наконец-то... Вы пришли" - Gentle welcoming nod
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             
@@ -226,19 +245,19 @@ public class NPCManager {
             animateSquashStretch(npc, location, 20, 1.0, 1.15, 0.95, null);
             
             // Continue talking motion for 6 seconds (until next dialog)
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 NPC innerNpc = npcEntities.get(npcId);
                 if (innerNpc == null) return;
                 animateTalkingMovement(innerNpc, location, 100, 4); // 5 seconds
-            }, 25L);
+                }, 25L));
             
             world.spawnParticle(Particle.END_ROD, location.clone().add(0, 1.8, 0), 12, 0.4, 0.3, 0.4, 0.06);
             world.spawnParticle(Particle.GLOW, location.clone().add(0, 1.5, 0), 8, 0.3, 0.2, 0.3, 0.02);
             world.playSound(location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 0.7f, 1.8f);
-        }, 100L); // 5s after NPC spawn (total 15s)
+        }, 100L)); // 5s after NPC spawn (total 15s)
         
         // Animation at 21s: "Меня зовут Посланник" - Formal introduction with head turn
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             
@@ -247,19 +266,19 @@ public class NPCManager {
             animateSquashStretch(npc, location, 30, 1.0, 1.25, 0.85, null);
             
             // Talking motion during dialog
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 NPC innerNpc = npcEntities.get(npcId);
                 if (innerNpc == null) return;
                 animateTalkingMovement(innerNpc, location, 100, 4);
-            }, 35L);
+            }, 35L));
             
             world.spawnParticle(Particle.END_ROD, location.clone().add(0, 1.6, 0), 18, 0.5, 0.3, 0.5, 0.08);
             world.spawnParticle(Particle.ENCHANT, location.clone().add(0, 1.3, 0), 25, 0.7, 0.4, 0.7, 0.6);
             world.playSound(location, Sound.ENTITY_PLAYER_LEVELUP, 0.6f, 2.0f);
-        }, 220L); // 11s after NPC spawn (total 21s)
+        }, 220L)); // 11s after NPC spawn (total 21s)
         
         // Animation at 27s: "Мир умирает, Странник" - Sad head shake
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             
@@ -268,19 +287,19 @@ public class NPCManager {
             animateSquashStretch(npc, location, 25, 1.0, 0.85, 1.15, null);
             
             // Talking motion
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 NPC innerNpc = npcEntities.get(npcId);
                 if (innerNpc == null) return;
                 animateTalkingMovement(innerNpc, location, 140, 5); // 7 seconds
-            }, 30L);
+            }, 30L));
             
             world.spawnParticle(Particle.SMOKE, location.clone().add(0, 1.5, 0), 20, 0.6, 0.4, 0.6, 0.05);
             world.spawnParticle(Particle.REVERSE_PORTAL, location.clone().add(0, 1.2, 0), 15, 0.5, 0.3, 0.5, 0.3);
             world.playSound(location, Sound.BLOCK_GLASS_BREAK, 1.2f, 0.8f);
-        }, 340L); // 17s after spawn (total 27s)
+        }, 340L)); // 17s after spawn (total 27s)
         
         // Animation at 35s: "Но вы можете это остановить" - Hopeful encouraging nod
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             
@@ -289,33 +308,33 @@ public class NPCManager {
             animateSquashStretch(npc, location, 24, 1.0, 1.3, 0.8, null);
             
             // Talking motion
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 NPC innerNpc = npcEntities.get(npcId);
                 if (innerNpc == null) return;
                 animateTalkingMovement(innerNpc, location, 100, 4); // 5 seconds
-            }, 28L);
+            }, 28L));
             
             world.spawnParticle(Particle.GLOW, location.clone().add(0, 1.7, 0), 30, 0.8, 0.5, 0.8, 0.05);
             world.spawnParticle(Particle.END_ROD, location.clone().add(0, 1.4, 0), 20, 0.5, 0.3, 0.5, 0.1);
             world.playSound(location, Sound.BLOCK_AMETHYST_BLOCK_CHIME, 1.0f, 1.5f);
-        }, 500L); // 25s after spawn (total 35s)
+        }, 500L)); // 25s after spawn (total 35s)
         
         // Dialog at 41s: "Найдите Первый Алтарь" - Emphasis with multiple nods
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             animateTalkingMovement(npc, location, 140, 6); // 7 seconds of talking
-        }, 620L);
-        
+        }, 620L));
+
         // Dialog at 49s: "Только он может восстановить равновесие" - Serious nod
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             animateTalkingMovement(npc, location, 100, 4); // 5 seconds
-        }, 780L);
+        }, 780L));
         
         // Animation at 55s: "Ищите руины с фиолетовым свечением" - Point north
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+        trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             NPC npc = npcEntities.get(npcId);
             if (npc == null) return;
             
@@ -324,26 +343,26 @@ public class NPCManager {
             animateSquashStretch(npc, location, 35, 1.0, 1.2, 0.9, null);
             
             // Talking motion while pointing
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
                 NPC innerNpc = npcEntities.get(npcId);
                 if (innerNpc == null) return;
                 animateTalkingMovement(innerNpc, location, 140, 5); // 7 seconds
-            }, 40L);
+            }, 40L));
             
             // Directional particle line pointing north
             Location particleLoc = location.clone().add(0, 1.5, 0);
             for (int i = 0; i < 10; i++) {
                 final int index = i;
-                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                    world.spawnParticle(Particle.END_ROD, 
-                        particleLoc.clone().add(0, 0, -index * 0.3), 
+                trackTask(npcId, plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    world.spawnParticle(Particle.END_ROD,
+                        particleLoc.clone().add(0, 0, -index * 0.3),
                         3, 0.1, 0.1, 0.1, 0.01);
-                }, i * 2L);
+                }, i * 2L));
             }
-            
+
             world.spawnParticle(Particle.PORTAL, location.clone().add(0, 1.5, 0), 25, 0.6, 0.4, 0.6, 0.8);
             world.playSound(location, Sound.BLOCK_BEACON_AMBIENT, 1.2f, 1.3f);
-        }, 900L); // 45s after spawn (total 55s)
+        }, 900L)); // 45s after spawn (total 55s)
     }
     
     // Animate talking - constant micro head movements like a YouTuber
@@ -645,6 +664,9 @@ public class NPCManager {
             return;
         }
         
+        // Cancel any scheduled one-off tasks for this NPC
+        cancelScheduledTasks(npcId);
+        
         // Cancel aura particles immediately
         BukkitRunnable aura = auraTask.remove(npcId);
         if (aura != null) {
@@ -659,12 +681,17 @@ public class NPCManager {
         
         World world = location.getWorld();
         
+        // Immediate particle cleanup before starting despawn animation
+        clearParticlesInRadius(location, 10.0);
+        
         // Vanish effect over 5 seconds (100 ticks) with shrinking scale
         new BukkitRunnable() {
             int ticks = 0;
             @Override
             public void run() {
                 if (ticks >= 100) {
+                    // Final particle cleanup after despawn completes
+                    clearParticlesInRadius(location, 10.0);
                     removeNPC(npcId);
                     cancel();
                     return;
@@ -717,10 +744,59 @@ public class NPCManager {
             npc.hideNpcFromAllPlayers();
         }
         
-        // Cancel aura particles if still running
-        BukkitRunnable aura = auraTask.remove(npcId);
-        if (aura != null) {
-            aura.cancel();
+        // Enhanced task cancellation with logging
+        int cancelledTasks = 0;
+        
+        // Cancel any scheduled one-off tasks for this NPC
+        try {
+            cancelScheduledTasks(npcId);
+            cancelledTasks++;
+        } catch (Exception e) {
+            plugin.getLogger().warning("[NPC] Error cancelling scheduled tasks for " + npcId + ": " + e.getMessage());
+        }
+        
+        // Cancel aura particles if still running with enhanced null checking
+        try {
+            BukkitRunnable aura = auraTask.remove(npcId);
+            if (aura != null && !aura.isCancelled()) {
+                aura.cancel();
+                cancelledTasks++;
+                plugin.getLogger().info("[NPC] Cancelled aura task for " + npcId);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("[NPC] Error cancelling aura task for " + npcId + ": " + e.getMessage());
+        }
+        
+        // Cancel idle animations if still running with enhanced null checking
+        try {
+            BukkitRunnable idle = auraTask.remove(npcId + "_idle");
+            if (idle != null && !idle.isCancelled()) {
+                idle.cancel();
+                cancelledTasks++;
+                plugin.getLogger().info("[NPC] Cancelled idle task for " + npcId);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("[NPC] Error cancelling idle task for " + npcId + ": " + e.getMessage());
+        }
+        
+        // Additional safety check: ensure no remaining tasks for this NPC
+        try {
+            java.util.List<BukkitTask> remainingTasks = scheduledTasks.get(npcId);
+            if (remainingTasks != null) {
+                for (BukkitTask task : remainingTasks) {
+                    if (task != null && !task.isCancelled()) {
+                        task.cancel();
+                        cancelledTasks++;
+                    }
+                }
+                scheduledTasks.remove(npcId);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("[NPC] Error in final task cleanup for " + npcId + ": " + e.getMessage());
+        }
+        
+        if (cancelledTasks > 0) {
+            plugin.getLogger().info("[NPC] Successfully cancelled " + cancelledTasks + " tasks for NPC " + npcId);
         }
     }
     
@@ -751,9 +827,8 @@ public class NPCManager {
                     // Play disappearance sound
                     world.playSound(npcLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
                     
-                    // Remove the NPC
-                    npc.hideNpcFromAllPlayers();
-                    npcEntities.remove(entry.getKey());
+                    // Remove the NPC via centralized removal to cancel tasks
+                    removeNPC(entry.getKey());
                     
                     plugin.getLogger().info("[NPC] Removed messenger NPC: " + entry.getKey());
                     return;
@@ -777,20 +852,20 @@ public class NPCManager {
             plugin.getLogger().warning("[NPC] despawnMessenger() called but no messenger is tracked");
             return;
         }
-        
+
         if (currentMessengerLocation == null) {
             plugin.getLogger().warning("[NPC] despawnMessenger() called but messenger location is null, using immediate removal");
             removeNPC(currentMessengerId);
             currentMessengerId = null;
             return;
         }
-        
-        plugin.getLogger().info("[NPC] Starting despawn animation for messenger: " + currentMessengerId);
-        
-        // Trigger the 5-second shrinking animation
-        startMessengerDespawn(currentMessengerId, currentMessengerLocation);
-        
-        // Clear tracking (actual NPC removal happens at end of animation)
+
+        plugin.getLogger().info("[NPC] Starting enhanced despawn animation for messenger: " + currentMessengerId);
+
+        // Use the enhanced despawn method with improved cleanup and idempotency
+        enhancedDespawnMessenger();
+
+        // Clear tracking (actual NPC removal happens in enhanced method)
         currentMessengerId = null;
         currentMessengerLocation = null;
     }
@@ -833,6 +908,19 @@ public class NPCManager {
         currentMessengerId = null;
         currentMessengerLocation = null;
         
+        // Cancel any remaining scheduled tasks for safety
+        for (java.util.List<BukkitTask> tasks : scheduledTasks.values()) {
+            if (tasks != null) {
+                for (BukkitTask t : tasks) {
+                    if (t != null) t.cancel();
+                }
+            }
+        }
+        scheduledTasks.clear();
+
+        // Clear despawning NPCs tracking
+        despawningNpcs.clear();
+
         plugin.getLogger().info("[NPC] Cleanup complete - removed " + removedCount + " NPCs");
     }
     
@@ -898,5 +986,281 @@ public class NPCManager {
                 player.sendMessage(Component.text("§7Метка направления исчезла"));
             }
         }, 6000L); // 5 minutes = 6000 ticks
+    }
+    
+    /**
+     * Clear all particles in a specified radius around a location
+     * @param center Center location for particle cleanup
+     * @param radius Radius in blocks to clear particles (default 15 blocks for better cleanup)
+     */
+    private void clearParticlesInRadius(Location center, double radius) {
+        if (center == null || center.getWorld() == null) {
+            return;
+        }
+
+        World world = center.getWorld();
+
+        // Immediate visual override particle burst - more intensive for better cleanup
+        for (int i = 0; i < 50; i++) {
+            double offsetX = (Math.random() - 0.5) * radius * 2;
+            double offsetY = Math.random() * radius * 1.5; // Increased vertical coverage
+            double offsetZ = (Math.random() - 0.5) * radius * 2;
+
+            world.spawnParticle(Particle.END_ROD, center.clone().add(offsetX, offsetY, offsetZ), 1, 0, 0, 0, 0);
+        }
+
+        // Additional cleanup wave with larger radius to catch residual effects
+        world.spawnParticle(Particle.END_ROD, center, 100, radius * 1.2, radius * 1.5, radius * 1.2, 0.05);
+
+        // Follow-up with reverse portal particles to override any portal effects
+        world.spawnParticle(Particle.REVERSE_PORTAL, center, 30, radius * 0.8, radius, radius * 0.8, 0.1);
+
+        plugin.getLogger().info("[NPC] Enhanced particle cleanup in radius " + radius + " around " + center);
+    }
+
+    /**
+     * Enhanced particle cleanup with configurable method and timing
+     */
+    private void enhancedParticleCleanup(Location center, String cleanupMethod, double radius) {
+        if (center == null || center.getWorld() == null) {
+            return;
+        }
+
+        World world = center.getWorld();
+
+        switch (cleanupMethod.toLowerCase()) {
+            case "override":
+                // Enhanced override method: Aggressive particle clearing with multiple particle types
+                // First wave: Heavy END_ROD burst to override existing particles
+                for (int i = 0; i < 60; i++) {
+                    double offsetX = (Math.random() - 0.5) * radius * 2.5;
+                    double offsetY = Math.random() * radius * 1.8;
+                    double offsetZ = (Math.random() - 0.5) * radius * 2.5;
+
+                    world.spawnParticle(Particle.END_ROD, center.clone().add(offsetX, offsetY, offsetZ), 1, 0, 0, 0, 0);
+                }
+
+                // Second wave: Wider radius ENCHANT particles to override magical effects
+                world.spawnParticle(Particle.ENCHANT, center, 80, radius * 1.2, radius * 1.5, radius * 1.2, 0.02);
+
+                // Third wave: REVERSE_PORTAL to override any portal effects
+                world.spawnParticle(Particle.REVERSE_PORTAL, center, 40, radius * 1.0, radius * 1.3, radius * 1.0, 0.08);
+                break;
+
+            case "wait":
+                // Wait method: Minimal intervention - just mark area
+                world.spawnParticle(Particle.END_ROD, center, 10, radius * 0.3, radius * 0.3, radius * 0.3, 0.02);
+                break;
+
+            default:
+                // Default to enhanced override method
+                enhancedParticleCleanup(center, "override", radius);
+                return;
+        }
+
+        plugin.getLogger().info("[NPC] Enhanced particle cleanup using method: " + cleanupMethod);
+    }
+
+    /**
+     * Checks if NPC despawn effects are enabled in configuration
+     */
+    private boolean isDespawnEffectEnabled(String effectType) {
+        try {
+            String basePath = "npc.despawn.";
+            return plugin.getConfigManager().getConfig().getBoolean(basePath + "visualEffects.enabled", true) &&
+                   plugin.getConfigManager().getConfig().getBoolean(basePath + "visualEffects." + effectType, true);
+        } catch (Exception e) {
+            plugin.getLogger().warning("[NPC] Error checking despawn effect config for " + effectType + ": " + e.getMessage());
+            return true; // Default to enabled
+        }
+    }
+
+    /**
+     * Gets despawn configuration value with fallback
+     */
+    private double getDespawnConfigValue(String path, double defaultValue) {
+        try {
+            return plugin.getConfigManager().getConfig().getDouble("npc.despawn." + path, defaultValue);
+        } catch (Exception e) {
+            plugin.getLogger().warning("[NPC] Error getting despawn config for " + path + ": " + e.getMessage());
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Ensures NPC operations are idempotent by checking if already processed
+     */
+    private boolean isNpcBeingDespawned(String npcId) {
+        return despawningNpcs.containsKey(npcId);
+    }
+
+    /**
+     * Marks NPC as being despawned to prevent duplicate operations
+     */
+    private void markNpcAsDespawning(String npcId, Location location) {
+        despawningNpcs.put(npcId, System.currentTimeMillis());
+        plugin.getLogger().info("[NPC] Marked " + npcId + " as despawning at " + location);
+    }
+
+    /**
+     * Removes NPC from despawning tracking
+     */
+    private void unmarkNpcAsDespawning(String npcId) {
+        despawningNpcs.remove(npcId);
+    }
+
+    /**
+     * Enhanced despawn with improved cleanup and idempotency
+     */
+    public void enhancedDespawnMessenger() {
+        String npcId = currentMessengerId != null ? currentMessengerId : "messenger";
+        Location npcLocation = currentMessengerLocation;
+
+        if (npcLocation == null) {
+            plugin.getLogger().warning("[NPC] Cannot despawn messenger - location unknown");
+            return;
+        }
+
+        // Check idempotency - prevent duplicate despawns
+        if (isNpcBeingDespawned(npcId)) {
+            plugin.getLogger().info("[NPC] Messenger already being despawned, skipping duplicate request");
+            return;
+        }
+
+        markNpcAsDespawning(npcId, npcLocation);
+
+        try {
+            // Get configuration values
+            boolean visualEffectsEnabled = isDespawnEffectEnabled("enabled");
+            boolean particlesEnabled = isDespawnEffectEnabled("showParticles");
+            boolean immediateCleanup = isDespawnEffectEnabled("particleCleanup.immediateCleanup");
+            boolean finalCleanup = isDespawnEffectEnabled("particleCleanup.finalCleanup");
+            double cleanupRadius = getDespawnConfigValue("visualEffects.cleanupRadius", 15.0);
+            int animationDuration = (int) getDespawnConfigValue("visualEffects.animationDuration", 100);
+            String cleanupMethod = plugin.getConfigManager().getConfig().getString("npc.despawn.particleCleanup.cleanupMethod", "override");
+
+            if (!visualEffectsEnabled) {
+                // Simple despawn without effects
+                removeNPC(npcId);
+                unmarkNpcAsDespawning(npcId);
+                return;
+            }
+
+            // Immediate particle cleanup if configured
+            if (immediateCleanup) {
+                enhancedParticleCleanup(npcLocation, cleanupMethod, cleanupRadius);
+            }
+
+            // Start enhanced despawn animation
+            startEnhancedMessengerDespawn(npcId, npcLocation, animationDuration, particlesEnabled, cleanupRadius, finalCleanup, cleanupMethod);
+
+        } catch (Exception e) {
+            plugin.getLogger().severe("[NPC] Error during enhanced despawn: " + e.getMessage());
+            e.printStackTrace();
+
+            // Fallback to simple removal
+            removeNPC(npcId);
+            unmarkNpcAsDespawning(npcId);
+        }
+    }
+
+    /**
+     * Enhanced despawn animation with configurable parameters
+     */
+    private void startEnhancedMessengerDespawn(String npcId, Location location, int durationTicks,
+                                              boolean showParticles, double cleanupRadius,
+                                              boolean finalCleanup, String cleanupMethod) {
+        NPC npc = npcEntities.get(npcId);
+        if (npc == null) {
+            unmarkNpcAsDespawning(npcId);
+            return;
+        }
+
+        // Cancel existing tasks first
+        cancelScheduledTasks(npcId);
+
+        // Cancel aura and idle animations
+        BukkitRunnable aura = auraTask.remove(npcId);
+        if (aura != null) {
+            aura.cancel();
+        }
+
+        BukkitRunnable idle = auraTask.remove(npcId + "_idle");
+        if (idle != null) {
+            idle.cancel();
+        }
+
+        World world = location.getWorld();
+
+        // Immediate particle cleanup at despawn start
+        plugin.getLogger().info("[NPC] Starting immediate particle cleanup for messenger despawn");
+        enhancedParticleCleanup(location, cleanupMethod, cleanupRadius);
+
+        // Despawn animation with configurable effects
+        new BukkitRunnable() {
+            int ticks = 0;
+
+            @Override
+            public void run() {
+                if (ticks >= durationTicks) {
+                    // Final cleanup and removal
+                    plugin.getLogger().info("[NPC] Performing final cleanup for messenger despawn");
+                    if (finalCleanup) {
+                        enhancedParticleCleanup(location, cleanupMethod, cleanupRadius);
+                    }
+
+                    removeNPC(npcId);
+                    unmarkNpcAsDespawning(npcId);
+                    cancel();
+                    return;
+                }
+
+                NPC currentNpc = npcEntities.get(npcId);
+                if (currentNpc == null) {
+                    unmarkNpcAsDespawning(npcId);
+                    cancel();
+                    return;
+                }
+
+                Location loc = location.clone().add(0, 1, 0);
+
+                // Calculate shrinking scale
+                double progress = (double) ticks / durationTicks;
+                double scale = 1.0 - progress;
+                currentNpc.setOption(NpcOption.SCALE, Math.max(0.01, scale));
+
+                // Particle effects if enabled
+                if (showParticles) {
+                    // Intensifying portal effect
+                    if (ticks % 5 == 0) {
+                        world.spawnParticle(Particle.REVERSE_PORTAL, loc, 10 + ticks / 2, 0.3, 0.5, 0.3, 0.1);
+                        world.spawnParticle(Particle.END_ROD, loc, 3 + ticks / 5, 0.2, 0.3, 0.2, 0.05);
+                    }
+
+                    // Fade out particles
+                    if (ticks > durationTicks * 0.8) {
+                        world.spawnParticle(Particle.ENCHANT, loc, 5, 0.5, 0.5, 0.5, 0.5);
+                    }
+                }
+
+                // Sound effects if enabled
+                if (isDespawnEffectEnabled("soundEffects.enabled")) {
+                    boolean fadeOut = isDespawnEffectEnabled("soundEffects.fadeOut");
+                    if (ticks % 20 == 0) {
+                        float volume = 0.5f;
+                        float pitch = 1.5f;
+
+                        if (fadeOut) {
+                            volume = 0.5f + ((float)progress * 0.5f);
+                            pitch = 1.5f - ((float)progress * 0.5f);
+                        }
+
+                        world.playSound(location, Sound.BLOCK_PORTAL_AMBIENT, volume, pitch);
+                    }
+                }
+
+                ticks++;
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
     }
 }

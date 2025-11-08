@@ -28,6 +28,12 @@ public class MessageManager {
         // Load messages
         messages = loadMessageFile("messages.yml");
         
+        // Load English messages if available
+        FileConfiguration messagesEn = loadMessageFile("messages_en.yml");
+        if (messagesEn != null) {
+            configCache.put("en", messagesEn);
+        }
+        
         // Cache for quick access
         configCache.put("ru", messages);
     }
@@ -58,8 +64,20 @@ public class MessageManager {
      * Get message for player's language
      */
     public String getMessage(Player player, String path) {
-        // Since only Russian is supported, ignore player and return Russian
-        return getMessage("ru", path);
+        // Get player's preferred language (for future use)
+        String playerLang = getPlayerLanguage(player);
+        
+        // Try to get message in player's language first, fallback to Russian
+        FileConfiguration langConfig = configCache.getOrDefault(playerLang, messages);
+        String message = langConfig.getString(path);
+        
+        // Final fallback - return raw key if not found
+        if (message == null) {
+            plugin.getLogger().warning("Missing localization key: " + path + " (language: " + playerLang + ")");
+            return path;
+        }
+        
+        return message;
     }
     
     /**
