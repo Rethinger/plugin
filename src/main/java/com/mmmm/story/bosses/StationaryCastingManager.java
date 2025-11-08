@@ -48,8 +48,8 @@ public class StationaryCastingManager {
     private static final int FANGS_PER_WAVE = 8;
 
     // Damage constants
-    private static final double DAMAGE_HEARTS = 4.0; // 4 hearts damage
-    private static final double DAMAGE_AMOUNT = DAMAGE_HEARTS * 2.0; // 4 hearts = 8 damage points
+    private static final double DAMAGE_HEARTS = 2.0; // 2 hearts damage (balanced for players without armor)
+    private static final double DAMAGE_AMOUNT = DAMAGE_HEARTS * 2.0; // 2 hearts = 4 damage points
 
     // Particle colors
     private static final DustOptions RED_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 50, 50), 1.5f);
