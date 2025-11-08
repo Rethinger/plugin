@@ -7,8 +7,11 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.EvokerFangs;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Mob;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -43,6 +46,10 @@ public class StationaryCastingManager {
     private static final double SAFE_ZONE_RADIUS = 1.5;
     private static final int MAX_SAFE_ZONES = 5;
     private static final int FANGS_PER_WAVE = 8;
+
+    // Damage constants
+    private static final double DAMAGE_HEARTS = 4.0; // 4 hearts damage
+    private static final double DAMAGE_AMOUNT = DAMAGE_HEARTS * 2.0; // 4 hearts = 8 damage points
 
     // Particle colors
     private static final DustOptions RED_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 50, 50), 1.5f);
@@ -407,7 +414,7 @@ public class StationaryCastingManager {
     }
 
     /**
-     * Spawn evoker fangs at specified positions
+     * Spawn evoker fangs at specified positions with custom damage
      */
     private void spawnFangs(List<Location> positions, float soundPitch) {
         World world = bossPosition.getWorld();
@@ -416,6 +423,9 @@ public class StationaryCastingManager {
         for (Location pos : positions) {
             EvokerFangs fang = (EvokerFangs) world.spawnEntity(pos, EntityType.EVOKER_FANGS);
 
+            // Set custom damage for the fangs
+            setFangDamage(fang);
+
             // Play spawn sound with varying pitch
             world.playSound(pos, org.bukkit.Sound.ENTITY_EVOKER_FANGS_ATTACK, 0.8f, soundPitch);
 
@@ -423,7 +433,108 @@ public class StationaryCastingManager {
             world.spawnParticle(Particle.CRIT, pos, 5, 0.2, 0.2, 0.2, 0.1);
         }
 
-        logger.info("[StationaryCastingManager] Spawned " + positions.size() + " evoker fangs (pitch: " + soundPitch + ")");
+        logger.info("[StationaryCastingManager] Spawned " + positions.size() + " evoker fangs with " + DAMAGE_HEARTS + " hearts damage (pitch: " + soundPitch + ")");
+    }
+
+    /**
+     * Set custom damage for evoker fangs that bypasses armor and protects skeleton warriors
+     */
+    private void setFangDamage(EvokerFangs fang) {
+        // Schedule damage application shortly after fang spawns
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!fang.isValid()) return;
+
+                Location fangLoc = fang.getLocation();
+                World world = fangLoc.getWorld();
+                if (world == null) return;
+
+                // Find entities near the fang (1.5 block radius)
+                for (org.bukkit.entity.Entity entity : world.getNearbyEntities(fangLoc, 1.5, 1.5, 1.5)) {
+                    if (!(entity instanceof LivingEntity)) continue;
+
+                    // Skip skeleton warriors (any skeleton-type mob)
+                    if (entity instanceof Skeleton ||
+                        (entity instanceof Mob && isWarriorSkeleton((Mob) entity))) {
+                        continue;
+                    }
+
+                    // Apply custom damage to players (ignores armor)
+                    if (entity instanceof Player) {
+                        Player player = (Player) entity;
+
+                        // Check if player is in safe zone
+                        if (safeZoneManager != null && safeZoneManager.isInSafeZone(player.getLocation())) {
+                            continue; // No damage in safe zones
+                        }
+
+                        // Apply damage that bypasses armor
+                        boolean success = applyCustomDamage(player);
+                        if (success) {
+                            logger.info("[StationaryCastingManager] Applied " + DAMAGE_HEARTS + " hearts damage to player " + player.getName());
+                        }
+                    }
+                }
+            }
+        }.runTaskLater(plugin, 5L); // Apply damage 5 ticks after spawn
+    }
+
+    /**
+     * Apply custom damage that bypasses armor
+     */
+    private boolean applyCustomDamage(Player player) {
+        if (!player.isValid() || player.isDead()) return false;
+
+        // Store original health
+        double originalHealth = player.getHealth();
+
+        // Apply damage using EntityDamageEvent with IGNORE_ARMOR and IGNORE_INVULNERABILITY for custom calculation
+        EntityDamageEvent damageEvent = new EntityDamageEvent(
+            player,
+            EntityDamageEvent.DamageCause.MAGIC,
+            DAMAGE_AMOUNT
+        );
+
+        // Call the damage event
+        if (!damageEvent.isCancelled()) {
+            // Apply damage directly (bypasses armor)
+            double newHealth = Math.max(0, originalHealth - DAMAGE_AMOUNT);
+            player.setHealth(newHealth);
+
+            // Send damage animation
+            player.playEffect(org.bukkit.EntityEffect.HURT);
+
+            // Play hurt sound
+            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a mob is a warrior skeleton (custom skeleton used by the boss system)
+     */
+    private boolean isWarriorSkeleton(Mob mob) {
+        // Check for specific characteristics of warrior skeletons
+        // This could be based on custom name, tags, or other properties
+        String customName = mob.getCustomName();
+        if (customName != null) {
+            return customName.toLowerCase().contains("warrior") ||
+                   customName.toLowerCase().contains("скелет-воин") ||
+                   customName.toLowerCase().contains("skeleton warrior");
+        }
+
+        // Additional check: if the skeleton has specific equipment or metadata
+        if (mob instanceof Skeleton) {
+            Skeleton skeleton = (Skeleton) mob;
+            // You can add more specific checks here based on your warrior skeleton implementation
+            // For example, specific armor, weapons, or metadata
+        }
+
+        return false;
     }
 
     /**
