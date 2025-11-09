@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
@@ -355,11 +355,11 @@ public class ArrowHemisphereFormation implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onArrowHit(ProjectileHitEvent event) {
-        if (!(event.getEntity() instanceof Arrow)) {
+        if (!(event.getEntity() instanceof AbstractArrow)) {
             return;
         }
 
-        Arrow arrow = (Arrow) event.getEntity();
+        AbstractArrow arrow = (AbstractArrow) event.getEntity();
 
         // Check if this is one of our special arrows
         ArrowProjectile projectile = findProjectileByEntity(arrow);
@@ -383,12 +383,12 @@ public class ArrowHemisphereFormation implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onArrowDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Arrow)) {
+        if (!(event.getEntity() instanceof Player) || !(event.getDamager() instanceof AbstractArrow)) {
             return;
         }
 
         Player player = (Player) event.getEntity();
-        Arrow arrow = (Arrow) event.getDamager();
+        AbstractArrow arrow = (AbstractArrow) event.getDamager();
 
         // Check if this is one of our special arrows
         ArrowProjectile projectile = findProjectileByEntity(arrow);
@@ -428,7 +428,7 @@ public class ArrowHemisphereFormation implements Listener {
      * @param arrow Arrow entity to find
      * @return ArrowProjectile or null if not found
      */
-    private ArrowProjectile findProjectileByEntity(Arrow arrow) {
+    private ArrowProjectile findProjectileByEntity(AbstractArrow arrow) {
         for (ArrowProjectile projectile : arrows) {
             if (projectile.getArrowEntity().equals(arrow)) {
                 return projectile;

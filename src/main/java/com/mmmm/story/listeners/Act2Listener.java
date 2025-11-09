@@ -21,16 +21,22 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -38,6 +44,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.enchantments.Enchantment;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +85,7 @@ public class Act2Listener implements Listener {
     // Enhanced hemisphere special attack manager
     private BossSpecialAttackManager bossSpecialAttackManager;
     private StationaryCastingManager stationaryCastingManager;
-    
+
     // Task references for proper cleanup
     private BukkitTask bossBarTask;
     private BukkitTask circleStrafeTask;
@@ -89,6 +96,8 @@ public class Act2Listener implements Listener {
     private BukkitTask teleportTask;
     private BukkitTask proximityTeleportTask;
     private BukkitTask risingAnimationTask;
+    private BukkitTask wolfEliminationTask;
+    private final List<LivingEntity> warriorSkeletons = new ArrayList<>();
     
     public Act2Listener(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -626,7 +635,7 @@ public class Act2Listener implements Listener {
                                                         setupBossAttributes(boss);
                                                        
                                                         // T028: Remove wolves' fear mechanic from Boss 1
-                                                        removeWolvesFearMechanic(boss);
+                                                        // Wolf elimination removed - using Arrow Rain Phase 2 attack instead
                                                     }
                                                 }.runTaskLater(plugin, 10L); // 0.5 seconds after impact
                                             }
@@ -899,7 +908,7 @@ public class Act2Listener implements Listener {
                 if (boss1Phase != 1) {
                     return;
                 }
-               
+
                 // Check if can attack (respects interval)
                 if (witherSkullAttackState.canAttack(intervalSeconds)) {
                     // Check cadence requirements for special attacks
@@ -916,12 +925,6 @@ public class Act2Listener implements Listener {
                         if (!witherSkullAttackState.canStartSpecialAttack(
                             specialAttackConfig.getMinSpecialAttackSpacingSeconds(),
                             specialAttackConfig.requiresWarriorSummonBetweenSpecials())) {
-                            
-                            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-                                plugin.getLogger().info("[Special Attack] Cadence requirements not met, skipping special attack. " +
-                                    "Spacing met: " + witherSkullAttackState.hasMetSpecialAttackSpacing(specialAttackConfig.getMinSpecialAttackSpacingSeconds()) +
-                                    ", Warrior summon: " + witherSkullAttackState.hasMetWarriorSummonRequirement(specialAttackConfig.requiresWarriorSummonBetweenSpecials()));
-                            }
                             return;
                         }
                     }
@@ -1042,7 +1045,7 @@ public class Act2Listener implements Listener {
         }
 
         // Create stationary casting manager
-        stationaryCastingManager = new StationaryCastingManager(plugin, boss1Entity, safeZoneManager);
+        stationaryCastingManager = new StationaryCastingManager(plugin, boss1Entity, safeZoneManager, boss1Phase);
         StationaryAttackConfiguration stationaryConfig = new StationaryAttackConfiguration();
 
         // Set completion callback to reset attack state
@@ -1062,24 +1065,25 @@ public class Act2Listener implements Listener {
         });
 
         // Check if stationary casting attack requirements are met
-        if (!witherSkullAttackState.canStartSpecialAttack(
+        boolean spacingMet = witherSkullAttackState.canStartSpecialAttack(
                 specialAttackConfig.getMinSpecialAttackSpacingSeconds(),
-                specialAttackConfig.requiresWarriorSummonBetweenSpecials())) {
-            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-                plugin.getLogger().info("[Stationary Casting] Requirements not met for stationary special attack. " +
-                    "Warrior waves: " + witherSkullAttackState.getWarriorSummonWaveCount() +
-                    ", Time since last wave: " + String.format("%.1f", witherSkullAttackState.getTimeSinceLastWarriorWave() / 1000.0) + "s");
-            }
+                specialAttackConfig.requiresWarriorSummonBetweenSpecials());
+
+        if (!spacingMet) {
+            plugin.getLogger().info("[Stationary Casting] Spacing requirements not met. " +
+                "Warrior waves: " + witherSkullAttackState.getWarriorSummonWaveCount() +
+                ", Time since last wave: " + String.format("%.1f", witherSkullAttackState.getTimeSinceLastWarriorWave() / 1000.0) + "s" +
+                ", Min spacing: " + specialAttackConfig.getMinSpecialAttackSpacingSeconds() + "s");
             return;
         }
 
         // Check hemisphere-specific warrior summon requirements
-        if (!witherSkullAttackState.canStartHemisphereSpecialAttack(2, 12)) {
-            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-                plugin.getLogger().info("[Stationary Casting] Hemisphere requirements not met. " +
-                    "Warrior waves: " + witherSkullAttackState.getWarriorSummonWaveCount() +
-                    ", Time since last wave: " + String.format("%.1f", witherSkullAttackState.getTimeSinceLastWarriorWave() / 1000.0) + "s");
-            }
+        boolean hemisphereMet = witherSkullAttackState.canStartHemisphereSpecialAttack(2, 12);
+        if (!hemisphereMet) {
+            plugin.getLogger().info("[Stationary Casting] Hemisphere requirements not met. " +
+                "Warrior waves: " + witherSkullAttackState.getWarriorSummonWaveCount() +
+                " (need >=2), Time since last wave: " + String.format("%.1f", witherSkullAttackState.getTimeSinceLastWarriorWave() / 1000.0) + "s" +
+                ", Required: 2 waves with 12 warriors total");
             return;
         }
 
@@ -1637,10 +1641,16 @@ public class Act2Listener implements Listener {
         if (!(event.getEntity() instanceof Skeleton)) {
             return;
         }
-        
+
         Skeleton skeleton = (Skeleton) event.getEntity();
         if (skeleton != boss1Entity) {
             return;
+        }
+
+        // Debug: Log that damage event was received
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("[BOSS DAMAGE] Damage event received! Damage: " + String.format("%.1f", event.getFinalDamage()) +
+                ", Current HP: " + String.format("%.1f", skeleton.getHealth()));
         }
         
         // If boss takes damage from a player, break shields of all blocking players nearby
@@ -1651,8 +1661,8 @@ public class Act2Listener implements Listener {
             boolean isPlayerAttack = false;
             if (damageEvent.getDamager() instanceof Player) {
                 isPlayerAttack = true;
-            } else if (damageEvent.getDamager() instanceof org.bukkit.entity.Arrow) {
-                org.bukkit.entity.Arrow arrow = (org.bukkit.entity.Arrow) damageEvent.getDamager();
+            } else if (damageEvent.getDamager() instanceof org.bukkit.entity.AbstractArrow) {
+                org.bukkit.entity.AbstractArrow arrow = (org.bukkit.entity.AbstractArrow) damageEvent.getDamager();
                 if (arrow.getShooter() instanceof Player) {
                     isPlayerAttack = true;
                 }
@@ -1685,8 +1695,19 @@ public class Act2Listener implements Listener {
         }
         
         // Check for phase 2 transition at 100 HP
-        double healthAfterDamage = skeleton.getHealth() - event.getFinalDamage();
+        double currentHealth = skeleton.getHealth();
+        double healthAfterDamage = currentHealth - event.getFinalDamage();
+
+        // Debug logging for boss health
+        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
+            plugin.getLogger().info("[BOSS HEALTH] Current HP: " + String.format("%.1f", currentHealth) +
+                ", Damage: " + String.format("%.1f", event.getFinalDamage()) +
+                ", HP after damage: " + String.format("%.1f", healthAfterDamage) +
+                ", Phase: " + boss1Phase);
+        }
+
         if (boss1Phase == 1 && healthAfterDamage <= 100) {
+            plugin.getLogger().info("[BOSS PHASE] Transitioning to Phase 2! HP: " + String.format("%.1f", healthAfterDamage));
             transitionToPhase2(skeleton);
         }
         
@@ -1753,8 +1774,8 @@ public class Act2Listener implements Listener {
         // Check if damager is skeleton directly or arrow from skeleton
         if (event.getDamager() instanceof Skeleton) {
             attacker = (Skeleton) event.getDamager();
-        } else if (event.getDamager() instanceof Arrow) {
-            Arrow arrow = (Arrow) event.getDamager();
+        } else if (event.getDamager() instanceof AbstractArrow) {
+            AbstractArrow arrow = (AbstractArrow) event.getDamager();
             if (arrow.getShooter() instanceof Skeleton) {
                 attacker = (Skeleton) arrow.getShooter();
             }
@@ -1816,11 +1837,11 @@ public class Act2Listener implements Listener {
         }
         
         // Check if damage is from arrow
-        if (!(event.getDamager() instanceof Arrow)) {
+        if (!(event.getDamager() instanceof AbstractArrow)) {
             return;
         }
         
-        Arrow arrow = (Arrow) event.getDamager();
+        AbstractArrow arrow = (AbstractArrow) event.getDamager();
         
         // Check if arrow was shot by player
         if (!(arrow.getShooter() instanceof Player)) {
@@ -1865,11 +1886,11 @@ public class Act2Listener implements Listener {
     @EventHandler
     public void onArcherHitPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent event) {
         // Check if arrow hit player in phase 2
-        if (!(event.getDamager() instanceof Arrow)) {
+        if (!(event.getDamager() instanceof AbstractArrow)) {
             return;
         }
         
-        Arrow arrow = (Arrow) event.getDamager();
+        AbstractArrow arrow = (AbstractArrow) event.getDamager();
         if (!(arrow.getShooter() instanceof Skeleton)) {
             return;
         }
@@ -1895,20 +1916,127 @@ public class Act2Listener implements Listener {
         int nauseaLevel = plugin.getConfig().getInt("phase2.archerNausea.level", 127);
         int nauseaDurationSeconds = plugin.getConfig().getInt("phase2.archerNausea.durationSeconds", 10);
         int nauseaDurationTicks = nauseaDurationSeconds * 20;
-        
+
         player.addPotionEffect(new PotionEffect(
-            PotionEffectType.NAUSEA, 
-            nauseaDurationTicks, 
+            PotionEffectType.NAUSEA,
+            nauseaDurationTicks,
             nauseaLevel - 1, // Amplifier is level - 1 (e.g., level 127 = amplifier 126)
-            false, 
+            false,
             true // Show particles
         ));
-        
-        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-            plugin.getLogger().info("[DEBUG] Applied Nausea (level=" + nauseaLevel + ", duration=" + nauseaDurationSeconds + "s) to " + player.getName());
+
+        // Apply poison effect - Level 1 for 3 seconds (60 ticks)
+        int poisonLevel = 1;
+        int poisonDurationSeconds = 3;
+        int poisonDurationTicks = poisonDurationSeconds * 20;
+
+        player.addPotionEffect(new PotionEffect(
+            PotionEffectType.POISON,
+            poisonDurationTicks,
+            poisonLevel - 1, // Amplifier is level - 1 (level 1 = amplifier 0)
+            false,
+            true // Show particles
+        ));
+
+            }
+
+    /**
+     * Handle special bow effects when player hits entities
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onSpecialArrowHit(EntityDamageByEntityEvent event) {
+        // Check if target is player
+        if (!(event.getEntity() instanceof Player target)) {
+            return;
         }
+
+        // Try to find the shooter
+        Player shooter = null;
+
+        // Check if damager is player (melee attack with bow)
+        if (event.getDamager() instanceof Player player) {
+            shooter = player;
+        }
+        // Check if damager is arrow
+        else if (event.getDamager() instanceof Arrow arrow && arrow.getShooter() instanceof Player player) {
+            shooter = player;
+        }
+        // Check if damager is spectral arrow or other projectile
+        else if (event.getDamager() instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+            shooter = player;
+        }
+
+        if (shooter == null) {
+            return;
+        }
+
+        // Check if shooter has special bow in main hand OR off hand
+        boolean hasSpecialBow = isSpecialArcherBow(shooter.getInventory().getItemInMainHand()) ||
+                              isSpecialArcherBow(shooter.getInventory().getItemInOffHand());
+
+        if (!hasSpecialBow) {
+            return;
+        }
+
+        // Apply effects to target
+        applySpecialBowEffects(target);
+
+        // Add visual effects
+        target.getWorld().spawnParticle(Particle.ENCHANT, target.getLocation(), 20, 0.5, 1, 0.5, 0.1);
+        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_EVOKER_CAST_SPELL, 0.8f, 1.2f);
+
+            }
+
+    /**
+     * Check if bow is the special archer bow
+     */
+    private boolean isSpecialArcherBow(ItemStack bow) {
+        if (bow == null || !bow.hasItemMeta()) {
+            return false;
+        }
+
+        ItemMeta meta = bow.getItemMeta();
+        if (meta == null || !meta.hasDisplayName()) {
+            return false;
+        }
+
+        // Check display name
+        if (!meta.getDisplayName().equals("§5Токсичный Лук Повелителя")) {
+            return false;
+        }
+
+        // Check persistent data
+        NamespacedKey key = new NamespacedKey(plugin, "special_archer_bow");
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        return container.has(key, PersistentDataType.BYTE);
     }
-    
+
+    /**
+     * Apply special bow effects to target
+     */
+    private void applySpecialBowEffects(Player target) {
+        // Apply nausea effect (Level 127 for 10 seconds)
+        target.addPotionEffect(new PotionEffect(
+            PotionEffectType.NAUSEA,
+            200, // 10 seconds
+            126, // Level 127 (amplifier 126)
+            false,
+            true
+        ));
+
+        // Apply poison effect (Level 1 for 3 seconds)
+        target.addPotionEffect(new PotionEffect(
+            PotionEffectType.POISON,
+            60, // 3 seconds
+            0, // Level 1 (amplifier 0)
+            false,
+            true
+        ));
+
+        // Send message to target
+        target.sendActionBar(Component.text("§cВы поражены токсичным ядом Повелителя!").decoration(TextDecoration.ITALIC, false));
+    }
+
     private void startBoss1SummonTask(Skeleton boss) {
         new BukkitRunnable() {
             @Override
@@ -1951,22 +2079,33 @@ public class Act2Listener implements Listener {
                         warrior.getEquipment().setHelmet(new ItemStack(Material.IRON_HELMET));
                         warrior.getEquipment().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
                         warrior.getEquipment().setItemInMainHand(new ItemStack(Material.IRON_SWORD));
+
+                        // Remove all drops
+                        warrior.getEquipment().setHelmetDropChance(0.0f);
+                        warrior.getEquipment().setChestplateDropChance(0.0f);
+                        warrior.getEquipment().setItemInMainHandDropChance(0.0f);
                     } else {
                         // Phase 2: Archer warriors
                         warrior.setCustomName("§6Лучник Повелителя");
                         warrior.getEquipment().setHelmet(new ItemStack(Material.IRON_HELMET));
                         warrior.getEquipment().setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
-                       
-                        ItemStack bow = new ItemStack(Material.BOW);
-                        bow.addEnchantment(Enchantment.POWER, 2);
+
+                        // Create special bow with lore and effects
+                        ItemStack bow = createSpecialArcherBow();
                         warrior.getEquipment().setItemInMainHand(bow);
+
+                        // Remove all drops except bow (for special bow chance)
+                        warrior.getEquipment().setHelmetDropChance(0.0f);
+                        warrior.getEquipment().setChestplateDropChance(0.0f);
+                        warrior.getEquipment().setItemInMainHandDropChance(0.05f); // 5% chance for special bow
                     }
                    
                     // T029/T031: Remove wolves' fear mechanic from summoned skeleton warriors
-                    removeWolvesFearMechanic(warrior);
+                    // Wolf elimination removed - using Arrow Rain Phase 2 attack instead
                    
                     warrior.setTarget(boss.getTarget());
                     boss1Warriors.add(warrior.getUniqueId());
+                    warriorSkeletons.add(warrior);
                 }
                
                     boss.getWorld().playSound(boss.getLocation(), Sound.ENTITY_SKELETON_AMBIENT, 1.0f, 0.5f);
@@ -2043,7 +2182,14 @@ public class Act2Listener implements Listener {
                 player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.0f, 1.5f);
             }
         }
+
+        // Reset attack state to clean up Phase 1 attacks
+        if (witherSkullAttackState != null) {
+            witherSkullAttackState.setSpecialAttackPhase(BossAttackState.SpecialAttackPhase.NONE);
+            witherSkullAttackState.endAttack();
+        }
     }
+
     
     private Location findSafeSpawnLocation(Location center, double radius) {
         World world = center.getWorld();
@@ -2285,18 +2431,123 @@ public class Act2Listener implements Listener {
             }
         }
         
-        // Try above player as last resort
-        Location aboveLoc = player.getLocation().clone().add(0, 5, 0);
-        if (isSafeLocation(aboveLoc)) {
-            return executeBossTeleport(boss, player, aboveLoc);
+        // Always find a surface location for teleportation
+        Location surfaceLoc = findSurfaceTeleportLocation(player.getLocation(), distance);
+        if (surfaceLoc != null) {
+            return executeBossTeleport(boss, player, surfaceLoc);
         }
-        
-        // No safe location found
-        if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-            plugin.getLogger().warning("Could not find safe teleport location for Boss #1 near " + player.getName());
+
+        // Last resort: teleport to player eye level directly
+        Location lastResort = player.getEyeLocation().clone();
+        lastResort.add(player.getLocation().getDirection().multiply(-3)); // Behind player
+        return executeBossTeleport(boss, player, lastResort);
+    }
+
+    /**
+     * Find a suitable surface teleport location
+     */
+    private Location findSurfaceTeleportLocation(Location playerLoc, double distance) {
+        World world = playerLoc.getWorld();
+
+        // Try different locations around player
+        for (int angle = 0; angle < 360; angle += 30) {
+            double radians = Math.toRadians(angle);
+            Vector offset = new Vector(
+                Math.cos(radians) * distance,
+                0,
+                Math.sin(radians) * distance
+            );
+
+            Location testLoc = playerLoc.clone().add(offset);
+
+            // Find highest solid block (surface)
+            Location surface = findSurfaceLocation(world, testLoc.getX(), testLoc.getZ());
+            if (surface != null) {
+                return surface;
+            }
         }
-        
-        return false;
+
+        return null;
+    }
+
+    /**
+     * Find the highest solid block (surface) at given x,z coordinates
+     */
+    private Location findSurfaceLocation(World world, double x, double z) {
+        // Start from a high point and go down - search from reasonable surface level
+        int startY = Math.min(world.getMaxHeight() - 1, 200); // Search from height 200 for better surface detection
+        int surfaceY = -1;
+        int airColumnHeight = 0;
+
+        for (int y = startY; y >= world.getMinHeight(); y--) {
+            Location testLoc = new Location(world, x, y, z);
+            Material blockType = testLoc.getBlock().getType();
+
+            if (blockType.isAir()) {
+                // Count air blocks to find surface level
+                airColumnHeight++;
+            } else if (blockType.isSolid()) {
+                // Check if this is actually the surface (not underground)
+                if (airColumnHeight >= 2 && surfaceY == -1) { // At least 2 air blocks above indicates surface
+                    // Found ground level, make sure we have enough space above
+                    Location above = testLoc.clone().add(0, 1, 0);
+                    Location twoAbove = testLoc.clone().add(0, 2, 0);
+
+                    if (above.getBlock().getType().isAir() && twoAbove.getBlock().getType().isAir()) {
+                        surfaceY = above.getBlockY();
+                        break; // Found suitable surface location
+                    }
+                }
+                // Reset air counter for underground detection
+                airColumnHeight = 0;
+            }
+        }
+
+        if (surfaceY != -1) {
+            // Ensure the found surface is not underground (avoid Y < 60 for overworld surface)
+            if (world.getEnvironment() == World.Environment.NORMAL && surfaceY < 50) {
+                plugin.getLogger().warning("[TELEPORT] Found surface at Y=" + surfaceY + " seems too low, searching higher...");
+                return findHigherSurfaceLocation(world, x, z);
+            }
+            return new Location(world, x, surfaceY, z);
+        }
+
+        // Fallback: try to find any location with air above solid block
+        for (int y = startY; y >= Math.max(world.getMinHeight(), 50); y--) { // Don't go below Y=50 for surface
+            Location testLoc = new Location(world, x, y, z);
+            if (testLoc.getBlock().getType().isSolid()) {
+                Location above = testLoc.clone().add(0, 1, 0);
+                if (above.getBlock().getType().isAir()) {
+                    Location twoAbove = testLoc.clone().add(0, 2, 0);
+                    if (twoAbove.getBlock().getType().isAir()) {
+                        return above;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Helper method to find higher surface location
+     */
+    private Location findHigherSurfaceLocation(World world, double x, double z) {
+        // Search in a reasonable surface range (Y=60 to Y=120 for overworld)
+        for (int y = 120; y >= 60; y--) {
+            Location testLoc = new Location(world, x, y, z);
+            if (testLoc.getBlock().getType().isSolid()) {
+                Location above = testLoc.clone().add(0, 1, 0);
+                if (above.getBlock().getType().isAir()) {
+                    Location twoAbove = testLoc.clone().add(0, 2, 0);
+                    if (twoAbove.getBlock().getType().isAir()) {
+                        plugin.getLogger().info("[TELEPORT] Found higher surface at Y=" + above.getBlockY());
+                        return above;
+                    }
+                }
+            }
+        }
+        return null;
     }
     
     /**
@@ -2809,7 +3060,40 @@ public class Act2Listener implements Listener {
             event.setDamage(event.getDamage() * damageMultiplier);
         }
     }
-    
+
+    /**
+     * Handle warrior and archer deaths - remove all drops
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onWarriorDeath(EntityDeathEvent event) {
+        if (!(event.getEntity() instanceof Skeleton skeleton)) {
+            return;
+        }
+
+        String customName = skeleton.getCustomName();
+        if (customName == null) {
+            return;
+        }
+
+        // Check if it's a warrior or archer
+        if (customName.contains("Воин Повелителя") || customName.contains("Лучник Повелителя")) {
+            // Clear ALL drops completely
+            event.getDrops().clear();
+            event.setDroppedExp(0);
+
+            // Only allow special bow to drop (5% chance for archers)
+            if (customName.contains("Лучник Повелителя") && Math.random() < 0.05) {
+                ItemStack specialBow = createSpecialArcherBow();
+                event.getDrops().add(specialBow);
+
+                }
+
+            // Clean up tracking lists
+            boss1Warriors.remove(skeleton.getUniqueId());
+            warriorSkeletons.remove(skeleton);
+        }
+    }
+
     @EventHandler
     public void onBoss1Death(EntityDeathEvent event) {
         if (!(event.getEntity() instanceof Skeleton)) {
@@ -2827,6 +3111,9 @@ public class Act2Listener implements Listener {
         
         // Clean up all tasks when boss dies
         cleanupAllBossTasks();
+
+        // Clean up all tracked blocks when boss is defeated to optimize memory
+        PlayerPlacedBlocksManager.clearAll();
         
         // Drop Boss 1 Material (Фрагмент Гнева) - ONLY on first kill
         event.getDrops().clear();
@@ -2929,7 +3216,13 @@ public class Act2Listener implements Listener {
             witherSkullAttackState.setSpecialAttackPhase(BossAttackState.SpecialAttackPhase.NONE);
             witherSkullAttackState.endAttack();
         }
-        
+
+        // Clean up wolf elimination system
+        if (wolfEliminationTask != null) {
+            wolfEliminationTask.cancel();
+            wolfEliminationTask = null;
+        }
+
         // Clear tracking data
         circleStrafeTrackers.clear();
         currentSafeZones.clear();
@@ -2938,6 +3231,7 @@ public class Act2Listener implements Listener {
         playersNearBoss.clear();
         playerProximityStart.clear();
         teleportCooldown.clear();
+        warriorSkeletons.clear();
     }
     
     @EventHandler
@@ -3041,53 +3335,45 @@ public class Act2Listener implements Listener {
     }
     
     /**
-     * T028/T029: Remove wolves' fear mechanic from skeleton entities
-     * This prevents skeletons from fleeing when wolves are nearby
+     * Create special archer bow with lore and effects
+     */
+    private ItemStack createSpecialArcherBow() {
+        ItemStack bow = new ItemStack(Material.BOW);
+        bow.addEnchantment(Enchantment.POWER, 2);
+        bow.addEnchantment(Enchantment.PUNCH, 1);
+        bow.addEnchantment(Enchantment.UNBREAKING, 1);
+
+        // Add custom lore and name
+        ItemMeta meta = bow.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName("§5Токсичный Лук Повелителя");
+
+            java.util.List<Component> lore = new java.util.ArrayList<>();
+            lore.add(Component.text("§7Лук, отравленный ядом Повелителя Скелетов").decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("§7Накладывает на цели сильную тошноту и смертельный яд").decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(""));
+            lore.add(Component.text("§c+ Эффект: Тошнота (10 сек)").decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("§c+ Эффект: Смертельный яд (3 сек)").decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text(""));
+            lore.add(Component.text("§6Редкий трофей с лучников Повелителя").decoration(TextDecoration.ITALIC, false));
+
+            meta.lore(lore);
+            // Add custom data to identify special bow
+            NamespacedKey key = new NamespacedKey(plugin, "special_archer_bow");
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(key, PersistentDataType.BYTE, (byte) 1);
+
+            bow.setItemMeta(meta);
+        }
+
+        return bow;
+    }
+
+    /**
+     * T028/T029: Enable wolf elimination system for skeletons
+     * This makes skeletons kill any wolves within 5 blocks with beautiful visual effects
      * @param skeleton The skeleton to modify
      */
-    private void removeWolvesFearMechanic(Skeleton skeleton) {
-        if (skeleton == null || !skeleton.isValid()) {
-            return;
-        }
-        
-        // Set skeleton to ignore wolves by modifying its AI goals
-        // This overrides the default Minecraft behavior where skeletons flee from wolves
-        try {
-            // Use NMS to modify entity goals if available
-            Object nmsEntity = skeleton.getClass().getMethod("getHandle").invoke(skeleton);
-            Class<?> entityInsentientClass = nmsEntity.getClass().getSuperclass();
-           
-            // Get the goal selector
-            Object goalSelector = entityInsentientClass.getField("goalSelector").get(nmsEntity);
-           
-            // Remove the "avoid wolf" goal if it exists
-            // This is a simplified approach - in practice, you might need more specific NMS calls
-            // For now, we'll use Bukkit API approach with attributes
-           
-            // Alternative approach: Use attributes to make skeleton immune to wolf fear
-            if (skeleton.getAttribute(org.bukkit.attribute.Attribute.GENERIC_KNOCKBACK_RESISTANCE) != null) {
-                skeleton.getAttribute(org.bukkit.attribute.Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-            }
-           
-            // Set skeleton to be more aggressive and less fearful
-            skeleton.setPersistent(true);
-           
-            // Debug logging
-            if (plugin.getConfig().getBoolean("logging.debugMode", false)) {
-                plugin.getLogger().info("[Wolves Fear] Removed wolves' fear mechanic from skeleton: " +
-                    (skeleton.getCustomName() != null ? skeleton.getCustomName() : "unnamed"));
-            }
-           
-        } catch (Exception e) {
-            // Fallback to Bukkit API approach if NMS fails
-            plugin.getLogger().warning("Could not fully remove wolves' fear mechanic using NMS, using fallback: " + e.getMessage());
-           
-            // Set skeleton to be more aggressive as a fallback
-            if (skeleton.getAttribute(org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE) != null) {
-                skeleton.getAttribute(org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(
-                    skeleton.getAttribute(org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue() * 1.2
-                );
-            }
-        }
-    }
-}
+    // Wolf elimination system removed - using Arrow Rain Phase 2 attack instead
+
+  }

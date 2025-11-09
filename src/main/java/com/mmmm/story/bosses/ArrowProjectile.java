@@ -3,7 +3,7 @@ package com.mmmm.story.bosses;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -31,7 +31,7 @@ public class ArrowProjectile {
     private long creationTime;
 
     // Entity reference
-    private Arrow arrowEntity;
+    private AbstractArrow arrowEntity;
     private Skeleton shooter;
 
     // Visual effects
@@ -70,13 +70,13 @@ public class ArrowProjectile {
         }
 
         // Spawn the arrow at origin
-        arrowEntity = world.spawn(origin, Arrow.class);
+        arrowEntity = (AbstractArrow) world.spawnEntity(origin, org.bukkit.entity.EntityType.ARROW);
         if (arrowEntity == null) {
             return false;
         }
 
         // Set arrow properties
-        arrowEntity.setPickupStatus(Arrow.PickupStatus.CREATIVE_ONLY); // Prevent pickup
+        arrowEntity.setPickupStatus(org.bukkit.entity.AbstractArrow.PickupStatus.DISALLOWED); // Prevent pickup
         arrowEntity.setCritical(false); // Not a critical hit by default
         arrowEntity.setDamage(0.0); // We'll handle damage ourselves
         arrowEntity.setKnockbackStrength(0); // No knockback from our arrows
@@ -263,7 +263,7 @@ public class ArrowProjectile {
     /**
      * Get arrow entity
      */
-    public Arrow getArrowEntity() {
+    public AbstractArrow getArrowEntity() {
         return arrowEntity;
     }
 

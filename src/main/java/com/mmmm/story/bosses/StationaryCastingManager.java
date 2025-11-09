@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.LivingEntity;
@@ -36,36 +37,47 @@ public class StationaryCastingManager {
     private boolean isActive;
     private Location bossPosition;
     private int castingProgress;
+    private int bossPhase;
     private BukkitRunnable castingTask;
     private BukkitRunnable fangsTask;
+    private BukkitRunnable arrowRainTask;
     private AttackCompletionCallback completionCallback;
 
     // Configuration constants
     private static final int CASTING_DURATION_TICKS = 60; // 3 seconds
-    private static final double ATTACK_RADIUS = 15.0; // Back to 15 blocks for performance
+    private static final double ATTACK_RADIUS = 20.0; // Expanded by 5 blocks (was 15.0)
     private static final double SAFE_ZONE_RADIUS = 1.5;
-    private static final int MAX_SAFE_ZONES = 5;
+    private static final int MAX_SAFE_ZONES = 4; // Reduced to 3-4 zones
     private static final int FANGS_PER_WAVE = 8;
 
-    // Damage constants
-    private static final double DAMAGE_HEARTS = 2.0; // 2 hearts damage (balanced for players without armor)
-    private static final double DAMAGE_AMOUNT = DAMAGE_HEARTS * 2.0; // 2 hearts = 4 damage points
+    // Arrow Rain Phase 2 constants
+    private static final int ARROW_RAIN_DURATION_TICKS = 80; // 4 seconds
+    private static final int ARROWS_PER_WAVE = 30; // Number of arrows per wave
+    private static final int ARROW_WAVES = 6; // Number of waves
+    private static final double ARROW_FALL_HEIGHT = 25.0; // Height above ground
+    private static final int ARROW_WARNING_TICKS = 20; // Warning before arrows land
+
+    // Removed damage constants - using vanilla evoker fangs damage
 
     // Particle colors
     private static final DustOptions RED_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 50, 50), 1.5f);
     private static final DustOptions WHITE_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 255, 255), 2.0f);
+    private static final DustOptions ARROW_DUST = new DustOptions(org.bukkit.Color.fromRGB(139, 69, 19), 1.2f); // Brown color for arrows
+    private static final DustOptions WARNING_DUST = new DustOptions(org.bukkit.Color.fromRGB(255, 165, 0), 1.8f); // Orange for warnings
 
     /**
      * Create a new stationary casting manager
      * @param plugin Plugin instance
      * @param boss Boss entity
      * @param safeZoneManager Safe zone manager for integration
+     * @param bossPhase Boss phase (1 or 2) - determines attack type
      */
-    public StationaryCastingManager(Plugin plugin, Skeleton boss, SafeZoneManager safeZoneManager) {
+    public StationaryCastingManager(Plugin plugin, Skeleton boss, SafeZoneManager safeZoneManager, int bossPhase) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.boss = boss;
         this.safeZoneManager = safeZoneManager;
+        this.bossPhase = bossPhase;
 
         this.isActive = false;
         this.castingProgress = 0;
@@ -85,15 +97,12 @@ public class StationaryCastingManager {
      */
     public boolean startCastingAttack() {
         if (isActive || boss == null || !boss.isValid()) {
-            logger.warning("[StationaryCastingManager] Cannot start attack - boss invalid or already active");
             return false;
         }
 
         isActive = true;
         bossPosition = boss.getLocation().clone();
         castingProgress = 0;
-
-        logger.info("[StationaryCastingManager] Starting stationary casting attack");
 
         // Freeze boss movement during casting
         freezeBoss();
@@ -128,7 +137,7 @@ public class StationaryCastingManager {
 
                 // Complete casting and start fangs attack
                 if (castingProgress >= CASTING_DURATION_TICKS) {
-                    startFangsAttack();
+                    startAttack();
                     cancel();
                 }
             }
@@ -263,15 +272,12 @@ public class StationaryCastingManager {
         int playerCount = getNearbyPlayerCount();
         int safeZoneCount = Math.min(playerCount + 1, MAX_SAFE_ZONES);
 
-        logger.info("[StationaryCastingManager] Creating " + safeZoneCount + " safe zones for " + playerCount + " players");
-        logger.info("[StationaryCastingManager] Attack radius: " + ATTACK_RADIUS + ", Safe zone radius: " + SAFE_ZONE_RADIUS);
+        
+        // Create random safe zones (3-4 zones)
+        List<com.mmmm.story.bosses.SafeZone> createdZones = safeZoneManager.generateSafeZones(
+            bossPosition, ATTACK_RADIUS, SAFE_ZONE_RADIUS, 30, 3, 4);
 
-        // Create safe zones using hemisphere method (better for sequential appearance)
-        List<com.mmmm.story.bosses.SafeZone> createdZones = safeZoneManager.generateHemisphereSafeZones(
-            bossPosition, ATTACK_RADIUS, SAFE_ZONE_RADIUS, 30, playerCount, true, 10);
-
-        logger.info("[StationaryCastingManager] Created " + createdZones.size() + " safe zones with sequential appearance");
-
+        
         // Debug: log safe zone positions
         for (int i = 0; i < createdZones.size(); i++) {
             com.mmmm.story.bosses.SafeZone zone = createdZones.get(i);
@@ -308,16 +314,22 @@ public class StationaryCastingManager {
     }
 
     /**
-     * Start the evoker fangs attack
+     * Start the attack based on boss phase
+     */
+    private void startAttack() {
+        // Only Phase 1 attacks (Evoker Fangs) - Phase 2 attacks disabled
+        startFangsAttack();
+    }
+
+    /**
+     * Start the evoker fangs attack (same for both phases)
      */
     private void startFangsAttack() {
-        logger.info("[StationaryCastingManager] Starting evoker fangs attack");
-
+        
         // Calculate fang positions
         List<Location> fangPositions = calculateFangPositions();
 
-        logger.info("[StationaryCastingManager] Calculated " + fangPositions.size() + " fang positions");
-
+        
         // Spawn triple fang attack instantly (3 waves at once)
         spawnTripleFangAttack(fangPositions);
 
@@ -414,104 +426,43 @@ public class StationaryCastingManager {
     }
 
     /**
-     * Spawn evoker fangs at specified positions with custom damage
+     * Spawn actual evoker fangs at specified positions
      */
     private void spawnFangs(List<Location> positions, float soundPitch) {
         World world = bossPosition.getWorld();
         if (world == null) return;
 
         for (Location pos : positions) {
-            EvokerFangs fang = (EvokerFangs) world.spawnEntity(pos, EntityType.EVOKER_FANGS);
-
-            // Set custom damage for the fangs
-            setFangDamage(fang);
-
-            // Play spawn sound with varying pitch
-            world.playSound(pos, org.bukkit.Sound.ENTITY_EVOKER_FANGS_ATTACK, 0.8f, soundPitch);
-
-            // Add spawn particles
-            world.spawnParticle(Particle.CRIT, pos, 5, 0.2, 0.2, 0.2, 0.1);
+            // Create actual evoker fangs (vanilla behavior)
+            createFangEffect(pos, soundPitch);
         }
 
-        logger.info("[StationaryCastingManager] Spawned " + positions.size() + " evoker fangs with " + DAMAGE_HEARTS + " hearts damage (pitch: " + soundPitch + ")");
+        logger.info("[StationaryCastingManager] Created " + positions.size() + " evoker fangs (pitch: " + soundPitch + ")");
     }
 
     /**
-     * Set custom damage for evoker fangs that bypasses armor and protects skeleton warriors
+     * Create actual evoker fang entity
      */
-    private void setFangDamage(EvokerFangs fang) {
-        // Schedule damage application shortly after fang spawns
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!fang.isValid()) return;
+    private void createFangEffect(Location pos, float soundPitch) {
+        World world = pos.getWorld();
+        if (world == null) return;
 
-                Location fangLoc = fang.getLocation();
-                World world = fangLoc.getWorld();
-                if (world == null) return;
+        // Play spawn sound with varying pitch
+        world.playSound(pos, org.bukkit.Sound.ENTITY_EVOKER_FANGS_ATTACK, 0.8f, soundPitch);
 
-                // Find entities near the fang (1.5 block radius)
-                for (org.bukkit.entity.Entity entity : world.getNearbyEntities(fangLoc, 1.5, 1.5, 1.5)) {
-                    if (!(entity instanceof LivingEntity)) continue;
+        // Spawn actual evoker fang entity
+        EvokerFangs fang = (EvokerFangs) world.spawnEntity(pos, EntityType.EVOKER_FANGS);
 
-                    // Skip skeleton warriors (any skeleton-type mob)
-                    if (entity instanceof Skeleton ||
-                        (entity instanceof Mob && isWarriorSkeleton((Mob) entity))) {
-                        continue;
-                    }
-
-                    // Apply custom damage to players (ignores armor)
-                    if (entity instanceof Player) {
-                        Player player = (Player) entity;
-
-                        // Check if player is in safe zone
-                        if (safeZoneManager != null && safeZoneManager.isInSafeZone(player.getLocation())) {
-                            continue; // No damage in safe zones
-                        }
-
-                        // Apply damage that bypasses armor
-                        boolean success = applyCustomDamage(player);
-                        if (success) {
-                            logger.info("[StationaryCastingManager] Applied " + DAMAGE_HEARTS + " hearts damage to player " + player.getName());
-                        }
-                    }
+        // Set the owner of the fangs to the boss
+        if (bossPosition != null) {
+            // Find the boss entity at the boss position
+            for (org.bukkit.entity.Entity entity : world.getNearbyEntities(bossPosition, 1.0, 1.0, 1.0)) {
+                if (entity instanceof Skeleton && "Босс Скелетов".equals(((Skeleton) entity).getCustomName())) {
+                    fang.setOwner((LivingEntity) entity);
+                    break;
                 }
             }
-        }.runTaskLater(plugin, 5L); // Apply damage 5 ticks after spawn
-    }
-
-    /**
-     * Apply custom damage that bypasses armor
-     */
-    private boolean applyCustomDamage(Player player) {
-        if (!player.isValid() || player.isDead()) return false;
-
-        // Store original health
-        double originalHealth = player.getHealth();
-
-        // Apply damage using EntityDamageEvent with IGNORE_ARMOR and IGNORE_INVULNERABILITY for custom calculation
-        EntityDamageEvent damageEvent = new EntityDamageEvent(
-            player,
-            EntityDamageEvent.DamageCause.MAGIC,
-            DAMAGE_AMOUNT
-        );
-
-        // Call the damage event
-        if (!damageEvent.isCancelled()) {
-            // Apply damage directly (bypasses armor)
-            double newHealth = Math.max(0, originalHealth - DAMAGE_AMOUNT);
-            player.setHealth(newHealth);
-
-            // Send damage animation
-            player.playEffect(org.bukkit.EntityEffect.HURT);
-
-            // Play hurt sound
-            player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f);
-
-            return true;
         }
-
-        return false;
     }
 
     /**
@@ -574,6 +525,10 @@ public class StationaryCastingManager {
         if (fangsTask != null) {
             fangsTask.cancel();
             fangsTask = null;
+        }
+        if (arrowRainTask != null) {
+            arrowRainTask.cancel();
+            arrowRainTask = null;
         }
 
         // Clean up safe zones
@@ -674,5 +629,240 @@ public class StationaryCastingManager {
         double x = vector.getX() * cos - vector.getZ() * sin;
         double z = vector.getX() * sin + vector.getZ() * cos;
         return new Vector(x, vector.getY(), z);
+    }
+
+    /**
+     * Start Arrow Rain attack for Phase 2
+     */
+    private void startArrowRainAttack() {
+        logger.info("[StationaryCastingManager] Starting Arrow Rain attack with " + ARROW_WAVES + " waves");
+
+        World world = bossPosition.getWorld();
+        if (world == null) {
+            stopCastingAttack(false);
+            return;
+        }
+
+        // Play starting sound
+        world.playSound(bossPosition, org.bukkit.Sound.ENTITY_EVOKER_PREPARE_SUMMON, 1.5f, 0.3f);
+
+        // Start arrow rain waves
+        startArrowRainWaves();
+
+        // Schedule attack completion
+        arrowRainTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                stopCastingAttack(true);
+            }
+        };
+        arrowRainTask.runTaskLater(plugin, ARROW_RAIN_DURATION_TICKS);
+    }
+
+    /**
+     * Start multiple waves of arrow rain
+     */
+    private void startArrowRainWaves() {
+        int waveInterval = ARROW_RAIN_DURATION_TICKS / ARROW_WAVES;
+
+        for (int wave = 0; wave < ARROW_WAVES; wave++) {
+            final int currentWave = wave;
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (!isActive || boss == null || !boss.isValid()) {
+                        return;
+                    }
+
+                    logger.info("[StationaryCastingManager] Launching Arrow Rain wave " + (currentWave + 1) + "/" + ARROW_WAVES);
+                    launchArrowRainWave(currentWave);
+
+                    // Play wave sound
+                    World world = bossPosition.getWorld();
+                    if (world != null) {
+                        world.playSound(bossPosition, org.bukkit.Sound.ENTITY_ARROW_SHOOT, 1.2f, 0.8f + (currentWave * 0.1f));
+                    }
+                }
+            }.runTaskLater(plugin, wave * waveInterval);
+        }
+    }
+
+    /**
+     * Launch a single wave of falling arrows
+     */
+    private void launchArrowRainWave(int waveNumber) {
+        World world = bossPosition.getWorld();
+        if (world == null) return;
+
+        // Calculate ground level for the boss position
+        double bossGroundY = findGroundLevel(world, bossPosition.getX(), bossPosition.getZ(), bossPosition.getY());
+
+        // Generate random arrow positions within attack radius
+        List<Location> arrowTargets = new ArrayList<>();
+        for (int i = 0; i < ARROWS_PER_WAVE; i++) {
+            // Generate random position within attack radius
+            double angle = Math.random() * 2 * Math.PI;
+            double distance = Math.random() * ATTACK_RADIUS;
+
+            double x = bossPosition.getX() + distance * Math.cos(angle);
+            double z = bossPosition.getZ() + distance * Math.sin(angle);
+
+            Location targetLoc = new Location(world, x, 0, z);
+
+            // Check if position is within attack radius (circular boundary)
+            if (targetLoc.distance(bossPosition) <= ATTACK_RADIUS) {
+                // Find ground level for this specific position
+                double groundY = findGroundLevel(world, targetLoc.getX(), targetLoc.getZ(), bossGroundY);
+                targetLoc.setY(groundY);
+
+                // Check if not in safe zone
+                if (safeZoneManager == null || !safeZoneManager.isInSafeZone(targetLoc)) {
+                    arrowTargets.add(targetLoc);
+                }
+            }
+        }
+
+        logger.info("[StationaryCastingManager] Generated " + arrowTargets.size() + " arrow targets for wave " + (waveNumber + 1));
+
+        // Create falling arrows with warnings
+        for (Location target : arrowTargets) {
+            createFallingArrowWithWarning(target);
+        }
+    }
+
+    /**
+     * Create a single falling arrow with warning effects
+     */
+    private void createFallingArrowWithWarning(Location groundTarget) {
+        World world = groundTarget.getWorld();
+        if (world == null) return;
+
+        // Create falling arrow position high above ground
+        Location arrowStart = groundTarget.clone().add(0, ARROW_FALL_HEIGHT, 0);
+
+        // Show warning particles on ground first
+        showArrowWarning(groundTarget);
+
+        // Create falling arrow effect
+        new BukkitRunnable() {
+            private int ticks = 0;
+            private final int totalTicks = ARROW_WARNING_TICKS;
+            private Location currentPos = arrowStart.clone();
+
+            @Override
+            public void run() {
+                if (!isActive || ticks >= totalTicks) {
+                    // Arrow hits ground
+                    onArrowImpact(groundTarget);
+                    cancel();
+                    return;
+                }
+
+                // Calculate falling position
+                double progress = ticks / (double) totalTicks;
+                double currentY = arrowStart.getY() - (progress * ARROW_FALL_HEIGHT);
+                currentPos.setY(currentY);
+
+                // Create arrow particle trail
+                createArrowParticleTrail(currentPos);
+
+                // Falling sound effect
+                if (ticks % 5 == 0) {
+                    world.playSound(currentPos, org.bukkit.Sound.ENTITY_ARROW_HIT, 0.3f, 1.5f);
+                }
+
+                ticks++;
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    /**
+     * Show warning particles where arrow will land
+     */
+    private void showArrowWarning(Location groundTarget) {
+        World world = groundTarget.getWorld();
+        if (world == null) return;
+
+        // Create warning circle on ground
+        new BukkitRunnable() {
+            private int ticks = 0;
+            private final int maxTicks = ARROW_WARNING_TICKS;
+
+            @Override
+            public void run() {
+                if (ticks >= maxTicks) {
+                    cancel();
+                    return;
+                }
+
+                // Pulsing warning circle
+                float intensity = 1.0f - (ticks / (float) maxTicks) * 0.5f;
+
+                // Create circle of warning particles
+                for (int i = 0; i < 8; i++) {
+                    double angle = (i / 8.0) * 2 * Math.PI;
+                    double x = groundTarget.getX() + Math.cos(angle) * 0.5;
+                    double z = groundTarget.getZ() + Math.sin(angle) * 0.5;
+
+                    Location particleLoc = new Location(world, x, groundTarget.getY(), z);
+                    world.spawnParticle(Particle.DUST, particleLoc, 1, 0, 0.1, 0, WARNING_DUST);
+                }
+
+                ticks++;
+            }
+        }.runTaskTimer(plugin, 0L, 2L);
+    }
+
+    /**
+     * Create particle trail for falling arrow
+     */
+    private void createArrowParticleTrail(Location arrowPos) {
+        World world = arrowPos.getWorld();
+        if (world == null) return;
+
+        // Main arrow particle
+        world.spawnParticle(Particle.DUST, arrowPos, 1, 0, 0, 0, ARROW_DUST);
+
+        // Trail particles
+        for (int i = 0; i < 3; i++) {
+            double offsetX = (Math.random() - 0.5) * 0.3;
+            double offsetY = (Math.random() - 0.5) * 0.3;
+            double offsetZ = (Math.random() - 0.5) * 0.3;
+
+            Location trailLoc = arrowPos.clone().add(offsetX, offsetY, offsetZ);
+            world.spawnParticle(Particle.CRIT, trailLoc, 1, 0, 0, 0, 0.1);
+        }
+    }
+
+    /**
+     * Handle arrow impact with ground
+     */
+    private void onArrowImpact(Location impactLocation) {
+        World world = impactLocation.getWorld();
+        if (world == null) return;
+
+        // Create impact effects
+        world.spawnParticle(Particle.CRIT, impactLocation, 10, 0.5, 0.5, 0.5, 0.3);
+        world.spawnParticle(Particle.BLOCK, impactLocation, 5, 0.2, 0.1, 0.2, 0.1);
+
+        // Play impact sound
+        world.playSound(impactLocation, org.bukkit.Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.2f);
+
+        // Check for nearby players to apply damage
+        for (Player player : world.getPlayers()) {
+            if (player.getLocation().distance(impactLocation) <= 2.0) {
+                // Apply custom damage (avoiding arrow entity issues)
+                double damage = 8.0; // Moderate damage
+                player.damage(damage, boss);
+
+                // Knockback effect
+                Vector knockback = player.getLocation().toVector().subtract(impactLocation.toVector()).normalize();
+                knockback.multiply(0.5).setY(0.3);
+                player.setVelocity(knockback);
+
+                // Send damage message
+                player.sendMessage("§cВы попали под град стрел!");
+            }
+        }
     }
 }

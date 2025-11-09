@@ -32,14 +32,14 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         }
         
         String subCommand = args[0].toLowerCase();
-        
+
         switch (subCommand) {
             case "start":
                 return handleStart(sender);
             case "give":
                 return handleGive(sender, args);
             case "debug":
-                return handleDebug(sender);
+                return handleDebug(sender, args);
             case "continue":
                 return handleContinue(sender);
             case "menu":
@@ -164,18 +164,31 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         return true;
     }
     
-    private boolean handleDebug(CommandSender sender) {
+    private boolean handleDebug(CommandSender sender, String[] args) {
         if (!sender.hasPermission("story.admin")) {
             sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.insufficient_permissions")).color(NamedTextColor.RED));
             return true;
         }
-        
-        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.debug_info_header")).color(NamedTextColor.GOLD));
-        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.debug_tracked_blocks").replace("%count%", String.valueOf(com.mmmm.story.managers.PlayerPlacedBlocksManager.getTrackedBlocksCount()))).color(NamedTextColor.YELLOW));
-        
+
+        // Handle force phase 2 command
+        if (args.length > 1 && args[1].equalsIgnoreCase("forcephase2")) {
+            return handleForcePhase2(sender);
+        }
+
+        sender.sendMessage(Component.text("=== Debug Information ===").color(NamedTextColor.GOLD));
+        sender.sendMessage(Component.text("Tracked blocks: " + com.mmmm.story.managers.PlayerPlacedBlocksManager.getTrackedBlocksCount()).color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Debug mode is enabled - check logs for boss damage and phase transition info").color(NamedTextColor.GREEN));
+
         return true;
     }
-    
+
+    private boolean handleForcePhase2(CommandSender sender) {
+        sender.sendMessage(Component.text("Force Phase 2 command disabled - please reduce boss health to 100 HP naturally").color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Arrow Rain system will trigger automatically when boss reaches Phase 2").color(NamedTextColor.GREEN));
+        return true;
+    }
+
+        
     private void sendHelp(CommandSender sender) {
         sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_header")).color(NamedTextColor.GOLD));
         sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_start")).color(NamedTextColor.YELLOW));

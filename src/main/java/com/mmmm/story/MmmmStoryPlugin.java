@@ -99,7 +99,7 @@ public class MmmmStoryPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MobListener(this), this);
         getServer().getPluginManager().registerEvents(new ChestSpawnManager(this), this);
         getServer().getPluginManager().registerEvents(new StoryItemProtectionListener(this), this);
-        getServer().getPluginManager().registerEvents(new BlockTrackingListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockTrackingListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new MenuClickListener(this), this);
     }
