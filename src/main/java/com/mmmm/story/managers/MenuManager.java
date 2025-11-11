@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * Thread-safe: All public methods can be called from any thread.
  * 
- * @since 1.4.0
+ * @since 1.0
  */
 public class MenuManager {
     private final MmmmStoryPlugin plugin;
