@@ -1,0 +1,650 @@
+# ================================
+# СЮЖЕТНЫЕ ДИАЛОГИ (РУССКИЙ)
+# Полный русский перевод
+# Основан на СЮЖЕТ_ФИНАЛЬНЫЙ.md
+# Использует стандартные структуры Minecraft
+# ================================
+
+# ================================
+# ПРОЛОГ — "Пробуждение"
+# ================================
+
+# Messenger spawns and introduces the quest
+messenger.spawn:
+  hologram: true
+  actionBar: true
+  title: false
+  effect: "DARKNESS"
+  disappearanceLine: 63
+  lines:
+    - delay: 0
+      text: "&7&o*Мир вокруг внезапно темнеет...*"
+      sound: "AMBIENT_CAVE"
+    - delay: 5
+      text: "&d&o???&r: &7...кто-то здесь есть?"
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 10
+      text: "&7&o*Фигура материализуется из тумана*"
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+      removeEffect: true
+    - delay: 15
+      text: "&6Посланник: &7Наконец-то... Вы прибыли."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 21
+      text: "&6Посланник: &7Меня зовут Посланник. Я ждал вас."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 27
+      text: "&6Посланник: &7Мир умирает. Порталы рушатся, границы между мирами истончаются."
+      sound: "BLOCK_GLASS_BREAK"
+    - delay: 35
+      text: "&6Посланник: &aНо вы можете это остановить."
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 41
+      text: "&6Посланник: &7На севере лежит древний алтарь. Ядро Стабилизации спрятано там."
+      sound: "BLOCK_BELL_USE"
+    - delay: 49
+      text: "&6Посланник: &7Только оно может восстановить баланс..."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 55
+      text: "&6Посланник: &dИщите руины с фиолетовым свечением. Идите... пока не поздно."
+      sound: "BLOCK_BEACON_AMBIENT"
+    - delay: 63
+      text: "&7&o*Посланник исчезает в тумане*"
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+    - delay: 68
+      text: "&e&l✦ &eНовый квест:&f Найдите Разрушенный Портал на севере"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# ================================
+# АКТ I — "Разлом"
+# ================================
+
+# Player finds the stabilization core at the forgotten altar
+altar.forgotten:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Древний артефакт излучает странное тепло*"
+      sound: "BLOCK_BEACON_AMBIENT"
+    - delay: 5
+      text: "&5Древний Голос: &7Не... трогай... печать..."
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 10
+      text: "&6Посланник: &7Не слушайте шёпот безумия. Возьмите Ядро."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 16
+      text: "&7&o*Вы берёте Ядро Стабилизации*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 21
+      text: "&5Древний Голос: &cПечать... ослабла..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 26
+      text: "&6Посланник: &aОтлично. Теперь активируйте ядро."
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 32
+      text: "&6Посланник: &7Чтобы стабилизировать порталы."
+      sound: "BLOCK_BELL_USE"
+    - delay: 38
+      text: "&e&l✦ &aПолучено:&b Ядро Стабилизации"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 43
+      text: "&e&l✦ &eНовый квест:&f Стабилизируйте Портал"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# Player activates the stabilization node, opening the Nether portal
+node.crossroads:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&7&o*Ядро вставлено в рамку*"
+      sound: "BLOCK_END_PORTAL_FRAME_FILL"
+    - delay: 4
+      text: "&7&o*Земля начинает трястись*"
+      sound: "ENTITY_LIGHTNING_BOLT_THUNDER"
+    - delay: 9
+      text: "&5Древний Голос: &cПечать... сломана..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 14
+      text: "&6Посланник: &aЧудесно! Порталы стабилизированы!"
+      sound: "ENTITY_VILLAGER_CELEBRATE"
+    - delay: 20
+      text: "&7&o*Портал в Ад загорается сам по себе*"
+      sound: "BLOCK_PORTAL_TRIGGER"
+      ignitePortal: true
+    - delay: 25
+      text: "&6Посланник: &7Теперь идите в Ад. Там вас ждёт важная миссия."
+      sound: "BLOCK_BELL_USE"
+    - delay: 31
+      text: "&6Посланник: &7Ищите адские крепости... ключ для призыва Стража спрятан там."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 38
+      text: "&5Древний Голос: &cНе идите... это... ловушка..."
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 43
+      text: "&6Посланник: &7*Смеётся* Безумный шёпот древних мёртвых."
+      sound: "ENTITY_VILLAGER_NO"
+    - delay: 49
+      text: "&a&l✓ &aДостижение:&f Разлом Активирован"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 54
+      text: "&e&l✦ &eНовый квест:&f Исследуйте Адские Крепости"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# Player finds the summoning key in a Nether fortress
+nether.key_found:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Ключ начинает пульсировать тёмной энергией*"
+      sound: "BLOCK_BEACON_AMBIENT"
+    - delay: 5
+      text: "&5Древний Голос: &cЭтот ключ... откроет врата..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&6Посланник: &7Отлично! Теперь создайте алтарь призыва."
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 16
+      text: "&e&l✦ &aПолучено:&6 Ключ Призыва"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# Player finds the void catalyst in a bastion remnant
+bastion.catalyst_found:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Кристалл излучает мерцающую пустоту*"
+      sound: "BLOCK_RESPAWN_ANCHOR_AMBIENT"
+    - delay: 5
+      text: "&5Древний Голос: &cСила хаоса... осторожнее..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 10
+      text: "&6Посланник: &7Катализатор Пустоты! Он усилит Фрагмент Гнева."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 17
+      text: "&e&l✦ &aПолучено:&5 Катализатор Пустоты"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# ================================
+# АКТ II — "Первая Жертва"
+# ================================
+
+# Player summons the first boss, the Wither Lord
+boss1.summon:
+  hologram: false
+  actionBar: true
+  title: true
+  spawnBossAfter: true
+  lines:
+    - delay: 0
+      text: "&7&o*Ключ Призыва вставлен в алтарь*"
+      sound: "ITEM_FIRECHARGE_USE"
+    - delay: 3
+      text: "&7&o*Земля раскалывается*"
+      sound: "ENTITY_GENERIC_EXPLODE"
+    - delay: 6
+      text: "&k&4???&r: &c*Рёв идёт из глубин...*"
+      sound: "ENTITY_WITHER_SPAWN"
+    - delay: 9
+      text: "&k&5Повелитель&r&5: &7Кто... посмел... потревожить... мой сон?"
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 13
+      text: "&k&5Повелитель&r&5: &7Я... был рыцарем..."
+      sound: "ENTITY_SKELETON_AMBIENT"
+    - delay: 17
+      text: "&k&5Повелитель&r&5: &7Я... охранял... печать..."
+      sound: "ENTITY_SKELETON_HURT"
+    - delay: 21
+      text: "&k&5Повелитель&r&5: &cНо теперь... ВЫ УМРЁТЕ!"
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 24
+      text: "&6Посланник: &aУничтожьте его! Он порождение древнего зла!"
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 28
+      text: "&5Древний Голос: &cНет... он... страж... вы освобождаете..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 31
+      text: "&4&l⚔⚔⚔ БИТВА НАЧИНАЕТСЯ ⚔⚔⚔"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+
+# Player defeats the first boss
+boss1.defeated:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&k&5Повелитель&r&5: &7Я... свободен..."
+      sound: "ENTITY_SKELETON_DEATH"
+    - delay: 5
+      text: "&k&5Повелитель&r&5: &cНо вы... освободили... нечто похуже..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 11
+      text: "&7&o*Повелитель обращается в пыль*"
+      sound: "BLOCK_SAND_BREAK"
+    - delay: 16
+      text: "&6Посланник: &aОтлично! Первый страж побеждён!"
+      sound: "ENTITY_VILLAGER_CELEBRATE"
+    - delay: 22
+      text: "&5Древний Голос: &cВторая... печать... сломана..."
+      sound: "ENTITY_ENDERMAN_STARE"
+    - delay: 27
+      text: "&6Посланник: &7Возьмите его силу. Она понадобится для следующего испытания."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 34
+      text: "&e&l✦ &aПолучено:&d Фрагмент Силы Повелителя"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 39
+      text: "&a&l✓ &aДостижение:&f Павший Страж"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 44
+      text: "&e&l✦ &eНовый квест:&f Исследуйте разрушенные бастионы пиглинов"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+    - delay: 49
+      text: "&7&o*Волны скелетов прекратились*"
+      sound: "ENTITY_EXPERIENCE_ORB_PICKUP"
+
+# ================================
+# АКТ II (АД) ПРОДОЛЖЕНИЕ
+# ================================
+
+# Player summons the second boss, the Eruptor
+boss2.summon:
+  hologram: false
+  actionBar: true
+  title: true
+  spawnBossAfter: true  # Босс появляется ПОСЛЕ окончания диалога
+  lines:
+    - delay: 0
+      text: "&7&o*Фрагмент и Катализатор сливаются*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 3
+      text: "&7&o*Земля раскалывается*"
+      sound: "ENTITY_GENERIC_EXPLODE"
+    - delay: 6
+      text: "&k&4???&r: &c*Адское пламя вырывается...*"
+      sound: "ENTITY_WITHER_SPAWN"
+    - delay: 9
+      text: "&k&4Изверг&r&4: &cЯ СПАЛ... ТЫСЯЧИ ЛЕТ!"
+      sound: "ENTITY_BLAZE_AMBIENT"
+    - delay: 13
+      text: "&k&4Изверг&r&4: &7МЕНЯ... ЗАКЛЮЧИЛИ..."
+      sound: "ENTITY_GHAST_SCREAM"
+    - delay: 17
+      text: "&k&4Изверг&r&4: &7Я ОХРАНЯЛ... ПРОХОД В КРАЙ!"
+      sound: "ENTITY_BLAZE_HURT"
+    - delay: 21
+      text: "&k&4Изверг&r&4: &cНО ТЕПЕРЬ... Я СВОБОДЕН! И ВЫ... СГОРИТЕ!"
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 25
+      text: "&6Посланник: &aУничтожьте его! Он последняя преграда перед Краем!"
+      sound: "ENTITY_VILLAGER_YES"
+    - delay: 29
+      text: "&5Древний Голос: &cОн... последний... страж..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 32
+      text: "&4&l🔥🔥🔥 БИТВА С ИЗВЕРГОМ НАЧИНАЕТСЯ 🔥🔥🔥"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+
+# Player defeats the second boss
+boss2.defeated:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&k&4Изверг&r&4: &7Печать... третья печать... ломается..."
+      sound: "ENTITY_WITHER_DEATH"
+    - delay: 5
+      text: "&k&4Изверг&r&4: &cВы... обречены... все обречены..."
+      sound: "ENTITY_BLAZE_DEATH"
+    - delay: 11
+      text: "&7&o*Изверг взрывается*"
+      sound: "ENTITY_GENERIC_EXPLODE"
+    - delay: 16
+      text: "&6Посланник: &aНАКОНЕЦ-ТО! Путь в Край открыт!"
+      sound: "ENTITY_VILLAGER_CELEBRATE"
+    - delay: 22
+      text: "&5Древний Голос: &cПоследняя... печать... сломана..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 28
+      text: "&6Посланник: &7Теперь бросьте ключ на маяк, чтобы открыть врата."
+      sound: "BLOCK_BELL_USE"
+    - delay: 34
+      text: "&6Посланник: &eИ не забудьте тыкву."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 40
+      text: "&e&l✦ &aПолучено:&6 Ключ Портала в Край"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 45
+      text: "&a&l✓ &aДостижение:&f Победитель Изверга"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 50
+      text: "&e&l✦ &eНовый квест:&f Используйте ключ, чтобы открыть портал в Край"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# ================================
+# АКТ III — "Истинная Правда"
+# ================================
+
+# Player enters the End dimension
+end.entry:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Вы входите в портал*"
+      sound: "BLOCK_PORTAL_TRAVEL"
+    - delay: 5
+      text: "&7&o*Реальность искажается*"
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+    - delay: 10
+      text: "&6Посланник: &aОтлично! Последний страж."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 16
+      text: "&5Древний Голос: &cДракон... не враг... он... ТЮРЕМЩИК!"
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 22
+      text: "&6Посланник: &cНе слушайте! Дракон - источник всего зла!"
+      sound: "ENTITY_VILLAGER_NO"
+    - delay: 28
+      text: "&5Древний Голос: &cПосланник... это... ОН!"
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 34
+      text: "&6Посланник: &7*Смеётся* Глупый осколок прошлого..."
+      sound: "ENTITY_VILLAGER_AMBIENT"
+    - delay: 40
+      text: "&e&l✦ &eКвест:&f Победите Дракона Края"
+      sound: "UI_TOAST_CHALLENGE_COMPLETE"
+
+# Player defeats the Ender Dragon, revealing the true villain
+dragon.defeated:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&5&k???&r&5: &7Я... был... стражем..."
+      sound: "ENTITY_ENDER_DRAGON_HURT"
+    - delay: 5
+      text: "&5&k???&r&5: &cПечать... сломана..."
+      sound: "ENTITY_ENDER_DRAGON_DEATH"
+    - delay: 11
+      text: "&7&o*Дракон исчезает*"
+      sound: "BLOCK_END_PORTAL_SPAWN"
+    - delay: 16
+      text: "&5Древний Голос: &cОН... СВОБОДЕН..."
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 22
+      text: "&6Посланник: &4*Голос искажается* НАКОНЕЦ-ТО!"
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 28
+      text: "&4&k???&r: &cВы... ОСВОБОДИЛИ МЕНЯ!"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+    - delay: 34
+      text: "&4&kТёмный Лорд&r: &cЯ... ТЁМНЫЙ ЛОРД!"
+      sound: "ENTITY_WITHER_SPAWN"
+    - delay: 40
+      text: "&4&kТёмный Лорд&r: &7Тысячи лет... я был заключён..."
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 46
+      text: "&4&kТёмный Лорд&r: &cНо вы... сломали ТРИ ПЕЧАТИ!"
+      sound: "ENTITY_ENDER_DRAGON_GROWL"
+    - delay: 53
+      text: "&5Древний Голос: &7Соберите... пять артефактов..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 59
+      text: "&5Древний Голос: &7Это... последний шанс... запечатать его... снова..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 66
+      text: "&4&kТёмный Лорд&r: &c*Смеётся* Попробуйте..."
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 72
+      text: "&e&l✦ &aПолучено:&d Яйцо Дракона"
+      sound: "ENTITY_ITEM_PICKUP"
+    - delay: 77
+      text: "&a&l✓ &aДостижение:&f Конец Эпохи"
+      sound: "ENTITY_PLAYER_LEVELUP"
+
+# Player finds the first artifact, the Void Shard
+artifact.found_1:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Осколок эха вибрирует от древней силы*"
+      sound: "BLOCK_SCULK_SHRIEKER_SHRIEK"
+    - delay: 5
+      text: "&5Древний Голос: &cОсколок Пустоты&7... найден..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aНайдено:&c Осколок Пустоты"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# Player finds the second artifact, the Breath of Time
+artifact.found_2:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Бутылка с дыханием дракона светится изнутри*"
+      sound: "ENTITY_ENDER_DRAGON_AMBIENT"
+    - delay: 5
+      text: "&5Древний Голос: &bДыхание Времени&7... рядом..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aНайдено:&b Дыхание Времени"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# Player finds the third artifact, the Fruit of Void
+artifact.found_3:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Плод хоруса искажает пространство вокруг себя*"
+      sound: "BLOCK_CHORUS_FLOWER_GROW"
+    - delay: 5
+      text: "&5Древний Голос: &aПлод Пустоты&7..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aНайдено:&a Плод Пустоты"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# Player finds the fourth artifact, the Eye of Dimensions
+artifact.found_4:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Глаз Эндера пульсирует межизмерительной энергией*"
+      sound: "BLOCK_END_PORTAL_FRAME_FILL"
+    - delay: 5
+      text: "&5Древний Голос: &fГлаз Измерений&7..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aНайдено:&f Глаз Измерений"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# Player finds the fifth artifact, the Wings of Freedom
+artifact.found_5:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&7&o*Элитры излучают фиолетовое сияние*"
+      sound: "ITEM_ELYTRA_FLYING"
+    - delay: 5
+      text: "&5Древний Голос: &7артефакт... найден..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&e&l✦ &aНайдено:&5 Крылья Свободы"
+      sound: "ENTITY_ITEM_PICKUP"
+
+# Triggered when all five artifacts have been found
+artifact.void_found:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&5Древний Голос: &cПОСЛЕДНИЙ! &cВСЕ ПЯТЬ АРТЕФАКТОВ!"
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 6
+      text: "&5Древний Голос: &7Спешите... к центру... времени мало..."
+      sound: "ENTITY_ENDERMAN_DEATH"
+    - delay: 12
+      text: "&4&kТёмный Лорд&r: &cВы не успеете... мир уже мой..."
+      sound: "ENTITY_WITHER_AMBIENT"
+    - delay: 18
+      text: "&a&l✓ &aДостижение:&f Пять Ключей"
+      sound: "ENTITY_PLAYER_LEVELUP"
+
+# Player starts the final ritual to seal the Dark Lord
+final.ritual_start:
+  hologram: false
+  actionBar: true
+  title: true
+  lines:
+    - delay: 0
+      text: "&7&o*Осколок Пустоты размещён*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 2
+      text: "&5Древний Голос: &7Первый... узел..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 5
+      text: "&7&o*Дыхание Времени размещено*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 7
+      text: "&5Древний Голос: &7Второй... узел..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 10
+      text: "&7&o*Плод Пустоты размещён*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 12
+      text: "&5Древний Голос: &7Третий... узел..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 14
+      text: "&4&kТёмный Лорд&r: &cВы... не посмеете..."
+      sound: "ENTITY_WITHER_HURT"
+    - delay: 17
+      text: "&7&o*Глаз Измерений размещён*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 19
+      text: "&5Древний Голос: &7Четвёртый... узел..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 21
+      text: "&4&kТёмный Лорд&r: &cСТОП!"
+      sound: "ENTITY_WITHER_SHOOT"
+    - delay: 24
+      text: "&7&o*Крылья Свободы размещены*"
+      sound: "BLOCK_BEACON_ACTIVATE"
+    - delay: 26
+      text: "&5Древний Голос: &cПЯТЫЙ... УЗЕЛ!"
+      sound: "ENTITY_ENDERMAN_SCREAM"
+    - delay: 28
+      text: "&7&o*Лучи соединяются в небе*"
+      sound: "BLOCK_END_PORTAL_SPAWN"
+    - delay: 30
+      text: "&4&kТёмный Лорд&r: &cНЕЕЕЕЕТ!"
+      sound: "ENTITY_WITHER_DEATH"
+    - delay: 32
+      text: "&4&kТёмный Лорд&r: &7Невозможно..."
+      sound: "ENTITY_WITHER_DEATH"
+    - delay: 34
+      text: "&4&kТёмный Лорд&r: &7Я... побеждён..."
+      sound: "ENTITY_ENDER_DRAGON_DEATH"
+    - delay: 37
+      text: "&5Древний Голос: &aПечать... восстановлена..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 40
+      text: "&5Древний Голос: &aМир... спасён..."
+      sound: "ENTITY_ENDERMAN_TELEPORT"
+    - delay: 43
+      text: "&5Древний Голос: &aВозвращайтесь... герои..."
+      sound: "ENTITY_ENDERMAN_AMBIENT"
+    - delay: 46
+      text: "&7&o*Открывается портал домой*"
+      sound: "BLOCK_END_PORTAL_SPAWN"
+
+# The final ritual is complete, the story ends
+final.complete:
+  hologram: false
+  actionBar: true
+  title: true
+  clearWeather: true
+  lines:
+    - delay: 0
+      text: "&7&o*Солнце светит ярче*"
+      sound: "ENTITY_PLAYER_LEVELUP"
+    - delay: 6
+      text: "&5Древний Голос: &7Но это... ещё не конец..."
+      sound: "ENTITY_ENDERMAN_STARE"
+
+# Act transitions
+# Transition to Act II
+act.2.start:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&8&m                                        "
+      sound: "BLOCK_BEACON_POWER_SELECT"
+
+# Transition to Act III
+act.3.start:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&8&m                                        "
+      sound: "BLOCK_BEACON_POWER_SELECT"
+
+# Transition to Act IV
+act.4.start:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&8&m                                        "
+      sound: "BLOCK_BEACON_POWER_SELECT"
+
+# Transition to Act V
+act.5.start:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&8&m                                        "
+      sound: "BLOCK_BEACON_POWER_SELECT"
+
+# Portal messages
+# Message displayed when the Nether portal is blocked
+portal.nether.blocked:
+  hologram: false
+  actionBar: true
+  title: false
+  lines:
+    - delay: 0
+      text: "&c✗ Портал в Ад заблокирован!"
+      sound: "BLOCK_GLASS_BREAK"
+    - delay: 3
+      text: "&7Найдите Ядро Стабилизации для активации порталов"
+      sound: "ENTITY_VILLAGER_NO"

@@ -44,9 +44,6 @@ Thumbs.db
 
 # Runtime data
 data/
-config.yml
-dialogs.yml
-sounds.yml
 messages_ru.yml
 
 # Backup files

@@ -1,0 +1,29 @@
+# Sound configurations for various events
+# Format: event_key: sound_name, volume, pitch
+
+sounds:
+  npc.spawn: "ENTITY_VILLAGER_AMBIENT,1.0,1.0"
+  npc.disappear: "ENTITY_VILLAGER_HURT,0.5,1.2"
+  
+  altar.activate: "BLOCK_BEACON_ACTIVATE,1.5,0.8"
+  altar.complete: "ENTITY_PLAYER_LEVELUP,1.0,1.0"
+  
+  node.activate: "BLOCK_END_PORTAL_SPAWN,2.0,1.0"
+  
+  boss.summon: "ENTITY_WITHER_SPAWN,2.0,0.8"
+  boss.death: "UI_TOAST_CHALLENGE_COMPLETE,1.5,1.0"
+  boss.special_attack.levitation: "ENTITY_WITHER_SPAWN,1.5,0.6"
+  boss.special_attack.skull_spawn: "ENTITY_WITHER_SHOOT,1.0,0.8"
+  boss.special_attack.descent: "ENTITY_WITHER_AMBIENT,1.2,0.7"
+  
+  portal.blocked: "BLOCK_GLASS_BREAK,1.0,0.5"
+  portal.open: "BLOCK_END_PORTAL_SPAWN,1.5,1.0"
+  
+  artifact.found: "ENTITY_ITEM_PICKUP,1.0,1.2"
+  artifact.complete: "BLOCK_BEACON_POWER_SELECT,1.5,1.0"
+  
+  ritual.start: "BLOCK_END_PORTAL_SPAWN,3.0,0.5"
+  ritual.complete: "UI_TOAST_CHALLENGE_COMPLETE,2.0,1.0"
+  
+  wave.start: "ENTITY_WITHER_SPAWN,0.5,1.0"
+  wave.end: "ENTITY_PLAYER_LEVELUP,0.8,1.0"

@@ -1,0 +1,244 @@
+version: 1
+
+# NPC Configuration
+npc:
+  spawnAtWorldSpawn: true
+  # Skin configuration for the Messenger NPC
+  skin:
+    # Type of skin: "player" or "custom"
+    # - player: Uses skin from a Minecraft player by username
+    # - custom: Uses raw texture data (value and signature)
+    type: custom
+    
+    # Player name to fetch skin from (only for type: player)
+    # Popular mystical options: Notch, Herobrine, jeb_, Dream, Ph1LzA
+    playerName: "Jitaro"
+    
+    # Custom texture data (only for type: custom)
+    # Get from: https://mineskin.org/ or https://minecraft-heads.com/
+    texture:
+      value: "ewogICJ0aW1lc3RhbXAiIDogMTc2MTIxMjkwNjg4MSwKICAicHJvZmlsZUlkIiA6ICI4MDU0MzU4YWZhYjM0ZjllYTQzMDM3ZWRjODBmYjBjYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJKaXRhcm8iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDgzZDgzODRiODRhNDgwMTBmMDg1YTBmYjQ1MjcyMDMzZmYzNmQyMGUzODQ2MTc1MjQ5MDQ2ZmFlNWRmNTEzZiIsCiAgICAgICJtZXRhZGF0YSIgOiB7CiAgICAgICAgIm1vZGVsIiA6ICJzbGltIgogICAgICB9CiAgICB9LAogICAgIkNBUEUiIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzc2NThjNTAyNWM3N2NmYWM3NTc0YWFiM2FmOTRhNDZhODg4NmUzYjc3MjJhODk1MjU1ZmJmMjJhYjg2NTI0MzQiCiAgICB9CiAgfQp9"
+      signature: "B6Fsz0EAUN+8KDMe0YxUULWCPxkDTsYs6U7OjNa8G9ktkwC14hkn3WJTE6BHNi6fH/PzE1JVyq9SFufiFolWj473zb2tBLNalN1dSYGKyyCTZTg5GatEeAYKlnUvKu9RNNhQZFNWIl8OVTdl4uEpmT6cpBbnTaR+ugL4tArCD8aFho7ZpBc1aNx2Gk3BqUvtI98ZoYqpJpuoIXkJlf8eli8srQnSyMfxECBcSL2yhCjOZS84//s+7edw81qNUrtKSC5xcA/cwS+homkBeo0q8y0qvwwfpizR65++7zIxeJHy2XIImr0mQFbVrLxh3AFpMkDazx0f0mj7LotNYJsIZIuHbWoDmDAk81lxShy96Rl9MVHPlatUX4GkAxRlS2gudcL1jzbaZiTkFTulC7PjayffZcaFXG4PDsdNOXHNJWSf35oiPVvpGrBhYNxcU4O4pgUkcmHQccnOAm567Xj8OyyuGDxLXmduPwumsj3y/E//WoFWW9sk99l+ONWsfhmuStMCJpwOStB2hwfeTsPsTsNJ4WkUsHEWlQUtvZupNgEq5nIt8JQ1HyRdsbTEKlPVo+em7OEvovvyYSYOfuOOCieMrCYJhKfAbLydoi7mVnNqKpu0syAGzMevlzCVTN+9jG8KgLZrE5eYn6Ixp/v+VOW3PqexkaUdWi5Ggn0+jyI="
+  
+  hologram: true
+  despawnAfterSeconds: 10
+
+  # Despawn Visual Effects Configuration
+  despawn:
+    # Visual effects during NPC despawn
+    visualEffects:
+      enabled: true                    # Enable/disable despawn visual effects
+      showParticles: true              # Show particle effects during despawn
+      showPlayerEffects: false         # Show any player-centered effects (default: false)
+      cleanupRadius: 15.0              # Radius to clean up particles after despawn
+      animationDuration: 100           # Despawn animation duration in ticks (5 seconds)
+
+    # Particle cleanup settings
+    particleCleanup:
+      enabled: true                    # Enable automatic particle cleanup
+      immediateCleanup: true           # Clean particles immediately when despawn starts
+      finalCleanup: true               # Final cleanup after despawn completes
+      cleanupMethod: "override"        # Method: "override" (use barrier particles) or "wait" (wait for natural decay)
+
+    # Sound effects during despawn
+    soundEffects:
+      enabled: true                    # Enable despawn sound effects
+      fadeOut: true                    # Fade sound volume over despawn duration
+
+  directionMarker:
+    type: compass
+    durationSeconds: 300
+
+# Acts Configuration
+acts:
+  skeletonWaves:
+    enabled: true
+    everyNthNight: 3
+    perPlayerRadius: 75
+    maxPerPlayer: 15
+    minLightLevel: 7
+  
+  boss1:
+    health: 200
+    summonIntervalSeconds: 30
+    # Bug #2 Fix: Phase 2 teleport mechanic
+    # Bug #5 Fix: Correct proximity parameters (4 blocks, 2 seconds)
+    teleport:
+      enabled: true
+      proximityDistance: 4.0         # blocks - trigger when player within this distance
+      triggerDelaySeconds: 2         # seconds - how long to stay close before teleport
+      behindDistance: 4.0            # blocks - teleport this far behind player
+      cooldownSeconds: 10            # seconds - cooldown per player after teleport
+      checkIntervalTicks: 20         # ticks - how often to check proximity (1 second = 20 ticks)
+    # Phase 2 mechanics
+    phase2:
+      archerNausea:
+        enabled: true
+        level: 127                   # nausea effect level (127 = maximum)
+        durationSeconds: 10          # duration in seconds
+    # Circle-strafe detection and teleportation
+    circleStrafeDetection:
+      enabled: true
+      minDistance: 2.0               # minimum distance to start tracking (blocks)
+      maxDistance: 4.0               # maximum distance for tracking (blocks)
+      trackingDurationSeconds: 3     # how long to track before confirming (seconds)
+      minAngleChanges: 10            # minimum angle changes to confirm circle-strafe
+      angleThreshold: 0.1            # radians (≈5.7 degrees) - minimum change to count
+      checkIntervalTicks: 5          # check every 5 ticks (4 times per second)
+      teleportToNearest: true        # fallback to nearest location if no close spot found
+    # Wither skull volley attack (Phase 1 only)
+    witherSkullAttack:
+      enabled: true
+      phase: 1                       # only in phase 1
+      intervalSeconds: 30            # attack every 30 seconds
+      durationSeconds: 5             # boss stationary for 5 seconds
+      freezeBossDuringCast: false    # NEW: boss no longer freezes during attack preparation
+      freezeDurationSeconds: 5       # how long boss is frozen (seconds)
+      damageMultiplier: 2.0          # double vanilla wither skull damage
+      destroyBlocks: false           # do not destroy terrain
+      damageMobs: false              # do not damage skeleton warriors
+      # NEW: Special attack configuration
+      specialAttack:
+        enabled: true                # Enable new special attack mechanics
+        risingAnimation: true        # Boss rises during special attack
+        risingHeight: 12.0          # Height boss rises (blocks)
+        risingDuration: 40           # Rising animation duration (ticks)
+        projectileCount: 36           # Number of skull projectiles (32-40 for epic effect)
+        spherePattern: true          # Use sphere pattern for projectiles
+        preventSkeletonSpawn: true    # Prevent skeleton warrior spawning during cast
+        removeStunEffect: true       # Remove stun effect before special attack
+
+        # NEW: Hemisphere attack timing and cadence settings
+        hoverDurationTicks: 0         # Hover at peak before launch (0 = immediate launch)
+        minSpecialAttackSpacingSeconds: 20  # Minimum time between special attacks
+        requireWarriorSummonBetweenSpecials: true  # Require warrior summon window
+
+        # NEW: Ground skull gather animation settings
+        groundGatherDurationTicks: 30  # Duration of ground gather phase
+        groundGatherPauseTicks: 20     # Duration of pause after gather
+
+        particleEffects:
+          soulFire: true            # Soul fire particles during rising
+          endRod: true              # End rod particles during rising
+          skullTrail: true           # Particle trails on rising skulls
+      safeZones:
+        count:
+          min: 6                     # minimum safe zones
+          max: 8                     # maximum safe zones
+        radius: 15.0                 # spawn within 15 blocks of boss
+        protectionRadius: 1.0        # safe zone size (1 block radius)
+        particleColor: RED           # particle color for visual indicator
+        particleCount: 20            # particles per safe zone per tick
+        improvedVisibility: true     # use sphere particles + beacon effect
+        beaconEffect: false          # NEW: remove vertical beacon effect during special attack
+        sphereParticles: true        # use 3D sphere instead of 2D circle
+  
+  boss2:
+    health: 500
+    knockbackResistance: 0.7
+  
+  end:
+    endermanAggroRadius: 48
+    phantomBurst:
+      durationSeconds: 15
+      intervalSeconds: 3
+      countMin: 1
+      countMax: 5
+    # Bug #3 Fix: Endermen ally cleanup after dragon death
+    dragonFight:
+      endermanAllies:
+        spawnCount: 5
+        removeOnDragonDeath: true    # true = remove, false = revert to vanilla
+        effects:
+          - type: SPEED
+            level: 1
+            duration: -1               # -1 = infinite during fight
+          - type: INCREASE_DAMAGE
+            level: 0
+            duration: -1
+
+# Bug #4 & #5 Fix: Acts 4-5 portal blocking and spawn management
+act4:
+  portalBlocking:
+    enabled: true
+    feedbackParticle: SMOKE            # particle shown when portal blocked
+    feedbackSound: BLOCK_ANVIL_LAND    # sound played when portal blocked
+    feedbackVolume: 1.0
+    feedbackPitch: 0.5
+  spawnManagement:
+    enabled: true
+    endSpawnLocation:                  # where players respawn in The End during Acts 4-5
+      world: world_the_end
+      x: 100.5
+      y: 50.0
+      z: 0.5
+      yaw: 0.0
+      pitch: 0.0
+
+act5:
+  ritual:
+    # Ritual completion will restore spawn points and unblock portal
+    restoreSpawnsOnComplete: true
+    unblockPortalOnComplete: true
+
+# Boss Visual Effects Configuration
+bosses:
+  boss1:  # Skeleton Lord (Boss #1)
+    skull_cast:
+      enabled: true                  # Enable/disable skull cast animation feature
+      skull_count: 100               # Number of skulls to spawn (range: 100-200, higher = more epic but more lag)
+      burst_interval_ms: 75          # Milliseconds between bursts (range: 50-100, lower = faster/chaotic)
+      burst_size: 5                  # Skulls per burst (range: 3-7, higher = denser bursts)
+      emergence_velocity: 0.3        # Upward velocity multiplier (range: 0.1-0.5, higher = faster float)
+      spawn_y_offset: -1.5           # Y-offset below boss for skull spawn (range: -3.0 to 0.0, negative = underground)
+      particle_trail: true           # Enable smoke particle trails on skulls (false = better performance)
+      
+    safe_zones:
+      particle_type: "REDSTONE"      # Particle type for zone boundaries (REDSTONE, GLOW, FLAME, etc.)
+      particle_density: 150          # Particles per zone perimeter (range: 50-300, higher = clearer boundaries)
+      color_r: 255                   # Red component (range: 0-255)
+      color_g: 0                     # Green component (range: 0-255)
+      color_b: 0                     # Blue component (range: 0-255)
+      y_offset_only: false           # DEPRECATED: false = ground-plane only (no Y-axis trail), true = old 3D sphere
+      beacon_effect: false           # Add vertical END_ROD beam at center (optional, adds visibility)
+      
+  boss2:  # Enderman Boss (Boss #2)
+    portal_emergence:
+      enabled: true                  # Enable/disable portal emergence animation feature
+      duration_seconds: 5            # Total emergence duration (range: 2-10, higher = more dramatic but longer wait)
+      particle_portal: true          # Enable PORTAL particles (purple vortex effect)
+      particle_dragon_breath: true   # Enable DRAGON_BREATH particles (lingering atmosphere)
+      particle_end_rod: true         # Enable END_ROD particles (energy beams)
+      particle_density: 50           # Particles spawned per tick (range: 10-100, higher = denser portal)
+      fade_in_steps: 10              # Steps for materialization effect (range: 5-20, higher = smoother fade)
+      
+    boss_bar:
+      style: "CUSTOM"                # Boss bar style (matches Boss #1)
+      show_numeric_hp: false         # Hide numeric HP display (only visual fill bar)
+      color_vulnerable: "PURPLE"     # Color when shield inactive (BarColor enum: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE)
+      color_shielded: "BLUE"         # Color when shield active (BarColor enum)
+      color_transition_ms: 100       # Color change transition speed (range: 50-500, lower = instant)
+
+# Structures Configuration
+structures:
+  searchRadiusBoss2: 500
+  overworldPortalDistanceFromSpawn: 500
+  finalPortal:
+    size:
+      width: 100
+      height: 5
+
+# Items Configuration
+items:
+  keepOnDeath: true
+  preventVoidLoss: true
+  preventHopperPickup: true
+
+# Messages Configuration
+messages:
+  locale: ru_RU
+
+# Logging Configuration
+logging:
+  level: INFO
+  debugMode: false
