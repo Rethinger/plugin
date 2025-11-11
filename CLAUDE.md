@@ -32,7 +32,7 @@ This is a sophisticated Minecraft 1.21.x story campaign plugin using Paper API, 
 # Clean compile with Maven
 mvn clean package
 
-# Output: target/story-plugin-1.4.0.jar
+# Output: target/story-plugin-1.0.jar
 ```
 
 ### Testing
@@ -41,7 +41,7 @@ mvn clean package
 mvn test
 
 # Run plugin in test server
-# Copy target/story-plugin-1.4.0.jar to server/plugins/
+# Copy target/story-plugin-1.0.jar to server/plugins/
 ```
 
 ### Debug Commands (In-Game)

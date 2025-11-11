@@ -43,7 +43,6 @@ Thumbs.db
 *.log
 
 # Runtime data
-data/
 messages_ru.yml
 
 # Backup files
@@ -178,6 +177,7 @@ logs/
 openspec/
 specs/
 texture-pack/
+node_modules/
 
 # Git
 .gitignore
