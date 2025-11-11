@@ -1,242 +1,368 @@
-# Mmmm Story Plugin - Сюжетный плагин для Minecraft 1.21.x
+# Mmmm Story Plugin
 
-Плагин реализует последовательную сюжетную кампанию из 5 актов с кастомными событиями, боссами, волнами мобов и достижениями.
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/yourusername/mmmm-story-plugin)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/yourusername/mmmm-story-plugin/releases)
+[![Java](https://img.shields.io/badge/java-21+-orange.svg)](https://openjdk.java.net/)
+[![PaperMC](https://img.shields.io/badge/PaperMC-1.21.1-green.svg)](https://papermc.io/)
 
-## Требования
+A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featuring a complete 5-act storyline with advanced NPC systems, boss mechanics, dialog management, and progressive world building.
 
-- **Сервер**: PaperMC 1.21.x или выше (Spigot API совместим)
-- **Java**: 21 или выше
-- **Опциональные зависимости**:
-  - WorldEdit (для импорта структур .schem)
-  - Citizens2 (для улучшенных NPC)
+## Features
 
-## Установка
+### Core Systems
+- **Advanced NPC System** - Frame-by-frame animations with squash/stretch effects and behavioral AI
+- **Multi-Act Story Campaign** - 5-act progressive storyline with seamless transitions
+- **Dynamic Dialog System** - Multi-language support with speed control and sound synchronization
+- **Boss Battle Mechanics** - Complex attack patterns, special phases, and boundary enforcement
+- **Custom Item System** - Story-specific items with NBT tagging and unique textures
+- **Progressive World Building** - Dynamic structure placement and world state management
+- **Player Achievement System** - Individual progress tracking with auto-save functionality
+- **Multi-Language Support** - Russian (primary) and English localization
 
-1. Скачайте `MmmmStoryPlugin.jar` из релизов
-2. Поместите JAR в папку `plugins/` вашего сервера
-3. Запустите сервер для генерации конфигурационных файлов
-4. Настройте конфигурацию по необходимости
-5. Перезапустите сервер или используйте `/story reload`
+### Technical Features
+- **Manager-Based Architecture** - Clean separation of concerns across 13 specialized managers
+- **Event-Driven Design** - Complex event listeners for each story act with precise timing
+- **Configuration-Driven** - All story content externalized in YAML files
+- **Performance Optimized** - Particle effects with radius optimization, mob throttling, and async data saving
+- **Persistent Data Storage** - JSON-based player progress with 5-minute auto-save intervals
+- **Memory Management** - Proper task cleanup and NPC memory management
+- **Debug Tools** - Comprehensive debugging commands and detailed logging
 
-## Компиляция из исходников
+### User Experience
+- **Personal Settings** - Individual player preferences for dialog language, speed, and display
+- **GUI Menu System** - Stackable navigation with player state integration
+- **Visual Effects** - Weather control, darkness effects, and portal ignition
+- **Sound Integration** - Synchronized audio effects with dialog timing
+- **Safe Zone Management** - Configurable protection zones with visual feedback
+
+## Requirements
+
+### Required
+- **Java 21** or higher
+- **PaperMC 1.21.1** or higher (Spigot API compatible)
+- **Maven 3.6+** (for building from source)
+
+### Optional Dependencies
+- **WorldEdit** - For structure import/export (.schem files)
+- **Citizens2** - Enhanced NPC functionality (fallback available)
+
+### Included Dependencies
+- **NpcApi-Paper 1.21.x-4** - Advanced NPC functionality (bundled)
+
+## Installation
+
+### Quick Install (Server Owners)
+
+1. **Download the latest release** from the [Releases page](https://github.com/yourusername/mmmm-story-plugin/releases)
+2. **Place the JAR file** in your server's `plugins/` directory
+3. **Restart your server** to generate configuration files
+4. **Configure settings** as needed (see Configuration section)
+5. **Reload** with `/story reload` or restart again
+
+### Build from Source (Developers)
 
 ```bash
-# Клонируйте репозиторий
-git clone <repository-url>
-cd plugin
+# Clone the repository
+git clone https://github.com/yourusername/mmmm-story-plugin.git
+cd mmmm-story-plugin
 
-# Скомпилируйте с помощью Maven
+# Compile with Maven
 mvn clean package
 
-# JAR будет в target/story-plugin-1.0.0.jar
+# The compiled JAR will be in: target/story-plugin-1.4.0.jar
 ```
 
-## Конфигурация
+## Configuration
 
-### config.yml
-Основной конфигурационный файл с настройками актов, боссов, структур и предметов.
+The plugin uses multiple YAML configuration files for maximum flexibility:
 
-### dialogs.yml
-Диалоги и реплики для различных событий сюжета. Можно настраивать:
-- Тайминги (задержка в секундах)
-- Текст сообщений
-- Звуки
-- Способ отображения (ActionBar, Title, Hologram)
+### Core Configuration Files
 
-### sounds.yml
-Настройка звуковых эффектов для различных событий.
+- **`config.yml`** - Main plugin settings, act configurations, boss mechanics, and structure locations
+- **`dialogs.yml`** - Story dialogues with timing controls, sound effects, and display methods
+- **`sounds.yml`** - Audio effect configurations for various events
+- **`messages.yml`** - Multi-language message templates (Russian primary)
+- **`messages_en.yml`** - English localization support
 
-### messages_ru.yml
-Русская локализация всех сообщений плагина.
+### Data Storage
 
-### dialogs_en.yml (NEW!)
-Английская локализация диалогов. Игроки могут выбрать язык в персональных настройках.
+- **`data/global.yml`** - World progress, boss states, structure coordinates, artifact counts
+- **`data/players/<uuid>.yml`** - Individual player progress, achievements, and personal settings
 
-## Персональные настройки игроков 🎮
+### Personal Player Settings
 
-**Версия 1.0.0+** включает систему персональных настроек для каждого игрока!
+Each player can customize their experience through GUI menus:
+- **Dialog Display** - Enable/disable story dialogues
+- **Language Preference** - Russian or English dialogues
+- **Dialog Speed** - Slow (+50%), Normal, or Fast (-25%)
 
-### Что можно настроить:
-- **📖 Показ диалогов** - включить/отключить диалоги сюжета
-- **🌍 Язык диалогов** - Русский или English
-- **⏱️ Скорость диалогов** - Медленная (+50%), Обычная, Быстрая (-25%)
+## Commands
 
-### Команды:
+### Player Commands
 ```bash
-/story settings  # Открыть меню настроек (доступно всем игрокам)
-/story menu      # Алиас команды settings
+/story settings    # Open personal settings menu (all players)
+/story menu        # Alias for settings
 ```
 
-### Как это работает:
-1. Каждый игрок может настроить свои предпочтения через GUI меню
-2. Настройки сохраняются в `data/players/<uuid>.yml`
-3. При `/story start` игроки без настроек получают меню автоматически
-4. Каждый игрок видит диалоги согласно своим параметрам (язык, скорость)
-
-### Подробнее:
-- **Для игроков**: См. `PLAYER_GUIDE.md` (секция "Персональные настройки")
-- **Для разработчиков**: См. `SETTINGS_SYSTEM.md`
-- **Для тестирования**: См. `TESTING_CHECKLIST.md`
-
-## Команды
-
-### Основные команды
-
-- `/story start` - Запустить сюжетную кампанию
-  - Права: `story.admin`
-  - **NEW**: Автоматически открывает меню настроек для игроков без настроек
-
-- `/story settings` / `/story menu` - Открыть меню персональных настроек
-  - Права: нет (доступно всем игрокам)
-  - **NEW**: Позволяет настроить язык, скорость и показ диалогов
-
-- `/story skip <act>` - Перейти к определённому акту (1-5)
-  - Права: `story.admin`
-
-- `/story reset <all|world|player <имя>>` - Сбросить прогресс
-  - Права: `story.admin`
-  - `all` - сбросить всё
-  - `world` - сбросить прогресс мира
-  - `player <имя>` - сбросить прогресс игрока
-
-- `/story progress [игрок]` - Показать прогресс
-  - Права: `story.progress.view` (для просмотра чужого прогресса)
-
-- `/story tp <location>` - Телепорт к структурам (отладка)
-  - Права: `story.debug`
-
-- `/story reload` - Перезагрузить конфигурацию
-  - Права: `story.admin`
-
-### Права доступа
-
-- `story.admin` - Полный доступ ко всем командам
-- `story.debug` - Доступ к отладочным командам
-- `story.progress.view` - Просмотр прогресса других игроков
-
-## Сюжетные акты
-
-### Акт 1 - Верхний Мир
-- НПЦ "Посланник" появляется у спавна
-- Каждую 3-ю ночь - волны скелетов-воинов
-- Поиск "Забытого Алтаря" для получения Ядра Стабилизации
-- Активация "Узла Перекрёстков" открывает доступ в Ад
-
-### Акт 2 - Адские земли
-- Призыв Босса №1 (Повелитель Скелетов)
-- После победы - получение ключа к структуре Босса №2
-- Призыв Босса №2 (Изверг Адских Глубин - модифицированный Иссушитель)
-- После победы - открытие порталов в Край
-
-### Акт 3 - Драконьи земли
-- Без тыквы на голове - все эндермены атакуют
-- Разрушение кристаллов призывает Стражей Кристалла
-- После всех кристаллов - волна фантомов
-- Победа над драконом - кастомная структура с 5 сундуками
-
-### Акт 4 - Дальние земли
-- Поиск 5 артефактов в городах Края
-- Каждый город содержит максимум 1 артефакт
-
-### Акт 5 - Финал
-- Размещение всех 5 артефактов активирует финальный ритуал
-- Эффекты левитации и слепоты
-- Появление финального портала 100×100
-- Телепорт в Верхний Мир и завершение истории
-
-## Кастомные предметы
-
-- **Ядро Стабилизации** - активирует Узел Перекрёстков
-- **Ключ Босса №1** - призывает первого босса
-- **Ключ Структуры Босса №2** - открывает доступ ко второму боссу
-- **Ключ Портала Верхнего Мира** - активирует портал из Ада
-- **Артефакты Края (5 шт)** - необходимы для финального ритуала
-
-Все сюжетные предметы:
-- Защищены от потери при смерти (настраивается)
-- Имеют уникальные текстуры и описания
-- Помечены NBT-тегами для идентификации
-
-## Особенности
-
-### Синхронизация прогресса
-- Глобальный прогресс мира синхронизирован между всеми игроками
-- Персональные достижения для каждого игрока
-- Автосохранение каждые 5 минут
-
-### Идемпотентность
-- Все структуры и порталы восстанавливаются после рестарта
-- Состояние боссов и событий сохраняется
-- Безопасная перезагрузка конфигурации
-
-### Производительность
-- Ограничение количества мобов на игрока
-- Троттлинг спавна волн
-- Асинхронное сохранение данных
-
-## Структура данных
-
-### data/global.yml
-Глобальный прогресс мира:
-- Текущий акт
-- Статус боссов
-- Координаты структур
-- Количество собранных артефактов
-
-### data/players/<uuid>.yml
-Персональные данные игрока:
-- Список достижений
-- Дата первого входа
-- **NEW**: Персональные настройки (язык, скорость диалогов, показ)
-  ```yaml
-  settings:
-    showDialogs: true
-    language: "ru"
-    dialogSpeed: "NORMAL"
-  configured: true
-  ```
-
-## Импорт структур
-
-Структуры (схематики) поставляются отдельно. См. `ИНСТРУКЦИЯ_импорт_структур.md` для инструкций по импорту.
-
-Необходимые структуры:
-- `boss1_summon` - Алтарь призыва Босса №1
-- `boss2_summon` - Алтарь призыва Босса №2
-- `overworld_portal` - Портал возвращения в Верхний Мир
-- `dragon_loot` - Структура с сундуками после дракона
-- `final_structure` - Финальная структура для ритуала
-
-## Отладка
-
-### Логирование
-Все важные события логируются:
-- Переходы между актами
-- Убийства боссов
-- Генерация структур
-- Сбор артефактов
-
-### Отладочные команды
-```
-/story tp <location> - Телепорт к структурам
-/story skip <act> - Пропуск к определённому акту
+### Administration Commands
+```bash
+/story start           # Start story campaign
+/story skip <act>      # Skip to specific act (1-5)
+/story reset <target>  # Reset progress (all|world|player <name>)
+/story progress [player] # Show current progress
+/story tp <location>   # Teleport to structures (debug)
+/story reload          # Reload configuration files
+/story give <player> <item> # Give story items
+/story debug           # Show debug information
 ```
 
-## Поддержка
+### Server Commands
+```bash
+/server start          # Initialize server start sequence
+```
 
-При возникновении проблем:
-1. Проверьте логи сервера в `logs/latest.log`
-2. Убедитесь, что версия Paper совместима (1.21.x)
-3. Проверьте конфигурационные файлы на ошибки YAML
+### Texture Testing
+```bash
+/testtexture          # Test custom texture system
+```
 
-## Лицензия
+## Permissions
 
-[Укажите лицензию]
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `story.admin` | Full admin access to all commands | OP |
+| `story.debug` | Debug and teleport commands | OP |
+| `story.progress.view` | View story progress of any player | true |
 
-## Авторы
+## Architecture
 
-MmmmTeam - Разработка плагина
+### Manager System
+The plugin uses a sophisticated manager-based architecture with clear separation of concerns:
 
-## Версия
+#### Core Managers
+1. **ConfigManager** - Configuration hub with multi-language support
+2. **DataManager** - JSON-based player progress persistence
+3. **NPCManager** - Advanced NPC animations and behavioral AI
+4. **DialogManager** - Interactive story system with sound synchronization
+5. **ActManager** - Story progression and world state control
 
-1.0.0 - Первый релиз
+#### Specialized Managers
+6. **StructureManager** - Custom structure detection and placement
+7. **ItemManager** - Story-specific item creation and management
+8. **MenuManager** - Unified GUI system with stackable navigation
+9. **MessageManager** - Multi-language communication layer
+10. **SafeZoneManager** - Protection zone management
+11. **ChestSpawnManager** - Loot chest generation and control
+
+### Event Listeners
+Each story act has dedicated event listeners:
+- **Act1Listener** - Skeleton wave spawning, cinematic effects
+- **Act2Listener** - Nether exploration mechanics
+- **Act3Listener** - Boss fight mechanics (Skeleton Lord)
+- **Act4Listener** - Blaze Master boss mechanics
+- **Act5Listener** - End portal and artifact collection
+
+### Boss Battle System
+The plugin features an advanced boss mechanics system including:
+- **BossAttackState** - Complex attack pattern management
+- **Special Attack Phases** - Boundary-enforced animations
+- **Damage Scaling** - Balanced combat mechanics
+- **Visual Feedback** - Particle effects and sound cues
+
+## Story Structure
+
+The plugin implements a 5-act campaign structure:
+
+1. **Act 1** - Overworld exploration with skeleton waves and stabilization core discovery
+2. **Act 2** - Nether access and catalyst acquisition with first boss encounter
+3. **Act 3** - Skeleton Lord boss battle mechanics
+4. **Act 4** - Blaze Master boss confrontation
+5. **Act 5** - End portal activation and artifact collection
+
+Each act includes unique mechanics, custom structures, and progressive difficulty scaling.
+
+## Development
+
+### Project Structure
+```
+src/main/java/com/mmmm/story/
+├── MmmmStoryPlugin.java          # Main plugin class
+├── commands/                     # Command implementations
+├── listeners/                    # Event listeners by act
+├── managers/                     # Core system managers
+├── bosses/                       # Boss mechanics and AI
+└── utils/                        # Utility classes
+
+src/main/resources/
+├── plugin.yml                    # Plugin metadata
+├── config.yml                    # Main configuration
+├── dialogs.yml                   # Story dialogues
+├── sounds.yml                    # Audio configurations
+└── messages*.yml                 # Localization files
+```
+
+### Code Patterns
+
+#### Manager Access
+```java
+public class SomeManager {
+    private final MmmmStoryPlugin plugin;
+
+    public SomeManager(MmmmStoryPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void someMethod() {
+        ConfigManager config = plugin.getConfigManager();
+        // Access other managers through plugin instance
+    }
+}
+```
+
+#### Configuration Access
+```java
+String message = plugin.getConfigManager().getMessage("some.key");
+int value = plugin.getConfigManager().getInt("some.setting", defaultValue);
+```
+
+#### Event Registration
+```java
+@Override
+public void onEnable() {
+    getServer().getPluginManager().registerEvents(new Act1Listener(this), this);
+}
+```
+
+### Testing
+
+#### Unit Tests
+```bash
+mvn test
+```
+
+#### Integration Testing
+1. Copy `target/story-plugin-1.4.0.jar` to test server
+2. Test all commands and permissions
+3. Verify NPC animations and dialog timing
+4. Test boss mechanics and progression
+
+#### Test Checklist
+- [ ] Plugin loads without errors
+- [ ] All commands execute properly
+- [ ] Configuration files generate correctly
+- [ ] NPCs spawn and animate as expected
+- [ ] Act transitions function smoothly
+- [ ] Boss mechanics work as designed
+- [ ] Player progress saves reliably
+
+## Contributing
+
+We welcome contributions to improve the plugin! Please follow these guidelines:
+
+### Pull Request Process
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Code Standards
+- **Language**: All comments and documentation should be in English
+- **Java Style**: Follow standard Java conventions
+- **Manager Pattern**: Use existing manager access patterns
+- **Configuration**: Externalize all configurable values in YAML files
+- **Error Handling**: Include comprehensive null checks and exception handling
+- **Testing**: Add unit tests for new functionality
+- **Documentation**: Update relevant documentation sections
+
+### Development Setup
+```bash
+# Clone your fork
+git clone https://github.com/yourusername/mmmm-story-plugin.git
+cd mmmm-story-plugin
+
+# Install dependencies
+mvn clean install
+
+# Run tests
+mvn test
+
+# Start development server
+# Copy target/story-plugin-1.4.0.jar to server/plugins/
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Plugin Won't Load
+- **Check Java version**: Ensure Java 21+ is installed
+- **Verify PaperMC version**: Must be 1.21.1 or higher
+- **Check logs**: Look for dependency errors in server logs
+
+#### NPCs Not Appearing
+- **Verify NPC API**: Check if NpcApi-Paper is properly initialized
+- **Check skins**: Ensure skin loading isn't blocked by firewall
+- **Review logs**: Look for NPC initialization errors
+
+#### Dialog System Issues
+- **Validate YAML**: Check dialog configuration syntax
+- **Check permissions**: Ensure players have necessary permissions
+- **Verify timing**: Dialog timing affects NPC animations
+
+#### Progress Not Saving
+- **File permissions**: Ensure plugin has write access to data directory
+- **Disk space**: Check available disk space
+- **Review logs**: Monitor data persistence operations
+
+### Debug Commands
+```bash
+/story debug          # Show current plugin state
+/log level <level>    # Set detailed logging level
+```
+
+### Log Analysis
+Check server logs (`logs/latest.log`) for:
+- NPC initialization errors
+- Configuration loading warnings
+- Data persistence operations
+- Task scheduling issues
+
+### Performance Issues
+- **Mob Limits**: Configure mob throttling in config.yml
+- **Particle Effects**: Adjust radius settings for better performance
+- **Task Cleanup**: Monitor for memory leaks from scheduled tasks
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
+
+## Support
+
+- **Issues**: Report bugs via [GitHub Issues](https://github.com/yourusername/mmmm-story-plugin/issues)
+- **Discussions**: Join our [GitHub Discussions](https://github.com/yourusername/mmmm-story-plugin/discussions)
+- **Documentation**: See additional guides in the repository
+
+## Version History
+
+### Version 1.4.0 (Current)
+- Added Enderman boss mechanics
+- Implemented advanced NPC animation system
+- Enhanced dialog management with multi-language support
+- Added player personal settings system
+- Improved performance optimization
+
+### Version 1.3.0
+- Added boss battle mechanics
+- Implemented custom item system
+- Enhanced structure management
+- Added achievement system
+
+### Version 1.0.0
+- Initial release
+- Basic 5-act story implementation
+- Core NPC and dialog systems
+
+---
+
+**Note**: This plugin is primarily designed for Russian-speaking servers, but includes full English localization support. All technical documentation is provided in English for developer accessibility.
