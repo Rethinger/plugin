@@ -53,7 +53,6 @@ A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featur
 2. **Place the JAR file** in your server's `plugins/` directory
 3. **Restart your server** to generate configuration files
 4. **Configure settings** as needed (see Configuration section)
-5. **Reload** with `/story reload` or restart again
 
 ### Build from Source (Developers)
 
@@ -94,20 +93,10 @@ Each player can customize their experience through GUI menus:
 
 ## Commands
 
-### Player Commands
-```bash
-/story settings    # Open personal settings menu (all players)
-/story menu        # Alias for settings
-```
-
 ### Administration Commands
 ```bash
 /story start           # Start story campaign
-/story skip <act>      # Skip to specific act (1-5)
-/story reset <target>  # Reset progress (all|world|player <name>)
-/story progress [player] # Show current progress
-/story tp <location>   # Teleport to structures (debug)
-/story reload          # Reload configuration files
+/story menu        # Alias for settings
 /story give <player> <item> # Give story items
 /story debug           # Show debug information
 ```
