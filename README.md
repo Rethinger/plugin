@@ -295,12 +295,6 @@ mvn test
 - **Disk space**: Check available disk space
 - **Review logs**: Monitor data persistence operations
 
-### Debug Commands
-```bash
-/story debug          # Show current plugin state
-/log level <level>    # Set detailed logging level
-```
-
 ### Log Analysis
 Check server logs (`logs/latest.log`) for:
 - NPC initialization errors
