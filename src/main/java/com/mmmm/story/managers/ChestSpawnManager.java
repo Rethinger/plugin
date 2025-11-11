@@ -139,7 +139,7 @@ public class ChestSpawnManager implements Listener {
                     // Still on cooldown, don't show search mechanic
                     long secondsRemaining = (CHEST_COOLDOWN - timeSince) / 1000;
                     String message = messageManager.getMessage(player, "chest.search.cooldown")
-                        .replace("{0}", String.valueOf(secondsRemaining));
+                        .replace("%cooldown%", String.valueOf(secondsRemaining));
                     Component msg = Component.text(message).color(NamedTextColor.RED);
                     player.sendMessage(msg);
                     player.sendActionBar(msg);
@@ -213,7 +213,7 @@ public class ChestSpawnManager implements Listener {
         String itemName = getItemNameForStructure(type, lang);
         String searchText = messageManager.getMessage(player, "chest.search.searching");
         String itemText = messageManager.getMessage(player, "chest.search.searching_item")
-            .replace("{0}", itemName);
+            .replace("%item%", itemName);
         
         Component searchMsg = Component.text(searchText)
                 .color(NamedTextColor.GOLD)
@@ -396,8 +396,8 @@ public class ChestSpawnManager implements Listener {
                         stopSearchingTask(player);
                         
                         String failText = messageManager.getMessage(player, "chest.search.nothing")
-                            .replace("{0}", String.valueOf(failCount))
-                            .replace("{1}", String.valueOf(MAX_FAILED_ATTEMPTS));
+                            .replace("%current%", String.valueOf(failCount))
+                            .replace("%total%", String.valueOf(MAX_FAILED_ATTEMPTS));
                         
                         Component failMsg = Component.text(failText).color(NamedTextColor.GRAY);
                         player.sendMessage(failMsg);
@@ -446,7 +446,7 @@ public class ChestSpawnManager implements Listener {
                 
                 // Add item to chest
                 Inventory inv = chest.getInventory();
-                inv.addItem(item);
+                inv.addItem(item.clone());
                 
                 // Mark material as found (globally for one-per-server)
                 markMaterialFound(structureType, structureKey, item);
@@ -468,7 +468,7 @@ public class ChestSpawnManager implements Listener {
                     String itemName = getItemNameForStructure(structureType, lang);
                     
                     String foundText = messageManager.getMessage(player, "chest.search.found")
-                        .replace("{0}", itemName);
+                        .replace("%item%", itemName);
                     String successText = messageManager.getMessage(player, "chest.search.success");
                     
                     Component foundMsg = Component.text(foundText)

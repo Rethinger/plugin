@@ -1,6 +1,7 @@
 package com.mmmm.story.managers;
 
 import com.mmmm.story.MmmmStoryPlugin;
+// import com.mmmm.story.utils.TextureOverrideManager; // Temporarily disabled due to NMS dependency issues
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -17,6 +18,7 @@ public class ItemManager {
     
     private final MmmmStoryPlugin plugin;
     private final NamespacedKey storyItemKey;
+    // private final TextureOverrideManager textureOverrideManager; // Temporarily disabled
     
     // Item IDs
     public static final String STABILIZATION_CORE = "stabilization_core";
@@ -35,6 +37,7 @@ public class ItemManager {
     public ItemManager(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
         this.storyItemKey = new NamespacedKey(plugin, "storyItem");
+        // this.textureOverrideManager = new TextureOverrideManager(plugin); // Temporarily disabled
     }
     
     public ItemStack createStoryItem(String itemId) {
@@ -42,7 +45,7 @@ public class ItemManager {
     }
     
     public ItemStack createStoryItem(String itemId, String language) {
-        return switch (itemId) {
+        ItemStack item = switch (itemId) {
             case STABILIZATION_CORE -> createStabilizationCore(language);
             case ACT1_SKELETON_KEY -> createAct1SkeletonKey(language);
             case BOSS1_MATERIAL -> createBoss1Material(language);
@@ -57,6 +60,12 @@ public class ItemManager {
             case END_ARTIFACT_5 -> createEndArtifact(5, language);
             default -> null;
         };
+        
+        if (item != null) {
+            // textureOverrideManager.applyTextureOverride(item); // Temporarily disabled due to NMS dependency issues
+        }
+        
+        return item;
     }
     
     private ItemStack createStabilizationCore() {
@@ -107,9 +116,10 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1001");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, STABILIZATION_CORE);
         item.setItemMeta(meta);
-        
+
         return item;
     }
     
@@ -151,6 +161,7 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1002");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, ACT1_SKELETON_KEY);
         item.setItemMeta(meta);
         
@@ -199,6 +210,7 @@ public class ItemManager {
         }
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1003");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS1_MATERIAL);
         item.setItemMeta(meta);
         
@@ -248,6 +260,7 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1004");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS1_CATALYST);
         item.setItemMeta(meta);
         
@@ -292,6 +305,7 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1005");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS1_SUMMON_KEY);
         item.setItemMeta(meta);
         
@@ -336,6 +350,7 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1006");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, BOSS2_STRUCTURE_KEY);
         item.setItemMeta(meta);
         
@@ -380,6 +395,7 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        setCustomModelDataAsString(meta, "1007");
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, OVERWORLD_PORTAL_KEY);
         item.setItemMeta(meta);
         
@@ -431,6 +447,16 @@ public class ItemManager {
         
         meta.lore(lore);
         
+        String modelData = switch (number) {
+            case 1 -> "1008"; // echo_shard_of_void
+            case 2 -> "1009"; // breath_of_time
+            case 3 -> "1010"; // fruit_of_void
+            case 4 -> "1011"; // eye_of_dimensions
+            case 5 -> "1012"; // wings_of_freedom
+            default -> "0";
+        };
+        setCustomModelDataAsString(meta, modelData);
+
         String artifactId = "end_artifact_" + number;
         meta.getPersistentDataContainer().set(storyItemKey, PersistentDataType.STRING, artifactId);
         item.setItemMeta(meta);
@@ -469,5 +495,46 @@ public class ItemManager {
             }
         }
         return -1;
+    }
+
+    /**
+     * Устанавливает custom_model_data с использованием нового Paper 1.21+ API
+     * Поддерживает строки как в команде /give minecraft:netherite_scrap[minecraft:custom_model_data={strings:["1003"]}]
+     */
+    private void setCustomModelDataAsString(ItemMeta meta, String modelData) {
+        try {
+            // Пробуем установить как строки через новый API Paper 1.21+
+            try {
+                // Пробуем новый подход через reflection для совместимости
+                java.lang.reflect.Method getComponentMethod = meta.getClass().getMethod("getCustomModelDataComponent");
+                Object component = getComponentMethod.invoke(meta);
+
+                if (component != null) {
+                    java.lang.reflect.Method setStringsMethod = component.getClass().getMethod("setStrings", java.util.List.class);
+                    setStringsMethod.invoke(component, java.util.List.of(modelData));
+
+                    java.lang.reflect.Method setComponentMethod = meta.getClass().getMethod("setCustomModelDataComponent", component.getClass());
+                    setComponentMethod.invoke(meta, component);
+
+                    plugin.getLogger().info("Set custom_model_data strings via reflection: [" + modelData + "]");
+                    return;
+                }
+            } catch (Exception reflectionEx) {
+                plugin.getLogger().fine("New CustomModelDataComponent API not available: " + reflectionEx.getMessage());
+            }
+
+            // Fallback к старому методу с integer
+            try {
+                int intModelData = Integer.parseInt(modelData);
+                meta.setCustomModelData(intModelData);
+                plugin.getLogger().info("Set integer custom_model_data: " + intModelData);
+            } catch (NumberFormatException ex) {
+                plugin.getLogger().warning("Invalid model data: " + modelData + ", using 0 instead");
+                meta.setCustomModelData(0);
+            }
+
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to set custom_model_data: " + e.getMessage());
+        }
     }
 }

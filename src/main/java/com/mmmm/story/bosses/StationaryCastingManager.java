@@ -174,7 +174,7 @@ public class StationaryCastingManager {
             world.spawnParticle(Particle.END_ROD, bossLoc, 10, 1.0, 1.0, 1.0, 0.1);
         } else {
             // Phase 3: Final preparation (white flash)
-            world.spawnParticle(Particle.FLASH, bossLoc, 1, 0, 0, 0, 0);
+            world.spawnParticle(Particle.SOUL_FIRE_FLAME, bossLoc, 1, 0, 0, 0, 0);
             world.spawnParticle(Particle.GLOW, bossLoc, 20, 1.5, 1.5, 1.5, 0.2);
         }
 

@@ -350,7 +350,7 @@ public class WitherSkullProjectile {
         }
         
         // Add dramatic flash effect
-        world.spawnParticle(Particle.FLASH, impactLoc, 2, 0, 0, 0, 0);
+        world.spawnParticle(Particle.SOUL_FIRE_FLAME, impactLoc, 2, 0, 0, 0, 0);
         
         // Enhanced sound effects
         world.playSound(impactLoc, org.bukkit.Sound.ENTITY_WITHER_SHOOT, 1.5f, 1.0f);

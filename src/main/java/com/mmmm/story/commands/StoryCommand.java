@@ -147,7 +147,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         };
         
         if (fullItemId == null) {
-            sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.unknown_item").replace("%item%", itemId)).color(NamedTextColor.RED));
+            sender.sendMessage(Component.text(plugin.getMessageManager().getMessage("command.unknown_item").replace("%item%", itemId)).color(NamedTextColor.RED));
             return true;
         }
         
@@ -158,8 +158,8 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         }
         
         target.getInventory().addItem(item);
-        sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.item_give_success").replace("%item%", itemId).replace("%player%", target.getName())).color(NamedTextColor.GREEN));
-        target.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.item_give_receiver")).color(NamedTextColor.GOLD));
+        sender.sendMessage(Component.text(plugin.getMessageManager().getMessage("command.item_give_success").replace("%item%", itemId).replace("%player%", target.getName())).color(NamedTextColor.GREEN));
+        target.sendMessage(Component.text(plugin.getMessageManager().getMessage("command.item_give_receiver")).color(NamedTextColor.GOLD));
         
         return true;
     }
@@ -196,7 +196,7 @@ public class StoryCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_give")).color(NamedTextColor.YELLOW));
         sender.sendMessage(Component.text(plugin.getConfigManager().getMessage("command.help_debug")).color(NamedTextColor.YELLOW));
     }
-    
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();

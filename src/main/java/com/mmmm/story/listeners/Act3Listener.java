@@ -23,6 +23,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
+
 public class Act3Listener implements Listener {
     
     private final MmmmStoryPlugin plugin;
@@ -231,13 +233,18 @@ public class Act3Listener implements Listener {
         if (!(event.getEntity() instanceof EnderCrystal)) {
             return;
         }
-        
+
         EnderCrystal crystal = (EnderCrystal) event.getEntity();
-        
+
         if (crystal.getWorld().getEnvironment() != World.Environment.THE_END) {
             return;
         }
-        
+
+        // Check if dragon is already defeated - if so, don't spawn guardians
+        if (plugin.getDataManager().isDragonDefeated()) {
+            return;
+        }
+
         Player damager = null;
         if (event.getDamager() instanceof Player) {
             damager = (Player) event.getDamager();
@@ -246,7 +253,7 @@ public class Act3Listener implements Listener {
                 damager = (Player) projectile.getShooter();
             }
         }
-        
+
         if (damager == null) {
             return;
         }
@@ -303,7 +310,7 @@ public class Act3Listener implements Listener {
         }
         
         IronGolem guardian = (IronGolem) crystal.getWorld().spawnEntity(spawnLoc, EntityType.IRON_GOLEM);
-        guardian.setCustomName(plugin.getMessageManager().getMessage("entities.crystal_guardian"));
+        guardian.setCustomName(plugin.getMessageManager().getMessage("npc.entities.crystal_guardian"));
         guardian.setCustomNameVisible(true);
         guardian.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(25.0);
         guardian.setHealth(25.0);
@@ -327,9 +334,9 @@ public class Act3Listener implements Listener {
     
     private void startPhantomBurst(World world) {
         phantomSpawningActive = true;
-        
-        plugin.getServer().broadcast(Component.text(plugin.getMessageManager().getMessage("events.wave_incoming")));
-        
+
+        plugin.getServer().broadcast(Component.text(plugin.getMessageManager().getMessage("events.phantom_burst")));
+
         int duration = plugin.getConfigManager().getConfig().getInt("acts.end.phantomBurst.durationSeconds", 15);
         int interval = plugin.getConfigManager().getConfig().getInt("acts.end.phantomBurst.intervalSeconds", 3);
         int minCount = plugin.getConfigManager().getConfig().getInt("acts.end.phantomBurst.countMin", 1);
@@ -507,22 +514,26 @@ public class Act3Listener implements Listener {
         // Mark dragon as defeated
         plugin.getDataManager().setDragonDefeated(true);
         plugin.getActManager().progressToAct(4);
-        
+
         // Broadcast victory message
         String victoryMsg = plugin.getMessageManager().getMessage("ru", "dragon.defeated_message");
         if (victoryMsg == null || victoryMsg.equals("dragon.defeated_message")) {
             victoryMsg = "§5§l⚔ Эндер Дракон повержен!";
         }
         plugin.getServer().broadcast(Component.text(victoryMsg).color(NamedTextColor.DARK_PURPLE));
-        
+
         String nextStepMsg = plugin.getMessageManager().getMessage("ru", "dragon.next_step");
         if (nextStepMsg == null || nextStepMsg.equals("dragon.next_step")) {
             nextStepMsg = "§d✦ Соберите артефакты в городах Края для начала финального ритуала!";
         }
         plugin.getServer().broadcast(Component.text(nextStepMsg).color(NamedTextColor.LIGHT_PURPLE));
-        
-        // Play dialog
-        plugin.getDialogManager().playDialogForAll("dragon.defeated");
+
+        // Play dialog only once
+        if (!plugin.getDataManager().hasPlayedDialog("dragon.defeated")) {
+            plugin.getDialogManager().playDialogForAll("dragon.defeated");
+            plugin.getDataManager().setDialogPlayed("dragon.defeated", true);
+            plugin.getLogger().info("Played dragon.defeated dialog for the first time");
+        }
         
         // Break the portal but keep the egg
         Location dragonLoc = dragon.getLocation();
@@ -587,23 +598,51 @@ public class Act3Listener implements Listener {
         
         // Reset ally spawn flag for potential future dragon fights
         dragonAlliesSpawned = false;
-        
-        // ==========================================
-        // BUG #4 FIX: PROTECT END PORTAL FROM CORRUPTION
-        // ==========================================
-        
-        // Find and protect the End portal
-        Location portalLoc = new Location(world, 0, 65, 0);
-        endPortalCenter = findEndPortal(world);
-        if (endPortalCenter != null) {
-            portalProtected = true;
-            plugin.getLogger().info("[Portal Protection] End portal protected at " + 
-                endPortalCenter.getBlockX() + ", " + endPortalCenter.getBlockY() + ", " + endPortalCenter.getBlockZ());
-        } else {
-            plugin.getLogger().warning("[Portal Protection] Could not find End portal to protect!");
-            portalProtected = true; // Still enable protection to be safe
-            endPortalCenter = portalLoc; // Use default location
+    }
+
+    /**
+     * Revert all Endermen in the End to vanilla state (for use after final ritual completion)
+     * @param plugin Plugin instance to get config
+     * @param world The End world
+     */
+    public static void revertEndermenToVanilla(MmmmStoryPlugin plugin, World world) {
+        boolean removeOnDeath = plugin.getConfig().getBoolean("acts.end.dragonFight.endermanAllies.removeOnDragonDeath", true);
+        int cleanedCount = 0;
+
+        plugin.getLogger().info("Reverting Endermen to vanilla state after final ritual...");
+
+        for (Entity entity : world.getEntities()) {
+            if (entity instanceof Enderman enderman) {
+                // Check if this is a tagged dragon ally
+                if (enderman.getScoreboardTags().contains("story_dragon_ally")) {
+                    if (removeOnDeath) {
+                        // Remove the ally entirely
+                        enderman.remove();
+                        cleanedCount++;
+                    } else {
+                        // Revert to vanilla behavior
+                        enderman.removeScoreboardTag("story_dragon_ally");
+                        enderman.setTarget(null);
+                        enderman.clearActivePotionEffects();
+                        enderman.setAware(true);
+                        enderman.setAI(true);
+                        enderman.setCanPickupItems(false);  // Reset pickup behavior
+                        cleanedCount++;
+                    }
+                } else {
+                    // Reset vanilla endermen (not allies)
+                    enderman.setTarget(null);
+                    enderman.setAware(true);
+                    enderman.setAI(true);
+                }
+            }
         }
+
+        String action = removeOnDeath ? "removed" : "reverted";
+        plugin.getLogger().info("Final ritual complete! " + cleanedCount + " Enderman allies " + action + ", vanilla Endermen reset.");
+
+        // Note: dragonAlliesSpawned flag is instance variable, so we don't reset it here since this is a static method
+        plugin.getLogger().info("Endermen successfully reverted to vanilla state.");
         
         // Find the exit portal location (usually at 0, ~, 0)
         
@@ -614,9 +653,10 @@ public class Act3Listener implements Listener {
             
             @Override
             public void run() {
-                // Stop when Act 5 is completed (Act >= 5 means ritual completed)
-                if (ticksElapsed >= maxTicks || plugin.getDataManager().getCurrentAct() >= 5) {
+                // Stop when final ritual is completed
+                if (ticksElapsed >= maxTicks || plugin.getDataManager().isFinalRitualComplete()) {
                     cancel();
+                    plugin.getLogger().info("Stopped portal replacement task - final ritual completed");
                     return;
                 }
                 
@@ -675,9 +715,43 @@ public class Act3Listener implements Listener {
         if (event.getTo() != null && event.getTo().getWorld() != null) {
             if (event.getTo().getWorld().getEnvironment() == World.Environment.THE_END) {
                 if (!plugin.getDataManager().isDragonDefeated()) {
-                    // Play end.entry dialog
-                    plugin.getDialogManager().playDialog(event.getPlayer(), "end.entry");
-                    
+                    // Check if this is the first time a player is entering End after dragon defeat
+                    boolean hasPlayedEndEntry = plugin.getDataManager().hasPlayedDialog("end.entry");
+
+                    if (!hasPlayedEndEntry) {
+                        // Play end.entry dialog once
+                        plugin.getDialogManager().playDialog(event.getPlayer(), "end.entry");
+                        plugin.getDataManager().setDialogPlayed("end.entry", true);
+                        plugin.getLogger().info("Played end.entry dialog for player: " + event.getPlayer().getName());
+
+                        // Save player's original spawn location before trapping them in End
+                        Player player = event.getPlayer();
+                        UUID playerId = player.getUniqueId();
+
+                        if (plugin.getDataManager().getPlayerOriginalSpawn(playerId) == null) {
+                            Location currentSpawn = player.getRespawnLocation();
+                            if (currentSpawn == null) {
+                                // Use bed spawn location if available, otherwise use overworld spawn
+                                currentSpawn = player.getBedSpawnLocation();
+                                if (currentSpawn == null) {
+                                    World overworld = plugin.getServer().getWorlds().stream()
+                                            .filter(w -> w.getEnvironment() == World.Environment.NORMAL)
+                                            .findFirst()
+                                            .orElse(null);
+                                    if (overworld != null) {
+                                        currentSpawn = overworld.getSpawnLocation();
+                                    }
+                                }
+                            }
+
+                            if (currentSpawn != null) {
+                                plugin.getDataManager().setPlayerOriginalSpawn(playerId, currentSpawn);
+                                plugin.getDataManager().setPlayerTrappedInEnd(playerId, true);
+                                plugin.getLogger().info("Saved original spawn for player " + player.getName() + " at " + currentSpawn.getWorld().getName() + " " + currentSpawn.getBlockX() + "," + currentSpawn.getBlockY() + "," + currentSpawn.getBlockZ());
+                            }
+                        }
+                    }
+
                     // Schedule crystal regeneration after teleport
                     new BukkitRunnable() {
                         @Override

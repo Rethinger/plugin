@@ -198,6 +198,15 @@ public class DataManager {
         globalData.set("ritual.final.complete", complete);
         saveGlobal();
     }
+
+    public boolean hasPlayedDialog(String dialogId) {
+        return globalData.getBoolean("dialogs.played." + dialogId, false);
+    }
+
+    public void setDialogPlayed(String dialogId, boolean played) {
+        globalData.set("dialogs.played." + dialogId, played);
+        saveGlobal();
+    }
     
     public void saveLocation(String key, Location location) {
         globalData.set(key + ".world", location.getWorld().getName());

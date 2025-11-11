@@ -6,6 +6,11 @@
 npc:
   messenger_name: "§6Посланник"
   direction_marker: "§6Вы получили метку направления! (Действует 5 минут)"
+  entities:
+    skeleton_lord: "§4§lПовелитель Скелетов"
+    nether_fiend: "§4§lИзверг Адских Глубин"
+    end_guardian: "§5§lСтраж Края"
+    crystal_guardian: "§5§lСтраж Кристалла"
 
 # Act Manager
 act:
@@ -47,10 +52,6 @@ boss1:
   defeated_again: "§6§l⚔ Повелитель побежден снова!"
   wither_skull_attack:
     warning: "§5§l⚡ ПОВЕЛИТЕЛЬ ПРИЗЫВАЕТ ЧЕРЕПА ИССУШЕНИЯ!"
-  
-  # Boss 1 Special Attack Warning
-  special_attack:
-    warning: "§5§l⚡ ПОВЕЛИТЕЛЬ ПРИЗЫВАЕТ ЧЕРЕПА ИССУШЕНИЯ!"
 
 # Boss 2 - Nether Fiend
 boss2:
@@ -89,29 +90,29 @@ portal:
 chest:
   search:
     searching: "🔍 Обыск сундука..."
-    searching_item: "Искомый предмет: {0}"
-    found: "✓ НАЙДЕНО: {0}!"
+    searching_item: "Искомый предмет: %item%"
+    found: "✓ НАЙДЕНО: %item%!"
     success: "✓ УСПЕХ!"
-    nothing: "✗ В этом сундуке ничего не найдено. ({0}/{1})"
+    nothing: "✗ В этом сундуке ничего не найдено. (%current%/%total%)"
     broke: "✗ Сундук сломался после 3 неудачных попыток!"
-    cooldown: "✗ Этот сундук уже недавно обыскивался ({0} сек)"
+    cooldown: "✗ Этот сундук уже недавно обыскивался (%cooldown% сек)"
     material_found: "✓ Предмет найден!"
 
   # Item finding messages
   item:
-    found: "§a§l✔ Найден предмет: {0}!"
-    found_multiple: "§a§l✔ Найдено предметов: {0}!"
+    found: "§a§l✔ Найден предмет: %item%!"
+    found_multiple: "§a§l✔ Найдено предметов: %count%!"
     lore_updated: "§7Описание предмета обновлено!"
     lore_added: "§7Добавлено описание предмета!"
     enchantment_added: "§7Добавлено зачарование предмета!"
     enchantment_removed: "§7Удалено зачарование предмета!"
     durability_changed: "§7Прочность предмета изменена!"
     durability_full: "§7Предмет полностью восстановлен!"
-    durability_low: "§cПредимент скоро сломается!"
-    durability_critical: "§4§l⚠ Предимент в критическом состоянии!"
-    repair_success: "§a§l✔ Предимент отремонтирован!"
+    durability_low: "§cПредмет скоро сломается!"
+    durability_critical: "§4§l⚠ Предмет в критическом состоянии!"
+    repair_success: "§a§l✔ Предмет отремонтирован!"
     repair_failed: "§c✗ Не удалось отремонтировать предмет!"
-    upgrade_success: "§a§l✔ Предимент улучшен!"
+    upgrade_success: "§a§l✔ Предмет улучшен!"
     upgrade_failed: "§c✗ Не удалось улучшить предмет!"
     custom_name_added: "§7Добавлено кастомное имя предмета!"
     custom_name_removed: "§7Удалено кастомное имя предмета!"
@@ -121,13 +122,13 @@ chest:
     flag_added: "§7Добавлен флаг предмета!"
     flag_removed: "§7Удалён флаг предмета!"
     flag_changed: "§7Изменён флаг предмета!"
-    nbt_added: "§7Добавены NBT-данные предмета!"
+    nbt_added: "§7Добавлены NBT-данные предмета!"
     nbt_removed: "§7Удалены NBT-данные предмета!"
     nbt_changed: "§7Изменены NBT-данные предмета!"
-    unbreakable_added: "§7Предимент сделан неразрушимым!"
-    unbreakable_removed: "§7Предимент сделан разрушимым!"
-    glow_added: "§7Предимент начинает светиться!"
-    glow_removed: "§7Предимент перестаёт светиться!"
+    unbreakable_added: "§7Предмет сделан неразрушимым!"
+    unbreakable_removed: "§7Предмет сделан разрушимым!"
+    glow_added: "§7Предмет начинает светиться!"
+    glow_removed: "§7Предмет перестаёт светиться!"
     hide_attributes_added: "§7Атрибуты предмета скрыты!"
     hide_attributes_removed: "§7Атрибуты предмета больше не скрыты!"
     hide_enchantments_added: "§7Зачарования предмета скрыты!"
@@ -136,63 +137,63 @@ chest:
     hide_flags_removed: "§7Флаги предмета больше не скрыты!"
     hide_tooltip_added: "§7Подсказка предмета скрыта!"
     hide_tooltip_removed: "§7Подсказка предмета больше не скрыта!"
-    stored_success: "§a§l✔ Предимент сохранён в инвентаре!"
+    stored_success: "§a§l✔ Предмет сохранён в инвентаре!"
     stored_failed: "§c✗ Не удалось сохранить предмет в инвентаре!"
-    retrieved_success: "§a§l✔ Предимент извлечён из инвентаря!"
+    retrieved_success: "§a§l✔ Предмет извлечён из инвентаря!"
     retrieved_failed: "§c✗ Не удалось извлечь предмет из инвентаря!"
-    converted_success: "§a§l✔ Предимент конвертирован!"
+    converted_success: "§a§l✔ Предмет конвертирован!"
     converted_failed: "§c✗ Не удалось конвертировать предмет!"
-    renamed_success: "§a§l✔ Предимент переименован!"
+    renamed_success: "§a§l✔ Предмет переименован!"
     renamed_failed: "§c✗ Не удалось переименовать предмет!"
-    copied_success: "§a§l✔ Предимент скопирован!"
+    copied_success: "§a§l✔ Предмет скопирован!"
     copied_failed: "§c✗ Не удалось скопировать предмет!"
-    moved_success: "§a§l✔ Предимент перемещён!"
+    moved_success: "§a§l✔ Предмет перемещён!"
     moved_failed: "§c✗ Не удалось переместить предмет!"
-    dropped_success: "§a§l✔ Предимент выброшен!"
+    dropped_success: "§a§l✔ Предмет выброшен!"
     dropped_failed: "§c✗ Не удалось выбросить предмет!"
-    picked_up_success: "§a§l✔ Предимент подобран!"
+    picked_up_success: "§a§l✔ Предмет подобран!"
     picked_up_failed: "§c✗ Не удалось подобрать предмет!"
-    placed_success: "§a§l✔ Предимент размещён!"
+    placed_success: "§a§l✔ Предмет размещён!"
     placed_failed: "§c✗ Не удалось разместить предмет!"
-    used_success: "§a§l✔ Предимент использован!"
+    used_success: "§a§l✔ Предмет использован!"
     used_failed: "§c✗ Не удалось использовать предмет!"
-    broken_success: "§a§l✔ Предимент сломан!"
+    broken_success: "§a§l✔ Предмет сломан!"
     broken_failed: "§c✗ Не удалось сломать предмет!"
-    consumed_success: "§a§l✔ Предимент потреблён!"
+    consumed_success: "§a§l✔ Предмет потреблён!"
     consumed_failed: "§c✗ Не удалось потребить предмет!"
-    crafted_success: "§a§l✔ Предимент создан!"
+    crafted_success: "§a§l✔ Предмет создан!"
     crafted_failed: "§c✗ Не удалось создать предмет!"
-    smelted_success: "§a§l✔ Предимент переплавлен!"
+    smelted_success: "§a§l✔ Предмет переплавлен!"
     smelted_failed: "§c✗ Не удалось переплавить предмет!"
     brewed_success: "§a§l✔ Зелье сварено!"
     brewed_failed: "§c✗ Не удалось сварить зелье!"
-    enchanted_success: "§a§l✔ Предимент зачарован!"
+    enchanted_success: "§a§l✔ Предмет зачарован!"
     enchanted_failed: "§c✗ Не удалось зачаровать предмет!"
-    repaired_success: "§a§l✔ Предимент отремонтирован!"
+    repaired_success: "§a§l✔ Предмет отремонтирован!"
     repaired_failed: "§c✗ Не удалось отремонтировать предмет!"
-    anvil_success: "§a§l✔ Предимент обработан на наковальне!"
+    anvil_success: "§a§l✔ Предмет обработан на наковальне!"
     anvil_failed: "§c✗ Не удалось обработать предмет на наковальне!"
-    grindstone_success: "§a§l✔ Предимент измельчён на точильном камне!"
+    grindstone_success: "§a§l✔ Предмет измельчён на точильном камне!"
     grindstone_failed: "§c✗ Не удалось измельчить предмет на точильном камне!"
-    brewing_stand_success: "§a§l✔ Предимент обработан на варочном стенде!"
+    brewing_stand_success: "§a§l✔ Предмет обработан на варочном стенде!"
     brewing_stand_failed: "§c✗ Не удалось обработать предмет на варочном стенде!"
-    enchanting_table_success: "§a§l✔ Предимент зачарован на столе зачарования!"
+    enchanting_table_success: "§a§l✔ Предмет зачарован на столе зачарования!"
     enchanting_table_failed: "§c✗ Не удалось зачаровать предмет на столе зачарования!"
-    furnace_success: "§a§l✔ Предимент переплавлен в печи!"
+    furnace_success: "§a§l✔ Предмет переплавлен в печи!"
     furnace_failed: "§c✗ Не удалось переплавить предмет в печи!"
-    blast_furnace_success: "§a§l✔ Предимент переплавлен в доменной печи!"
+    blast_furnace_success: "§a§l✔ Предмет переплавлен в доменной печи!"
     blast_furnace_failed: "§c✗ Не удалось переплавить предмет в доменной печи!"
-    smoker_success: "§a§l✔ Предимент прокопчён в коптильне!"
+    smoker_success: "§a§l✔ Предмет прокопчён в коптильне!"
     smoker_failed: "§c✗ Не удалось прокоптить предмет в коптильне!"
-    campfire_success: "§a§l✔ Предимент приготовлен на костре!"
+    campfire_success: "§a§l✔ Предмет приготовлен на костре!"
     campfire_failed: "§c✗ Не удалось приготовить предмет на костре!"
-    cartography_table_success: "§a§l✔ Предимент обработан на столе картографа!"
+    cartography_table_success: "§a§l✔ Предмет обработан на столе картографа!"
     cartography_table_failed: "§c✗ Не удалось обработать предмет на столе картографа!"
-    loom_success: "§a§l✔ Предимент обработан на ткацком станке!"
+    loom_success: "§a§l✔ Предмет обработан на ткацком станке!"
     loom_failed: "§c✗ Не удалось обработать предмет на ткацком станке!"
-    smithing_table_success: "§a§l✔ Предимент обработан на кузнечном столе!"
+    smithing_table_success: "§a§l✔ Предмет обработан на кузнечном столе!"
     smithing_table_failed: "§c✗ Не удалось обработать предмет на кузнечном столе!"
-    stonecutter_success: "§a§l✔ Предимент обработан на камнерезе!"
+    stonecutter_success: "§a§l✔ Предмет обработан на камнерезе!"
     stonecutter_failed: "§c✗ Не удалось обработать предмет на камнерезе!"
 
   # Item localization - Complete story items
@@ -207,7 +208,7 @@ chest:
         - ""
         - "▶ Бросьте (Q) на блок обсидиана"
         - "чтобы активировать порталы в Ад"
-    
+        
     act1_skeleton_key:
       name: "Скелетный Ключ"
       lore:
@@ -248,39 +249,7 @@ chest:
         - "✦ Создан из Материала и Катализатора"
         - ""
         - "▶ Используйте на алтаре призыва"
-    act1_skeleton_key:
-      name: "Ключ Скелета"
-      lore:
-        - "Древний ключ из кости"
-        - "призывающий воинов тьмы"
-        - ""
-        - "▶ Выбросьте (Q) на блок"
-        - "Древних Обломков для призыва"
-    boss1_material:
-      name: "Фрагмент Гнева"
-      lore:
-        - "Материал, пропитанный яростью"
-        - "побеждённого Повелителя Скелетов"
-        - ""
-        - "▶ Соедините с Катализатором Пустоты"
-        - "на блоке Древних Обломков"
-        - "для призыва Стража Края"
-    boss1_catalyst:
-      name: "Катализатор Пустоты"
-      lore:
-        - "Загадочный катализатор из"
-        - "сокровищниц Бастиона"
-        - ""
-        - "▶ Соедините с Фрагментом Гнева"
-        - "на блоке Древних Обломков"
-        - "для призыва Стража Края"
-    boss1_summon_key:
-      name: "Ключ Призыва"
-      lore:
-        - "Призывает Повелителя Скелетов"
-        - ""
-        - "▶ Выбросьте (Q) на блок"
-        - "Древних Обломков для призыва босса"
+    
     boss2_structure_key:
       name: "Ключ Структуры Босса №2"
       lore:
@@ -288,6 +257,7 @@ chest:
         - ""
         - "▶ Выбросьте (Q) на Яйцо Дракона"
         - "в Арене Босса 2 для призыва"
+    
     overworld_portal_key:
       name: "Ключ Врат Эндера"
       lore:
@@ -296,6 +266,7 @@ chest:
         - ""
         - "▶ Выбросьте (Q) на Маяк"
         - "для открытия портала"
+    
     end_artifact_1:
       name: "Осколок Пустоты"
       description: "Кусок ночи, в котором застряли шёпоты забытых миров."
@@ -307,6 +278,7 @@ chest:
         - ""
         - "✦ Поместите все 5 артефактов"
         - "в сундуки вокруг центра Края"
+    
     end_artifact_2:
       name: "Дыхание Времени"
       description: "Последний выдох часов, ускользнувший из треснувшей спирали эпох."
@@ -318,6 +290,7 @@ chest:
         - ""
         - "✦ Поместите все 5 артефактов"
         - "в сундуки вокруг центра Края"
+    
     end_artifact_3:
       name: "Плод Пустоты"
       description: "Семя звёздной тьмы, прорастающее тишиной межпространства."
@@ -329,6 +302,7 @@ chest:
         - ""
         - "✦ Поместите все 5 артефактов"
         - "в сундуки вокруг центра Края"
+    
     end_artifact_4:
       name: "Глаз Измерений"
       description: "Прозрачный зрачок, различающий швы реальности и тропы между ними."
@@ -340,6 +314,7 @@ chest:
         - ""
         - "✦ Поместите все 5 артефактов"
         - "в сундуки вокруг центра Края"
+    
     end_artifact_5:
       name: "Крылья Свободы"
       description: "Опаловые перья ветра, что не знают стен и цепей."
@@ -351,13 +326,6 @@ chest:
         - ""
         - "✦ Поместите все 5 артефактов"
         - "в сундуки вокруг центра Края"
-    end_artifact:
-      name: "Артефакт Края"
-      description: "Древний артефакт {0} из 5"
-      ritual_required: "Необходим для финального ритуала"
-      place_all: "▶ Поместите все 5 артефактов"
-      in_ritual_chests: "в ритуальные сундуки у центра Края (0, 0)"
-      for_ritual: "для активации финального ритуала"
 
 # Menu System Messages
 menu:
@@ -398,11 +366,6 @@ menu:
     all_ready: "§6§lВсе игроки готовы! Начинаем сюжет..."
     waiting: "§eОжидание готовности игроков..."
 
-# Additional messages from English file, now in Russian
-act5:
-  all_artifacts_collected: "§a§l✔ Все артефакты собраны!"
-  ritual_starting: "§d§l⚡ Ритуал начинается..."
-
 # Spawn point management (Bug #5 Fix)
 spawn:
   saved: "§6Ваша точка возрождения сохранена."
@@ -419,6 +382,7 @@ boss:
 events:
   wave_incoming: "§c§lПриближается волна скелетов! Защищайтесь до рассвета!"
   wave_survived: "§aВы пережили волну воинов-скелетов!"
+  phantom_burst: "§5§lБездна открыта! Фантомы приближаются!"
 
 # Achievement messages (Bug #1 Fix)
 achievements:
@@ -454,15 +418,6 @@ structures:
     line1: "§d§l[ПОРТАЛ]"
     line2: "§7Портал в Край"
     line3: "§eАкт 5"
-
-# NPC and Entity Names
-npc:
-  messenger_name: "§6Посланник"
-  entities:
-    skeleton_lord: "§4§lПовелитель Скелетов"
-    nether_fiend: "§4§lИзверг Адских Глубин"
-    end_guardian: "§5§lСтраж Края"
-    crystal_guardian: "§5§lСтраж Кристалла"
 
 # Server Start Menu
 server_start_menu:
@@ -540,9 +495,9 @@ dialog:
   continue_button: "[ ▶ Продолжить ]"
   continue_hover: "нажмите для продолжения диалога"
   npc_disappear_name: "Посланник"
-  core_location_not_found: "Core location not found for portal ignition!"
-  cannot_ignite_portal: "Cannot ignite portal - block is %block%"
-  portal_ignited_at: "Portal ignited at core location: %location%"
+  core_location_not_found: "Основное местоположение для зажжения портала не найдено!"
+  cannot_ignite_portal: "Не удалось зажечь портал - блок: %block%"
+  portal_ignited_at: "Портал зажжён в основном местоположении: %location%"
 
 # Story Command
 command:
@@ -559,7 +514,7 @@ command:
   item_creation_error: "Ошибка создания предмета!"
   player_not_found: "Игрок не найден!"
   debug_info_header: "=== Story Plugin Debug Info ==="
-  debug_tracked_blocks: "Tracked player-placed blocks: %count%"
+  debug_tracked_blocks: "Отслеживаемые блоки, размещённые игроком: %count%"
   help_header: "=== Story Plugin Commands ==="
   help_start: "/story start - Запустить кампанию"
   help_menu: "/story menu - Открыть меню настроек"

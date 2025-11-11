@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -33,7 +34,31 @@ public class PlayerListener implements Listener {
         
         // Initialize player data if first join
         plugin.getDataManager().getPlayerData(player.getUniqueId());
-        
+
+        // CRITICAL FIX: Check if player should be in Overworld after ritual completion
+        if (plugin.getDataManager().isFinalRitualComplete()) {
+            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                if (player.isOnline() && player.getWorld().getEnvironment() == World.Environment.THE_END) {
+                    // Player is in End but ritual is complete - move them to Overworld
+                    World overworld = plugin.getServer().getWorlds().stream()
+                            .filter(w -> w.getEnvironment() == World.Environment.NORMAL)
+                            .findFirst()
+                            .orElse(null);
+
+                    if (overworld != null) {
+                        Location originalSpawn = plugin.getDataManager().getPlayerOriginalSpawn(player.getUniqueId());
+                        Location spawnLoc = originalSpawn != null ? originalSpawn : overworld.getSpawnLocation();
+
+                        player.teleport(spawnLoc);
+                        player.setBedSpawnLocation(spawnLoc, true);
+
+                        plugin.getLogger().info("JOIN FIX: Moved player " + player.getName() +
+                            " from End to Overworld (ritual complete)");
+                    }
+                }
+            }, 20L); // Check after 1 second
+        }
+
         // Translate all story items in player's inventory to their language
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             translatePlayerItems(player);
@@ -114,40 +139,54 @@ public class PlayerListener implements Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)  // Set highest priority to override other plugins
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         int currentAct = plugin.getDataManager().getCurrentAct();
-        
-        // Acts 3-4: Respawn in the End
-        if (currentAct >= 3 && currentAct <= 4) {
+        boolean isRitualComplete = plugin.getDataManager().isFinalRitualComplete();
+
+        // Debug logging
+        plugin.getLogger().info("RESPAWN DEBUG: Player " + player.getName() + " - Act: " + currentAct +
+            ", RitualComplete: " + isRitualComplete + ", Current respawn world: " +
+            (event.getRespawnLocation() != null ? event.getRespawnLocation().getWorld().getEnvironment().name() : "null"));
+
+        // CRITICAL FIX: If ritual is complete, ALWAYS respawn in Overworld regardless of other conditions
+        if (isRitualComplete) {
+            // Force respawn in Overworld regardless of current respawn location
+            World overworld = plugin.getServer().getWorlds().stream()
+                    .filter(w -> w.getEnvironment() == World.Environment.NORMAL)
+                    .findFirst()
+                    .orElse(null);
+
+            if (overworld != null) {
+                // Try to use player's original spawn first
+                Location originalSpawn = plugin.getDataManager().getPlayerOriginalSpawn(player.getUniqueId());
+                Location spawnLoc = originalSpawn != null ? originalSpawn : overworld.getSpawnLocation();
+
+                event.setRespawnLocation(spawnLoc);
+                player.setBedSpawnLocation(spawnLoc, true);  // Also set bed spawn for future respawns
+
+                plugin.getLogger().info("RESPAWN FIX: Player " + player.getName() +
+                    " FORCED respawn in Overworld after ritual (Act " + currentAct +
+                    ", Original spawn: " + (originalSpawn != null ? "yes" : "no") + ")");
+                return;
+            }
+        }
+
+        // Original logic for when ritual is NOT complete
+        // Acts 3-4 OR Act 5 BEFORE ritual completion: Respawn in the End
+        if ((currentAct >= 3 && currentAct <= 4) || (currentAct >= 5 && !isRitualComplete)) {
             if (event.getRespawnLocation().getWorld().getEnvironment() != World.Environment.THE_END) {
                 // Find the End
                 World end = plugin.getServer().getWorlds().stream()
                         .filter(w -> w.getEnvironment() == World.Environment.THE_END)
                         .findFirst()
                         .orElse(null);
-                
+
                 if (end != null) {
                     Location spawnLoc = end.getSpawnLocation();
                     event.setRespawnLocation(spawnLoc);
-                    plugin.getLogger().info("Player " + player.getName() + " respawned in the End (Act " + currentAct + ")");
-                }
-            }
-        }
-        // Act 5+: Respawn in Overworld
-        else if (currentAct >= 5) {
-            if (event.getRespawnLocation().getWorld().getEnvironment() != World.Environment.NORMAL) {
-                // Find the overworld
-                World overworld = plugin.getServer().getWorlds().stream()
-                        .filter(w -> w.getEnvironment() == World.Environment.NORMAL)
-                        .findFirst()
-                        .orElse(null);
-                
-                if (overworld != null) {
-                    Location spawnLoc = overworld.getSpawnLocation();
-                    event.setRespawnLocation(spawnLoc);
-                    plugin.getLogger().info("Player " + player.getName() + " respawned in Overworld (Act " + currentAct + ")");
+                    plugin.getLogger().info("Player " + player.getName() + " respawned in the End (Act " + currentAct + ", Ritual: " + isRitualComplete + ")");
                 }
             }
         }

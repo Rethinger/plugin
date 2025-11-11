@@ -221,19 +221,26 @@ public class Act5Listener implements Listener {
         }
         
         portalActive = true;
-        
+
+        World world = center.getWorld();
+
         // Mark final ritual as complete (allows END portal to spawn)
         plugin.getDataManager().setFinalRitualComplete(true);
-        
+
         // BUG #4 & #5 FIX: Complete ritual - unblock portal and restore spawn points
         plugin.getDataManager().completeRitual();
-        
+
         // BUG #5 FIX: Restore original spawn points for all players
         for (Player player : Bukkit.getOnlinePlayers()) {
             restorePlayerSpawn(player);
         }
-        
-        World world = center.getWorld();
+
+        // BUG #4 FIX: Revert Endermen to vanilla state after ritual completion
+        try {
+            Act3Listener.revertEndermenToVanilla(plugin, world);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to revert Endermen to vanilla state: " + e.getMessage());
+        }
         
         // Broadcast
         String allCollectedMsg = plugin.getMessageManager().getMessage("ru", "act5.all_artifacts_collected");

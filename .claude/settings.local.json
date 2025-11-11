@@ -1,21 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "mcp__time__current_time",
-      "mcp__browser__browser_navigate",
-      "Bash(openspec list:*)",
-      "Bash(mvn:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "WebSearch",
+      "Bash(find:*)",
       "mcp__rube__RUBE_SEARCH_TOOLS",
       "mcp__rube__RUBE_MULTI_EXECUTE_TOOL",
-      "Bash(openspec validate:*)",
-      "Bash(mkdir:*)",
-      "Bash(openspec change show:*)",
-      "Bash(find:*)",
-      "Bash(openspec:*)",
-      "mcp__claude-context__index_codebase",
-      "mcp__claude-context__get_indexing_status",
-      "mcp__claude-context__search_code"
-    ]
+      "Bash(mvn:*)"
+    ],
+    "deny": [],
+    "ask": []
   },
   "outputStyle": "default"
 }

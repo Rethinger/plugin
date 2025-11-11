@@ -13,6 +13,7 @@ import com.mmmm.story.bosses.BossRisingAnimation;
 import com.mmmm.story.bosses.BossSpecialAttackManager;
 import com.mmmm.story.bosses.StationaryCastingManager;
 import com.mmmm.story.bosses.StationaryAttackConfiguration;
+import com.mmmm.story.bosses.EndermanBossManager;
 import com.mmmm.story.managers.SafeZoneManager;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -59,6 +60,7 @@ public class Act2Listener implements Listener {
     private final MmmmStoryPlugin plugin;
     private BossBar boss1BossBar;
     private Skeleton boss1Entity;
+    private BossBar boss2BossBar; // Босс бар для Изверга
     private int boss1Phase = 1;
     private Set<UUID> boss1Warriors = new HashSet<>();
     private Map<UUID, Long> playersAboveBoss = new HashMap<>(); // Отслеживание игроков над боссом
@@ -86,8 +88,12 @@ public class Act2Listener implements Listener {
     private BossSpecialAttackManager bossSpecialAttackManager;
     private StationaryCastingManager stationaryCastingManager;
 
+    // NEW: Enderman Boss #2 Manager (replaces Wither-based boss)
+    private EndermanBossManager endermanBossManager;
+
     // Task references for proper cleanup
     private BukkitTask bossBarTask;
+    private BukkitTask boss2BarTask; // Task для босс бара босса 2
     private BukkitTask circleStrafeTask;
     private BukkitTask witherSkullAttackTask;
     private BukkitTask bossAITask;
@@ -365,7 +371,7 @@ public class Act2Listener implements Listener {
             @Override
             public void run() {
                 world.spawnParticle(Particle.EXPLOSION, location, 15, 2, 1, 2, 0);
-                world.spawnParticle(Particle.FLASH, location, 5, 1, 1, 1, 0);
+                world.spawnParticle(Particle.SOUL_FIRE_FLAME, location, 5, 1, 1, 1, 0);
                 world.spawnParticle(Particle.SOUL_FIRE_FLAME, location, 300, 3, 2, 3, 0.3);
                 world.spawnParticle(Particle.LAVA, location, 150, 2.5, 1, 2.5, 0.1);
                 world.playSound(location, Sound.ENTITY_WITHER_SHOOT, 2.0f, 0.7f);
@@ -598,7 +604,7 @@ public class Act2Listener implements Listener {
                                             public void run() {
                                                 // MASSIVE IMPACT EFFECT
                                                 world.spawnParticle(Particle.EXPLOSION, spawnLoc.clone().add(0.5, 1, 0.5), 10, 0, 0, 0, 0);
-                                                world.spawnParticle(Particle.FLASH, spawnLoc.clone().add(0.5, 1, 0.5), 3, 0, 0, 0, 0);
+                                                world.spawnParticle(Particle.SOUL_FIRE_FLAME, spawnLoc.clone().add(0.5, 1, 0.5), 3, 0, 0, 0, 0);
                                                 world.spawnParticle(Particle.SOUL_FIRE_FLAME, spawnLoc.clone().add(0.5, 1, 0.5), 300, 1.5, 1.5, 1.5, 0.3);
                                                 world.spawnParticle(Particle.END_ROD, spawnLoc.clone().add(0.5, 1, 0.5), 200, 1, 1, 1, 0.2);
                                                 world.spawnParticle(Particle.REVERSE_PORTAL, spawnLoc.clone().add(0.5, 1, 0.5), 500, 1.5, 1.5, 1.5, 0.5);
@@ -795,6 +801,67 @@ public class Act2Listener implements Listener {
                         if (isViewing) {
                             player.hideBossBar(boss1BossBar);
                         }
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 10L); // Update every 0.5 seconds
+    }
+
+    /**
+     * Create boss bar for boss 2 (Изверг)
+     */
+    private void createBoss2BossBar() {
+        boss2BossBar = BossBar.bossBar(
+                Component.text("⚔ Изверг Адских Глубин ⚔").color(NamedTextColor.DARK_PURPLE),
+                1.0f,
+                BossBar.Color.RED,
+                BossBar.Overlay.NOTCHED_10
+        );
+        plugin.getLogger().info("[Boss2] Boss bar created for Изверг Адских Глубин");
+
+        // Test: Show to all players immediately after creation
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            player.showBossBar(boss2BossBar);
+        }
+        plugin.getLogger().info("[Boss2] Boss bar IMMEDIATELY shown to all players after creation");
+    }
+
+    /**
+     * Start boss bar update task for boss 2
+     */
+    private void startBoss2BossBarTask() {
+        plugin.getLogger().info("[Boss2] Starting boss bar update task");
+        boss2BarTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+                    plugin.getLogger().info("[Boss2] Task cancelled - endermanBossManager: " + (endermanBossManager != null ? "exists" : "null") +
+                                                ", isBossActive: " + (endermanBossManager != null ? endermanBossManager.isBossActive() : "N/A"));
+                    // Remove boss bar from all players
+                    if (boss2BossBar != null) {
+                        for (Player player : plugin.getServer().getOnlinePlayers()) {
+                            player.hideBossBar(boss2BossBar);
+                        }
+                        boss2BossBar = null;
+                        plugin.getLogger().info("[Boss2] Boss bar removed - boss is not active");
+                    }
+                    cancel();
+                    return;
+                }
+
+                // Update boss bar progress
+                Enderman bossEntity = endermanBossManager.getBossEntity();
+                if (bossEntity != null && boss2BossBar != null) {
+                    double health = bossEntity.getHealth();
+                    double maxHealth = bossEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                    float progress = (float) (health / maxHealth);
+                    boss2BossBar.progress(Math.max(0.0f, Math.min(1.0f, progress)));
+
+                    // Change color when shield is active
+                    if (endermanBossManager.hasActiveShield()) {
+                        boss2BossBar.color(BossBar.Color.BLUE); // Голубой цвет со щитом
+                    } else {
+                        boss2BossBar.color(BossBar.Color.RED); // Красный цвет без щита
                     }
                 }
             }
@@ -1874,7 +1941,7 @@ public class Act2Listener implements Listener {
            
             world.spawnParticle(Particle.ENCHANTED_HIT, arrowLoc, 30, 0.3, 0.3, 0.3, 0.1);
             world.spawnParticle(Particle.CRIT, arrowLoc, 20, 0.2, 0.2, 0.2, 0.1);
-            world.spawnParticle(Particle.FLASH, arrowLoc, 1, 0, 0, 0);
+            world.spawnParticle(Particle.SOUL_FIRE_FLAME, arrowLoc, 1, 0, 0, 0);
            
             world.playSound(arrowLoc, Sound.ITEM_SHIELD_BLOCK, 1.5f, 1.5f);
             world.playSound(arrowLoc, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 0.7f);
@@ -3163,6 +3230,10 @@ public class Act2Listener implements Listener {
             bossBarTask.cancel();
             bossBarTask = null;
         }
+        if (boss2BarTask != null) {
+            boss2BarTask.cancel();
+            boss2BarTask = null;
+        }
         if (circleStrafeTask != null) {
             circleStrafeTask.cancel();
             circleStrafeTask = null;
@@ -3210,6 +3281,20 @@ public class Act2Listener implements Listener {
         if (stationaryCastingManager != null) {
             stationaryCastingManager.cleanup();
             stationaryCastingManager = null;
+        }
+
+        // NEW: Clean up Enderman Boss #2 Manager
+        if (endermanBossManager != null) {
+            endermanBossManager.cleanup();
+            endermanBossManager = null;
+        }
+
+        // Clean up boss 2 bar
+        if (boss2BossBar != null) {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                player.hideBossBar(boss2BossBar);
+            }
+            boss2BossBar = null;
         }
 
         if (witherSkullAttackState != null) {
@@ -3265,73 +3350,175 @@ public class Act2Listener implements Listener {
     }
     
     private void spawnBoss2(Location location) {
-        Location spawnLoc = location.clone().add(0, 5, 0);
-        
-        Wither boss = (Wither) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.WITHER);
-        boss.setCustomName(plugin.getMessageManager().getMessage("entities.nether_fiend"));
-        boss.setCustomNameVisible(true);
-        
-        // Set attributes
-        boss.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(500.0);
-        boss.setHealth(500.0);
-        boss.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.7);
-        
-        boss.setRemoveWhenFarAway(false);
-        
-        // Effects
-        boss.getWorld().playSound(spawnLoc, Sound.ENTITY_WITHER_SPAWN, 3.0f, 0.5f);
-        boss.getWorld().spawnParticle(Particle.EXPLOSION, spawnLoc, 5, 2, 2, 2, 0);
+        // Spawn new Enderman boss to replace Wither-based Boss #2
+        endermanBossManager = new EndermanBossManager(plugin);
+        endermanBossManager.spawnBoss(location);
+
+        // Start boss bar system after VFX animation completes (VFX takes ~10 seconds)
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Check if boss is active
+                if (endermanBossManager != null && endermanBossManager.isBossActive()) {
+                    // Create boss bar after boss is actually spawned
+                    createBoss2BossBar();
+
+                    // Show boss bar to ALL online players
+                    int allPlayers = 0;
+                    for (Player player : plugin.getServer().getOnlinePlayers()) {
+                        player.showBossBar(boss2BossBar);
+                        allPlayers++;
+                    }
+                    plugin.getLogger().info("[Boss2] Boss bar shown to " + allPlayers + " players after boss spawned");
+
+                    // Start boss bar update task
+                    startBoss2BossBarTask();
+                } else {
+                    // Try again with multiple retries since VFX takes time
+                    new BukkitRunnable() {
+                        private int attempts = 0;
+                        private final int maxAttempts = 10; // 10 attempts = 20 seconds max wait
+
+                        @Override
+                        public void run() {
+                            attempts++;
+
+                            if (endermanBossManager != null && endermanBossManager.isBossActive()) {
+                                createBoss2BossBar();
+
+                                int allPlayers = 0;
+                                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                                    player.showBossBar(boss2BossBar);
+                                    allPlayers++;
+                                }
+                                plugin.getLogger().info("[Boss2] Boss bar shown to " + allPlayers + " players (attempt " + attempts + ")");
+
+                                startBoss2BossBarTask();
+                                this.cancel();
+                            } else if (attempts >= maxAttempts) {
+                                // Final attempt - create boss bar anyway
+                                plugin.getLogger().warning("[Boss2] Boss still not active after " + (attempts * 2) + " seconds, creating boss bar anyway");
+                                createBoss2BossBar();
+
+                                int allPlayers = 0;
+                                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                                    player.showBossBar(boss2BossBar);
+                                    allPlayers++;
+                                }
+                                plugin.getLogger().info("[Boss2] Boss bar shown to " + allPlayers + " players (forced)");
+
+                                startBoss2BossBarTask();
+                                this.cancel();
+                            } else {
+                                plugin.getLogger().info("[Boss2] Waiting for boss spawn... attempt " + attempts + "/" + maxAttempts);
+                            }
+                        }
+                    }.runTaskTimer(plugin, 0L, 40L); // Check every 2 seconds
+                }
+            }
+        }.runTaskLater(plugin, 60L); // 3 seconds initial wait to match VFX duration
     }
     
     @EventHandler
     public void onBoss2Death(EntityDeathEvent event) {
-        if (!(event.getEntity() instanceof Wither)) {
+        // Handle clone deaths first - prevent any drops or experience
+        if (endermanBossManager != null) {
+            endermanBossManager.handleEntityDeath(event);
+        }
+
+        // Handle legacy Wither boss (for compatibility with old saves)
+        if (!(event.getEntity() instanceof Wither) && !(event.getEntity() instanceof Enderman)) {
             return;
         }
-        
-        Wither wither = (Wither) event.getEntity();
-        if (wither.getCustomName() == null || !wither.getCustomName().contains("Изверг Адских Глубин")) {
+
+        // Check if this is Boss #2 (either legacy Wither or new Enderman)
+        Entity entity = event.getEntity();
+        String customName = entity.getCustomName();
+
+        // Remove color codes for name checking
+        String cleanName = customName != null ? customName.replaceAll("§[0-9a-fk-or]", "") : "";
+        boolean isBoss2 = (cleanName.contains("Изверг Адских Глубин")) ||
+                        (endermanBossManager != null && endermanBossManager.isBossActive() &&
+                         endermanBossManager.getBossEntity() == entity);
+
+        if (!isBoss2) {
             return;
         }
-        
-        // Boss 2 defeated!
-        plugin.getDataManager().setBoss2Defeated(true);
-        plugin.getDataManager().setEndEnabled(true);
-        plugin.getActManager().progressToAct(3);
-        
-        // Drop Overworld Portal Key
-        ItemStack key = plugin.getItemManager().createStoryItem(ItemManager.OVERWORLD_PORTAL_KEY);
-        event.getDrops().clear();
-        event.getDrops().add(key);
-        event.getDrops().add(new ItemStack(Material.NETHER_STAR, 2));
-        
-        // Broadcast victory message
-        String victoryMsg = plugin.getMessageManager().getMessage("ru", "boss2.defeated_message");
-        if (victoryMsg == null || victoryMsg.equals("boss2.defeated_message")) {
-            victoryMsg = "§6§l⚔ Изверг Адских Глубин повержен!";
+
+        // Handle Enderman boss defeat (new system)
+        if (entity instanceof Enderman && endermanBossManager != null) {
+            endermanBossManager.handleBossDefeat();
+
+            // Ensure drops and dialog are processed
+            event.getDrops().clear();
+
+            // Add boss drops
+            try {
+                ItemStack portalKey = plugin.getItemManager().createStoryItem(ItemManager.OVERWORLD_PORTAL_KEY);
+                if (portalKey != null) {
+                    event.getDrops().add(portalKey);
+                }
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to create Overworld Portal Key: " + e.getMessage());
+            }
+
+            // Add Nether Stars
+            event.getDrops().add(new ItemStack(Material.NETHER_STAR, 2));
+
+            // Play victory dialog
+            plugin.getDialogManager().playDialogForAll("boss2.defeated");
+
+            // Broadcast victory message
+            String victoryMsg = plugin.getMessageManager().getMessage("ru", "boss2.defeated_message");
+            if (victoryMsg == null || victoryMsg.equals("boss2.defeated_message")) {
+                victoryMsg = "§6§l⚔ Изверг Адских Глубин повержен!";
+            }
+            plugin.getServer().broadcast(Component.text(victoryMsg).color(NamedTextColor.GOLD));
+
+            return;
         }
-        plugin.getServer().broadcast(Component.text(victoryMsg).color(NamedTextColor.GOLD));
-        
-        // Play dialog
-        plugin.getDialogManager().playDialogForAll("boss2.defeated");
-        
-        // Create portal in Overworld
-        World overworld = plugin.getServer().getWorlds().get(0);
-        Location spawn = overworld.getSpawnLocation();
-        int distance = plugin.getConfigManager().getConfig().getInt("structures.overworldPortalDistanceFromSpawn", 500);
-        
-        Location portalLoc = plugin.getStructureManager().findSafeLocation(overworld, spawn, distance);
-        plugin.getStructureManager().placeStructure("overworld_portal", portalLoc);
-        plugin.getDataManager().saveLocation("structures.overworld_portal", portalLoc);
-        
-        // Announce portal creation
-        String portalMsg = plugin.getMessageManager().getMessage("ru", "boss2.portal_created");
-        if (portalMsg == null || portalMsg.equals("boss2.portal_created")) {
-            portalMsg = "§5§l⚡ Портал в Край создан в Верхнем Мире!";
+
+        // Handle legacy Wither boss defeat (compatibility)
+        if (entity instanceof Wither) {
+            // Boss 2 defeated!
+            plugin.getDataManager().setBoss2Defeated(true);
+            plugin.getDataManager().setEndEnabled(true);
+            plugin.getActManager().progressToAct(3);
+
+            // Drop Overworld Portal Key
+            ItemStack key = plugin.getItemManager().createStoryItem(ItemManager.OVERWORLD_PORTAL_KEY);
+            event.getDrops().clear();
+            event.getDrops().add(key);
+            event.getDrops().add(new ItemStack(Material.NETHER_STAR, 2));
+
+            // Broadcast victory message
+            String victoryMsg = plugin.getMessageManager().getMessage("ru", "boss2.defeated_message");
+            if (victoryMsg == null || victoryMsg.equals("boss2.defeated_message")) {
+                victoryMsg = "§6§l⚔ Изверг Адских Глубин повержен!";
+            }
+            plugin.getServer().broadcast(Component.text(victoryMsg).color(NamedTextColor.GOLD));
+
+            // Play dialog
+            plugin.getDialogManager().playDialogForAll("boss2.defeated");
+
+            // Create portal in Overworld
+            World overworld = plugin.getServer().getWorlds().get(0);
+            Location spawn = overworld.getSpawnLocation();
+            int distance = plugin.getConfigManager().getConfig().getInt("structures.overworldPortalDistanceFromSpawn", 500);
+
+            Location portalLoc = plugin.getStructureManager().findSafeLocation(overworld, spawn, distance);
+            plugin.getStructureManager().placeStructure("overworld_portal", portalLoc);
+            plugin.getDataManager().saveLocation("structures.overworld_portal", portalLoc);
+
+            // Announce portal creation
+            String portalMsg = plugin.getMessageManager().getMessage("ru", "boss2.portal_created");
+            if (portalMsg == null || portalMsg.equals("boss2.portal_created")) {
+                portalMsg = "§5§l⚡ Портал в Край создан в Верхнем Мире!";
+            }
+            plugin.getServer().broadcast(Component.text(portalMsg).color(NamedTextColor.LIGHT_PURPLE));
+
+            plugin.getLogger().info(plugin.getMessageManager().getMessage("log.overworld_portal_placed").replace("%location%", portalLoc.getBlockX() + ", " + portalLoc.getBlockY() + ", " + portalLoc.getBlockZ()));
         }
-        plugin.getServer().broadcast(Component.text(portalMsg).color(NamedTextColor.LIGHT_PURPLE));
-        
-        plugin.getLogger().info(plugin.getMessageManager().getMessage("log.overworld_portal_placed").replace("%location%", portalLoc.getBlockX() + ", " + portalLoc.getBlockY() + ", " + portalLoc.getBlockZ()));
     }
     
     /**
@@ -3367,6 +3554,119 @@ public class Act2Listener implements Listener {
         }
 
         return bow;
+    }
+
+    // NEW: Enderman Boss Event Handlers
+
+    @EventHandler
+    public void onEndermanBossDamage(EntityDamageEvent event) {
+        if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+            return;
+        }
+
+        // Handle boss damage (water immunity, shield damage reduction, etc.)
+        endermanBossManager.handleEntityDamage(event);
+
+        // Handle water contact for water immunity
+        if (event.getCause() == EntityDamageEvent.DamageCause.DROWNING ||
+            event.getCause() == EntityDamageEvent.DamageCause.DRYOUT ||
+            event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
+            endermanBossManager.handleWaterContact();
+        }
+    }
+
+    @EventHandler
+    public void onEndermanBossAttacked(EntityDamageByEntityEvent event) {
+        if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+            return;
+        }
+
+        Enderman boss = endermanBossManager.getBossEntity();
+        if (event.getEntity() != boss) {
+            return;
+        }
+
+        // Check if attacker is a player
+        if (event.getDamager() instanceof Player) {
+            Player attacker = (Player) event.getDamager();
+            endermanBossManager.handlePlayerAttack(attacker);
+        }
+
+        // Handle water contact if damaged by water-related sources
+        if (event.getDamager() instanceof org.bukkit.entity.ThrownPotion ||
+            event.getCause() == EntityDamageEvent.DamageCause.MAGIC) {
+            endermanBossManager.handleWaterContact();
+        }
+    }
+
+    @EventHandler
+    public void onEndermanCloneDamage(EntityDamageEvent event) {
+        if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+            return;
+        }
+
+        // Only handle Enderman entities
+        if (!(event.getEntity() instanceof Enderman)) {
+            return;
+        }
+
+        // Handle clone damage (one-hit kills)
+        Enderman enderman = (Enderman) event.getEntity();
+        if (endermanBossManager.isBossActive() &&
+            endermanBossManager.getBossEntity().getWorld() == enderman.getWorld()) {
+            // Check if this is a clone (not the main boss)
+            if (enderman != endermanBossManager.getBossEntity()) {
+                // Let the clone system handle this
+                // This would need to be connected to the clone system
+                event.setDamage(enderman.getHealth()); // One-hit kill
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlaceForEndermanBoss(org.bukkit.event.block.BlockPlaceEvent event) {
+        if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        Enderman boss = endermanBossManager.getBossEntity();
+
+        // Check if player is trying to build near boss
+        if (player.getLocation().distance(boss.getLocation()) < 15) {
+            event.setCancelled(true);
+            player.sendMessage("§cВы не можете строить так близко к Извергу Адских Глубин!");
+        }
+    }
+
+    @EventHandler
+    public void onEndermanBossWaterContact(org.bukkit.event.player.PlayerMoveEvent event) {
+        if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        Enderman boss = endermanBossManager.getBossEntity();
+
+        // Check if player is in water near boss (trigger water immunity)
+        if (player.getLocation().distance(boss.getLocation()) < 20 &&
+            (player.getLocation().getBlock().getType() == Material.WATER ||
+             player.getLocation().clone().subtract(0, 1, 0).getBlock().getType() == Material.WATER)) {
+            endermanBossManager.handleWaterContact();
+        }
+    }
+
+    @EventHandler
+    public void onWeatherChangeForEndermanBoss(org.bukkit.event.weather.WeatherChangeEvent event) {
+        if (endermanBossManager == null || !endermanBossManager.isBossActive()) {
+            return;
+        }
+
+        // Enderman boss prevents rain
+        if (event.toWeatherState() && endermanBossManager.isBossActive()) {
+            event.setCancelled(true);
+            endermanBossManager.getBossEntity().getWorld().setStorm(false);
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 ## Context
-The Enderman boss serves as the second major boss encounter in the 5-act story campaign, positioned between the Skeleton Lord (melee-focused) and Blaze Master (ranged-focused). This boss introduces complex mobility mechanics and deception tactics, requiring players to develop new strategies beyond basic combat. The implementation must integrate with the existing manager-based architecture while introducing new systems for clone management and teleportation control.
+The Enderman boss **replaces** the existing Boss #2 (Изверг Адских Глубин - Wither-based) in the 5-act story campaign. Positioned in Act 2, this replacement provides more engaging mechanics than the current Wither-based boss while maintaining the same narrative role. The new boss introduces complex mobility mechanics and deception tactics through teleportation and clone systems, requiring players to develop different strategies than the melee-focused Skeleton Lord in Act 3. The implementation must replace existing Wither mechanics in Act2Listener while integrating with the existing manager-based architecture.
 
 ## Goals / Non-Goals
 **Goals:**
@@ -14,6 +14,7 @@ The Enderman boss serves as the second major boss encounter in the 5-act story c
 - Create persistent boss entities across server restarts
 - Add complex loot systems (beyond existing boss progression)
 - Implement multiplayer synchronization beyond basic entity management
+- Maintain any existing Wither-based mechanics (complete replacement)
 
 ## Decisions
 
@@ -56,18 +57,27 @@ The Enderman boss serves as the second major boss encounter in the 5-act story c
 
 ## Migration Plan
 **Steps:**
-1. Create EndermanBossManager with basic functionality
-2. Implement Phase 1 mechanics (teleportation, basic clones)
-3. Add Phase 2 mechanics (healing shield, clone waves)
-4. Integrate with existing boss progression system
-5. Add visual effects and polish
-6. Performance testing and optimization
+1. Backup existing Boss #2 mechanics in Act2Listener
+2. Remove current Wither-based boss implementation
+3. Create EndermanBossManager with basic functionality
+4. Implement Phase 1 mechanics (teleportation, basic clones)
+5. Add Phase 2 mechanics (healing shield, clone waves)
+6. Update summoning ritual to fit Enderman theme
+7. Maintain existing boss name "Изверг Адских Глубин" in messages
+8. Update configuration parameters for new mechanics
+9. Add visual effects and polish
+10. Performance testing and optimization
 
-**Rollback:** Disable boss in configuration, remove from Act progression if critical issues arise
+**Rollback:** Restore Wither-based boss from backup, disable new boss in configuration
+
+## Resolved Questions
+- **Clone Attack Patterns**: Clones should NOT have different attack patterns (Q1)
+- **Shield Hit Visual Effects**: Beautiful particles when shield is hit (Q2)
+- **Healing Success**: 3-second healing duration (Q3)
+- **Additional Environmental Interactions**: Yes, possible to add more (Q4)
 
 ## Open Questions
-- Should clones have different movement patterns than the boss?
-- How should the boss behave when all players are out of range?
-- Should the healing shield have visual damage indicators?
-- How to handle boss behavior during server restart/combat interruption?
-- Should the boss have any environmental interaction beyond water immunity?
+- What specific particle effects should appear when shield is hit?
+- How should the boss behave during extended periods without player contact?
+- Should water freezing have additional effects beyond basic immunity?
+- What additional environmental interactions could be implemented?

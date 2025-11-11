@@ -1,13 +1,20 @@
 ## ADDED Requirements
 
-### Requirement: Enderman Boss Combat System
-The plugin SHALL provide a second boss encounter featuring an Enderman with teleportation abilities, clone mechanics, and two-phase combat system.
+### Requirement: Enderman Boss Combat System (Boss #2 Replacement)
+The plugin SHALL replace the existing Boss #2 (Изверг Адских Глубин - Wither-based) with an Enderman boss featuring teleportation abilities, clone mechanics, and two-phase combat system while maintaining the same narrative role and progression position in Act 2.
 
 #### Scenario: Boss Initialization
-- **WHEN** Act 3 progression reaches the boss encounter trigger
+- **WHEN** Act 2 progression reaches the boss encounter trigger (summoning ritual)
 - **THEN** the system SHALL spawn an Enderman boss with 500 HP, 1.25x scale, Resistance 2, and Strength 1 effects
+- **AND** the boss SHALL maintain the name "Изверг Адских Глубин" for narrative consistency
 - **AND** the boss SHALL appear with a vertical rift entrance sequence lasting 5 seconds
 - **AND** the boss SHALL aggro on players within 75 blocks
+
+#### Scenario: Legacy Boss Removal
+- **WHEN** the replacement implementation is activated
+- **THEN** the existing Wither-based Boss #2 mechanics SHALL be completely removed from Act2Listener
+- **AND** all Wither-specific configuration parameters SHALL be cleaned up
+- **AND** the summoning ritual SHALL be updated to fit Enderman theme while maintaining progression requirements
 
 #### Scenario: Phase 1 Combat Behavior
 - **WHEN** boss health is above 50% during combat
@@ -21,7 +28,21 @@ The plugin SHALL provide a second boss encounter featuring an Enderman with tele
 - **THEN** each clone SHALL inherit the boss's current health but without Resistance/Strength effects
 - **AND** clones SHALL appear identical to the boss but without glow effects
 - **AND** clones SHALL disappear after receiving one player hit with shadow disintegration effects
+- **AND** clones SHALL use the same movement patterns as the main boss
+- **AND** clones SHALL NOT have different attack patterns - identical to main boss
 - **AND** clones SHALL target players within 75 blocks like the main boss
+
+#### Scenario: Boss Behavior Without Players
+- **WHEN** all players move out of the boss's 75-block aggro range
+- **THEN** the boss SHALL stand stationary and wait for players to return
+- **AND** the boss SHALL not perform teleportation or healing abilities while waiting
+- **AND** when a player returns within range, the boss SHALL resume normal combat behavior
+
+#### Scenario: Server Restart/Combat Interruption
+- **WHEN** combat is interrupted by server restart or other means
+- **THEN** upon restart, the boss SHALL wait for the nearest player to approach
+- **AND** all active clones SHALL be cleaned up immediately
+- **AND** the boss SHALL maintain its current health percentage and phase state
 
 #### Scenario: Phase 2 Transition
 - **WHEN** boss health drops to 50% or below
@@ -39,6 +60,8 @@ The plugin SHALL provide a second boss encounter featuring an Enderman with tele
 - **WHEN** the boss attempts to heal in Phase 2 (every 35 seconds)
 - **THEN** the boss SHALL stop movement for 2 seconds to prepare healing
 - **AND** a purple particle shield SHALL form around the boss requiring 5 player hits to break
+- **AND** players SHALL see a hit counter display above their hotbars showing remaining hits
+- **AND** when players hit the shield, beautiful particle effects SHALL appear at impact points
 - **AND** if the shield is broken, the boss SHALL be stunned for 3 seconds and healing canceled
 - **AND** if the shield is not broken, the boss SHALL heal for 3 seconds
 
@@ -61,6 +84,8 @@ The plugin SHALL provide a second boss encounter featuring an Enderman with tele
 - **AND** when clones die, shadow disintegration effects SHALL play with smoke and witch particles
 - **AND** the healing shield SHALL display pulsing purple totem particles
 - **AND** vampirism healing SHALL show red particle effects
+- **AND** when players hit the healing shield, beautiful impact particle effects SHALL appear
+- **AND** shield impacts SHALL create colorful particle bursts with sound effects
 
 #### Scenario: Configuration Parameters
 - **WHEN** administrators modify boss configuration

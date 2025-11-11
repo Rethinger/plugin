@@ -151,7 +151,7 @@ public class NPCManager {
                 world.spawnParticle(Particle.PORTAL, location, 300, 0.5, 1, 0.5, 1);
                 world.spawnParticle(Particle.END_ROD, location, 100, 0.8, 1.5, 0.8, 0.1);
                 world.spawnParticle(Particle.ENCHANT, location, 150, 1, 1.5, 1, 1);
-                world.spawnParticle(Particle.FLASH, location, 2, 0, 0, 0, 0);
+                world.spawnParticle(Particle.SOUL_FIRE_FLAME, location, 2, 0, 0, 0, 0);
                 world.spawnParticle(Particle.GLOW, location, 50, 0.5, 1, 0.5, 0);
                 
                 world.playSound(location, Sound.ENTITY_ENDERMAN_TELEPORT, 1.5f, 1.0f);

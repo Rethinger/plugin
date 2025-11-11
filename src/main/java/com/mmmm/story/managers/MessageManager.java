@@ -151,7 +151,7 @@ public class MessageManager {
     /**
      * Get player's language based on client locale
      */
-    private String getPlayerLanguage(Player player) {
+    public String getPlayerLanguage(Player player) {
         // Since only Russian is supported, always return "ru"
         return "ru";
     }

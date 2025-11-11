@@ -250,6 +250,7 @@ chest:
         - ""
         - "▶ Drop (Q) on Dragon Egg"
         - "in Boss 2 Arena for summoning"
+  items:
     overworld_portal_key:
       name: "End Gates Key"
       lore:
@@ -318,13 +319,6 @@ chest:
         - "✦ Place all 5 artifacts"
         - "in ritual chests around End center (0, 0)"
         - "for the final sealing ritual"
-    end_artifact:
-      name: "End Artifact"
-      description: "Ancient artifact {0} of 5"
-      ritual_required: "Required for the final ritual"
-      place_all: "▶ Place all 5 artifacts"
-      in_ritual_chests: "in ritual chests around End center (0, 0)"
-      for_ritual: "for the final sealing ritual"
 
 # Menu System Messages
 menu:

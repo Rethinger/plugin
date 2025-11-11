@@ -9,7 +9,7 @@ website: https://pidoras.uno
 commands:
   story:
     description: Main story plugin command
-    usage: /story <start|menu|give|debug>
+    usage: /story <start|menu|give|debug|refresh>
     permission: story.admin
     aliases: [st]
   server:
@@ -17,6 +17,10 @@ commands:
     usage: /server start
     permission: story.admin
     aliases: [srv]
+  testtexture:
+    description: Test texture system
+    usage: /testtexture
+    permission: story.admin
 
 permissions:
   story.admin:

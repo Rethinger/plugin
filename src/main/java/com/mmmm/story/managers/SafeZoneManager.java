@@ -204,7 +204,7 @@ public class SafeZoneManager {
         world.spawnParticle(Particle.GLOW, center, 15, zone.getRadius(), zone.getRadius(), zone.getRadius(), 0.1);
 
         // Flash effect
-        world.spawnParticle(Particle.FLASH, center, 1, 0, 0, 0, 0);
+        world.spawnParticle(Particle.SOUL_FIRE_FLAME, center, 1, 0, 0, 0, 0);
 
         // Sound effect
         world.playSound(center, org.bukkit.Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.2f);

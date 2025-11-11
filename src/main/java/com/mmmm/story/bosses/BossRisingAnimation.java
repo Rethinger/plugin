@@ -228,7 +228,7 @@ public class BossRisingAnimation {
                 // Add dramatic effects at key points
                 if (currentTick == totalTicks / 2) {
                     // Mid-point effect
-                    world.spawnParticle(Particle.FLASH, bossLoc, 1, 0, 0, 0, 0);
+                    world.spawnParticle(Particle.SOUL_FIRE_FLAME, bossLoc, 1, 0, 0, 0, 0);
                     world.spawnParticle(Particle.EXPLOSION, bossLoc, 2, 0.5, 0.5, 0.5, 0);
                     world.playSound(bossLoc, org.bukkit.Sound.ENTITY_WITHER_AMBIENT, 1.5f, 0.5f);
                 }
@@ -408,7 +408,7 @@ public class BossRisingAnimation {
             World world = bossLoc.getWorld();
             
             // Dramatic final effect
-            world.spawnParticle(Particle.FLASH, bossLoc, 2, 0, 0, 0, 0);
+            world.spawnParticle(Particle.SOUL_FIRE_FLAME, bossLoc, 2, 0, 0, 0, 0);
             world.spawnParticle(Particle.EXPLOSION, bossLoc, 5, 0.5, 0.5, 0.5, 0);
             world.spawnParticle(Particle.DRAGON_BREATH, bossLoc, 20, 1, 1, 1, 0.1);
             

@@ -56,7 +56,17 @@ public class BossAttackState {
         STATIONARY_SAFE_ZONES_APPEARING, // Safe zones appear during casting
         STATIONARY_FANGS_ATTACK,         // Evoker fangs attack execution (3 seconds)
         STATIONARY_COOLDOWN,             // Attack cooldown phase
-        COOLDOWN                        // Legacy cooldown (for compatibility)
+        COOLDOWN,                       // Legacy cooldown (for compatibility)
+
+        // NEW: Enderman boss attack phases
+        ENDERMAN_PORTAL_RIFT,            // Initial portal rift entrance sequence
+        ENDERMAN_CHAOTIC_TELEPORT,       // Chaotic teleportation sequence with clones
+        ENDERMAN_COUNTER_TELEPORT,       // Counter-attack teleportation behind player
+        ENDERMAN_CLONE_WAVE_SPAWN,       // Phase 2 clone wave spawning
+        ENDERMAN_HEALING_PREPARATION,    // Healing shield preparation (2 seconds)
+        ENDERMAN_HEALING_SHIELD,         // Active healing shield requiring player hits
+        ENDERMAN_HEALING_SUCCESS,        // Successful healing (3 seconds)
+        ENDERMAN_STUNNED,                // Stunned after shield breaks (3 seconds)
     }
     
     /**
@@ -295,6 +305,105 @@ public class BossAttackState {
                specialAttackPhase == SpecialAttackPhase.STATIONARY_SAFE_ZONES_APPEARING ||
                specialAttackPhase == SpecialAttackPhase.STATIONARY_FANGS_ATTACK ||
                specialAttackPhase == SpecialAttackPhase.STATIONARY_COOLDOWN;
+    }
+
+    // NEW: Enderman boss phase checking methods
+
+    /**
+     * Check if boss is in portal rift entrance sequence
+     * @return True if in portal rift entrance
+     */
+    public boolean isInPortalRift() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_PORTAL_RIFT;
+    }
+
+    /**
+     * Check if boss is performing chaotic teleportation
+     * @return True if in chaotic teleportation sequence
+     */
+    public boolean isInChaoticTeleport() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_CHAOTIC_TELEPORT;
+    }
+
+    /**
+     * Check if boss is performing counter-attack teleportation
+     * @return True if in counter-attack teleportation
+     */
+    public boolean isInCounterTeleport() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_COUNTER_TELEPORT;
+    }
+
+    /**
+     * Check if boss is spawning clone waves
+     * @return True if spawning clone waves
+     */
+    public boolean isInCloneWaveSpawn() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_CLONE_WAVE_SPAWN;
+    }
+
+    /**
+     * Check if boss is preparing healing shield
+     * @return True if preparing healing shield
+     */
+    public boolean isInHealingPreparation() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_HEALING_PREPARATION;
+    }
+
+    /**
+     * Check if boss has active healing shield
+     * @return True if healing shield is active
+     */
+    public boolean isInHealingShield() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_HEALING_SHIELD;
+    }
+
+    /**
+     * Check if boss is successfully healing
+     * @return True if boss is healing
+     */
+    public boolean isInHealingSuccess() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_HEALING_SUCCESS;
+    }
+
+    /**
+     * Check if boss is stunned
+     * @return True if boss is stunned
+     */
+    public boolean isStunned() {
+        return specialAttackPhase == SpecialAttackPhase.ENDERMAN_STUNNED;
+    }
+
+    /**
+     * Check if boss should be immobilized (can't move or attack)
+     * @return True if boss should be immobilized
+     */
+    public boolean shouldBeImmobilized() {
+        return isInHealingPreparation() || isInHealingShield() || isInHealingSuccess() || isStunned();
+    }
+
+    /**
+     * Check if boss can teleport (not in immobilized states)
+     * @return True if boss can teleport
+     */
+    public boolean canTeleport() {
+        return !shouldBeImmobilized() && !isInPortalRift();
+    }
+
+    /**
+     * Check if boss can create clones
+     * @return True if boss can create clones
+     */
+    public boolean canCreateClones() {
+        return !shouldBeImmobilized() && !isInPortalRift();
+    }
+
+    /**
+     * Check if boss should have water immunity
+     * @return True if boss should have water immunity
+     */
+    public boolean shouldHaveWaterImmunity() {
+        // Enderman boss always has water immunity
+        return true;
     }
     
     /**

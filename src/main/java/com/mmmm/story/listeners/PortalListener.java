@@ -24,7 +24,7 @@ public class PortalListener implements Listener {
     
     @EventHandler
     public void onPortalKeyDrop(org.bukkit.event.entity.ItemSpawnEvent event) {
-        if (plugin.getDataManager().getCurrentAct() < 3) {
+        if (plugin.getDataManager().getCurrentAct() < 1) {
             return;
         }
         
@@ -102,8 +102,9 @@ public class PortalListener implements Listener {
         // Notify all players
         for (Player player : world.getPlayers()) {
             if (player.getLocation().distance(location) < 200) {
-                player.sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.end_opened")).color(NamedTextColor.DARK_PURPLE));
-                player.sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.end_instruction")).color(NamedTextColor.GREEN));
+                String lang = plugin.getMessageManager().getPlayerLanguage(player);
+                player.sendMessage(Component.text(plugin.getMessageManager().getMessage(lang, "portal.end_opened")).color(NamedTextColor.DARK_PURPLE));
+                player.sendMessage(Component.text(plugin.getMessageManager().getMessage(lang, "portal.end_instruction")).color(NamedTextColor.GREEN));
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
             }
         }
@@ -187,7 +188,8 @@ public class PortalListener implements Listener {
         // Check if nether is enabled
         if (!plugin.getDataManager().isNetherEnabled()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.unstable")));
+            String lang = plugin.getMessageManager().getPlayerLanguage(event.getPlayer());
+            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage(lang, "portal.unstable")));
             
             event.getPlayer().playSound(
                 event.getPlayer().getLocation(),
@@ -207,7 +209,8 @@ public class PortalListener implements Listener {
         // Check if end is enabled
         if (!plugin.getDataManager().isEndEnabled()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage("portal.end_closed")));
+            String lang = plugin.getMessageManager().getPlayerLanguage(event.getPlayer());
+            event.getPlayer().sendMessage(Component.text(plugin.getMessageManager().getMessage(lang, "portal.end_closed")));
             
             event.getPlayer().playSound(
                 event.getPlayer().getLocation(),
