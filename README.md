@@ -1,7 +1,7 @@
 # Mmmm Story Plugin
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/yourusername/mmmm-story-plugin)
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/yourusername/mmmm-story-plugin/releases)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Rethinger/plugin)
+[![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/Rethinger/plugin/releases)
 [![Java](https://img.shields.io/badge/java-21+-orange.svg)](https://openjdk.java.net/)
 [![PaperMC](https://img.shields.io/badge/PaperMC-1.21.1-green.svg)](https://papermc.io/)
 
@@ -42,10 +42,6 @@ A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featur
 - **PaperMC 1.21.1** or higher (Spigot API compatible)
 - **Maven 3.6+** (for building from source)
 
-### Optional Dependencies
-- **WorldEdit** - For structure import/export (.schem files)
-- **Citizens2** - Enhanced NPC functionality (fallback available)
-
 ### Included Dependencies
 - **NpcApi-Paper 1.21.x-4** - Advanced NPC functionality (bundled)
 
@@ -53,7 +49,7 @@ A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featur
 
 ### Quick Install (Server Owners)
 
-1. **Download the latest release** from the [Releases page](https://github.com/yourusername/mmmm-story-plugin/releases)
+1. **Download the latest release** from the [Releases page](https://github.com/Rethinger/plugin/releases)
 2. **Place the JAR file** in your server's `plugins/` directory
 3. **Restart your server** to generate configuration files
 4. **Configure settings** as needed (see Configuration section)
@@ -63,13 +59,13 @@ A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featur
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mmmm-story-plugin.git
-cd mmmm-story-plugin
+git clone https://github.com/Rethinger/plugin.git
+cd plugin
 
 # Compile with Maven
 mvn clean package
 
-# The compiled JAR will be in: target/story-plugin-1.4.0.jar
+# The compiled JAR will be in: target/story-plugin-1.0.jar
 ```
 
 ## Configuration
@@ -119,11 +115,6 @@ Each player can customize their experience through GUI menus:
 ### Server Commands
 ```bash
 /server start          # Initialize server start sequence
-```
-
-### Texture Testing
-```bash
-/testtexture          # Test custom texture system
 ```
 
 ## Permissions
@@ -241,7 +232,7 @@ mvn test
 ```
 
 #### Integration Testing
-1. Copy `target/story-plugin-1.4.0.jar` to test server
+1. Copy `target/story-plugin-1.0.jar` to test server
 2. Test all commands and permissions
 3. Verify NPC animations and dialog timing
 4. Test boss mechanics and progression
@@ -278,8 +269,8 @@ We welcome contributions to improve the plugin! Please follow these guidelines:
 ### Development Setup
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/mmmm-story-plugin.git
-cd mmmm-story-plugin
+git clone https://github.com/Rethinger/plugin.git
+cd plugin
 
 # Install dependencies
 mvn clean install
@@ -288,7 +279,7 @@ mvn clean install
 mvn test
 
 # Start development server
-# Copy target/story-plugin-1.4.0.jar to server/plugins/
+# Copy target/story-plugin-1.0.jar to server/plugins/
 ```
 
 ## Troubleshooting
@@ -339,29 +330,8 @@ This project is licensed under the [MIT License](LICENSE) - see the LICENSE file
 
 ## Support
 
-- **Issues**: Report bugs via [GitHub Issues](https://github.com/yourusername/mmmm-story-plugin/issues)
-- **Discussions**: Join our [GitHub Discussions](https://github.com/yourusername/mmmm-story-plugin/discussions)
-- **Documentation**: See additional guides in the repository
-
-## Version History
-
-### Version 1.4.0 (Current)
-- Added Enderman boss mechanics
-- Implemented advanced NPC animation system
-- Enhanced dialog management with multi-language support
-- Added player personal settings system
-- Improved performance optimization
-
-### Version 1.3.0
-- Added boss battle mechanics
-- Implemented custom item system
-- Enhanced structure management
-- Added achievement system
-
-### Version 1.0.0
-- Initial release
-- Basic 5-act story implementation
-- Core NPC and dialog systems
+- **Issues**: Report bugs via [GitHub Issues](https://github.com/Rethinger/plugin/issues)
+- **Discussions**: Join our [GitHub Discussions](https://github.com/Rethinger/plugin/discussions)
 
 ---
 
