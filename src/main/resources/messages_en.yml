@@ -6,6 +6,11 @@
 npc:
   messenger_name: "§6Messenger"
   direction_marker: "§6You received a direction marker! (Lasts 5 minutes)"
+  entities:
+    skeleton_lord: "§4§lSkeleton Lord"
+    nether_fiend: "§4§lNether Fiend"
+    end_guardian: "§5§lEnd Guardian"
+    crystal_guardian: "§5§lCrystal Guardian"
 
 # Act Manager
 act:
@@ -133,6 +138,8 @@ chest:
     hide_enchantments_removed: "§7Item enchantments no longer hidden!"
     hide_tooltip_added: "§7Item tooltip hidden!"
     hide_tooltip_removed: "§7Item tooltip no longer hidden!"
+    hide_flags_added: "§7Item flags hidden!"
+    hide_flags_removed: "§7Item flags no longer hidden!"
     stored_success: "§a§l✔ Item stored in inventory!"
     stored_failed: "§c✗ Failed to store item in inventory!"
     retrieved_success: "§a§l✔ Item retrieved from inventory!"
@@ -167,6 +174,8 @@ chest:
     enchanted_failed: "§c✗ Failed to enchant item!"
     repaired_success: "§a§l✔ Item processed on anvil!"
     repaired_failed: "§c✗ Failed to process item on anvil!"
+    anvil_success: "§a§l✔ Item processed on anvil!"
+    anvil_failed: "§c✗ Failed to process item on anvil!"
     grindstone_success: "§a§l✔ Item processed on grindstone!"
     grindstone_failed: "§c✗ Failed to process item on grindstone!"
     brewing_stand_success: "§a§l✔ Item processed on brewing stand!"
@@ -250,7 +259,6 @@ chest:
         - ""
         - "▶ Drop (Q) on Dragon Egg"
         - "in Boss 2 Arena for summoning"
-  items:
     overworld_portal_key:
       name: "End Gates Key"
       lore:
@@ -359,11 +367,6 @@ menu:
     all_ready: "§6§lAll players ready! Starting story..."
     waiting: "§eWaiting for player readiness..."
 
-# Additional messages from English file, now in Russian
-act5:
-  all_artifacts_collected: "§a§l✔ All artifacts collected!"
-  ritual_starting: "§d§l⚡ Ritual begins..."
-
 # Spawn point management (Bug #5 Fix)
 spawn:
   saved: "§6Your respawn point has been saved."
@@ -380,6 +383,7 @@ boss:
 events:
   wave_incoming: "§c§lSkeleton wave incoming! Defend yourselves until dawn!"
   wave_survived: "§aYou survived the skeleton warrior wave!"
+  phantom_burst: "§5§lThe Void has opened! Phantoms are approaching!"
 
 # Achievement messages (Bug #1 Fix)
 achievements:
@@ -415,15 +419,6 @@ structures:
     line1: "§d§l[PORTAL]"
     line2: "§7End Portal"
     line3: "§eAct 5"
-
-# NPC and Entity Names
-npc:
-  messenger_name: "§6Messenger"
-entities:
-  skeleton_lord: "§4§lSkeleton Lord"
-  nether_fiend: "§4§lNether Fiend"
-  end_guardian: "§5§lEnd Guardian"
-  crystal_guardian: "§5§lCrystal Guardian"
 
 # Server Start Menu
 server_start_menu:

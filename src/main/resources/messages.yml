@@ -52,6 +52,8 @@ boss1:
   defeated_again: "§6§l⚔ Повелитель побежден снова!"
   wither_skull_attack:
     warning: "§5§l⚡ ПОВЕЛИТЕЛЬ ПРИЗЫВАЕТ ЧЕРЕПА ИССУШЕНИЯ!"
+  special_attack:
+    warning: "§5§l⚡ Босс готовит особую атаку! Отойдите от центра!"
 
 # Boss 2 - Nether Fiend
 boss2:
@@ -104,6 +106,7 @@ chest:
     found_multiple: "§a§l✔ Найдено предметов: %count%!"
     lore_updated: "§7Описание предмета обновлено!"
     lore_added: "§7Добавлено описание предмета!"
+    lore_removed: "§7Описание предмета удалено!"
     enchantment_added: "§7Добавлено зачарование предмета!"
     enchantment_removed: "§7Удалено зачарование предмета!"
     durability_changed: "§7Прочность предмета изменена!"

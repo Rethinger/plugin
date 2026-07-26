@@ -162,7 +162,7 @@ public class Act3Listener implements Listener {
         // Spawn Boss 2 (Enderman boss)
         Location spawnLoc = location.clone().add(0, 3, 0);
         Enderman boss = (Enderman) world.spawnEntity(spawnLoc, EntityType.ENDERMAN);
-        boss.setCustomName(plugin.getMessageManager().getMessage("entities.end_guardian"));
+        boss.setCustomName(plugin.getMessageManager().getMessage("npc.entities.end_guardian"));
         boss.setCustomNameVisible(true);
         
         // Set attributes
