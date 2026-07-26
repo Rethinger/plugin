@@ -1,5 +1,6 @@
 package com.mmmm.story.listeners;
 
+import com.mmmm.story.Cleanable;
 import com.mmmm.story.MmmmStoryPlugin;
 import com.mmmm.story.managers.ItemManager;
 import com.mmmm.story.managers.MessageManager;
@@ -55,7 +56,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class Act2Listener implements Listener {
+public class Act2Listener implements Listener, Cleanable {
     
     private final MmmmStoryPlugin plugin;
     private BossBar boss1BossBar;
@@ -3221,6 +3222,31 @@ public class Act2Listener implements Listener {
         }
     }
     
+    /**
+     * Release every runtime resource this listener owns.
+     *
+     * <p>Called on plugin shutdown as well as on {@code /reload}. Bukkit cancels the
+     * scheduler tasks on its own, but without this the boss bars stay stuck on the
+     * screens of players who survive a reload.
+     */
+    @Override
+    public void cleanup() {
+        cleanupAllBossTasks();
+
+        // cleanupAllBossTasks() only clears the boss 2 bar - the boss 1 bar is normally
+        // removed by the death handler, which never runs when we shut down mid-fight.
+        if (boss1BossBar != null) {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                player.hideBossBar(boss1BossBar);
+            }
+            boss1BossBar = null;
+        }
+
+        boss1Entity = null;
+        boss1Phase = 1;
+        boss1Warriors.clear();
+    }
+
     /**
      * Clean up all boss-related tasks when boss dies
      */

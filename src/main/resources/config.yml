@@ -159,6 +159,9 @@ acts:
 
 # Bug #4 & #5 Fix: Acts 4-5 portal blocking and spawn management
 act4:
+  # When false, artifacts are obtained only by searching chests (Act4Listener stays
+  # unregistered). Previously this was toggled by commenting out code.
+  autoSpawnArtifacts: false
   portalBlocking:
     enabled: true
     feedbackParticle: SMOKE            # particle shown when portal blocked
