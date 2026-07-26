@@ -9,9 +9,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 public class DataManager {
     
@@ -21,7 +24,8 @@ public class DataManager {
     private File playersFolder;
     
     private FileConfiguration globalData;
-    private final Map<UUID, FileConfiguration> playerData = new HashMap<>();
+    /** Concurrent: read from scheduler tasks as well as the main thread. */
+    private final Map<UUID, FileConfiguration> playerData = new ConcurrentHashMap<>();
     
     public DataManager(MmmmStoryPlugin plugin) {
         this.plugin = plugin;
@@ -125,7 +129,52 @@ public class DataManager {
             savePlayerData(uuid);
         }
     }
-    
+
+    /**
+     * Save everything without stalling the server tick.
+     *
+     * <p>Bukkit configuration objects are not thread safe, so they are serialised to
+     * strings on the calling (main) thread; only the disk writes are handed to an
+     * async task. Used by the five-minute autosave, where the previous synchronous
+     * implementation wrote every cached player profile plus a backup copy inline.
+     */
+    public void saveAsync() {
+        Map<File, String> pending = new LinkedHashMap<>();
+        pending.put(globalFile, globalData.saveToString());
+        for (Map.Entry<UUID, FileConfiguration> entry : playerData.entrySet()) {
+            pending.put(new File(playersFolder, entry.getKey() + ".yml"), entry.getValue().saveToString());
+        }
+
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            for (Map.Entry<File, String> entry : pending.entrySet()) {
+                writeFile(entry.getKey(), entry.getValue());
+            }
+        });
+    }
+
+    private void writeFile(File file, String contents) {
+        try {
+            if (file.equals(globalFile) && globalFile.exists()) {
+                Files.copy(globalFile.toPath(), new File(dataFolder, "global.yml.backup").toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+            Files.writeString(file.toPath(), contents, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to write " + file.getName(), e);
+        }
+    }
+
+    /**
+     * Persist and drop a player's cached profile.
+     *
+     * <p>Called from {@code PlayerQuitEvent}. Without this the {@code playerData} cache
+     * grows for every player who has ever joined and is never reclaimed.
+     */
+    public void unloadPlayer(UUID uuid) {
+        savePlayerData(uuid);
+        playerData.remove(uuid);
+    }
+
     // Global data getters/setters
     public int getCurrentAct() {
         return globalData.getInt("act.current", 1);

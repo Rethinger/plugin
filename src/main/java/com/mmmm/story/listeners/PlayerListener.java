@@ -12,12 +12,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class PlayerListener implements Listener {
     
@@ -91,8 +93,7 @@ public class PlayerListener implements Listener {
                         plugin.getActManager().startCampaign();
                         plugin.getLogger().info("=== STORY STARTED SUCCESSFULLY ===");
                     } catch (Exception e) {
-                        plugin.getLogger().severe("=== ERROR STARTING STORY: " + e.getMessage());
-                        e.printStackTrace();
+                        plugin.getLogger().log(Level.SEVERE, "=== ERROR STARTING STORY", e);
                     }
                 } else {
                     plugin.getLogger().info("Auto-start cancelled - conditions not met (Act: " + actNow + ", Players: " + playersNow + ")");
@@ -105,6 +106,17 @@ public class PlayerListener implements Listener {
         }
     }
     
+    /**
+     * Flush and evict the leaving player's cached profile.
+     *
+     * <p>{@code DataManager} loads profiles lazily and used to keep every one of them
+     * for the lifetime of the server, so the cache grew without bound.
+     */
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        plugin.getDataManager().unloadPlayer(event.getPlayer().getUniqueId());
+    }
+
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();

@@ -1155,8 +1155,7 @@ public class NPCManager {
             startEnhancedMessengerDespawn(npcId, npcLocation, animationDuration, particlesEnabled, cleanupRadius, finalCleanup, cleanupMethod);
 
         } catch (Exception e) {
-            plugin.getLogger().severe("[NPC] Error during enhanced despawn: " + e.getMessage());
-            e.printStackTrace();
+            plugin.getLogger().log(java.util.logging.Level.SEVERE, "[NPC] Error during enhanced despawn", e);
 
             // Fallback to simple removal
             removeNPC(npcId);

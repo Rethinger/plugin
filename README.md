@@ -1,6 +1,6 @@
 # Mmmm Story Plugin
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Rethinger/plugin)
+[![Build](https://github.com/Rethinger/plugin/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/Rethinger/plugin/actions/workflows/maven-publish.yml)
 [![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/Rethinger/plugin/releases)
 [![Java](https://img.shields.io/badge/java-21+-orange.svg)](https://openjdk.java.net/)
 [![PaperMC](https://img.shields.io/badge/PaperMC-1.21.1-green.svg)](https://papermc.io/)
@@ -23,9 +23,9 @@ A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featur
 - **Manager-Based Architecture** - Clean separation of concerns across 13 specialized managers
 - **Event-Driven Design** - Complex event listeners for each story act with precise timing
 - **Configuration-Driven** - All story content externalized in YAML files
-- **Performance Optimized** - Particle effects with radius optimization, mob throttling, and async data saving
-- **Persistent Data Storage** - JSON-based player progress with 5-minute auto-save intervals
-- **Memory Management** - Proper task cleanup and NPC memory management
+- **Performance Optimized** - Particle effects with radius optimization, mob throttling, and off-thread autosave writes
+- **Persistent Data Storage** - YAML player progress with 5-minute auto-save intervals
+- **Memory Management** - Boss bars and NPCs released on shutdown, player profiles evicted on quit
 - **Debug Tools** - Comprehensive debugging commands and detailed logging
 
 ### User Experience
@@ -43,7 +43,7 @@ A sophisticated Minecraft story campaign plugin built for PaperMC 1.21.x, featur
 - **Maven 3.6+** (for building from source)
 
 ### Included Dependencies
-- **NpcApi-Paper 1.21.x-4** - Advanced NPC functionality (bundled)
+- **NpcApi-Paper 1.21.x-4** - Advanced NPC functionality (resolved from JitPack, shaded and relocated into the plugin jar)
 
 ## Installation
 
@@ -121,7 +121,7 @@ The plugin uses a sophisticated manager-based architecture with clear separation
 
 #### Core Managers
 1. **ConfigManager** - Configuration hub with multi-language support
-2. **DataManager** - JSON-based player progress persistence
+2. **DataManager** - YAML player progress persistence
 3. **NPCManager** - Advanced NPC animations and behavioral AI
 4. **DialogManager** - Interactive story system with sound synchronization
 5. **ActManager** - Story progression and world state control

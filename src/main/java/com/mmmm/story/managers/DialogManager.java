@@ -266,7 +266,7 @@ public class DialogManager {
 
                         if (matchesConfiguredDelay || matchesTriggerText) {
                             plugin.getLogger().info("[Dialog] Triggering messenger despawn for text: " + text);
-                            plugin.getNpcManager().despawnMessenger();
+                            plugin.getNPCManager().despawnMessenger();
                         }
                     } catch (Exception e) {
                         plugin.getLogger().warning("[Dialog] Error while triggering messenger despawn: " + e.getMessage());
